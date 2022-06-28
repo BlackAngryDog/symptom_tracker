@@ -1,6 +1,24 @@
 import 'package:flutter/material.dart';
 
-void main() {
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutterfire_ui/auth.dart';
+
+import 'firebase_config.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+        name: 'att', options: DefaultFirebaseConfig.platformOptions);
+  } else {
+    Firebase.app();
+  }
+
+  // FacebookSdk.sdkInitialize();
+  //FirebaseDatabase.instance.goOnline();
+
   runApp(const MyApp());
 }
 
@@ -24,7 +42,29 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const AuthGate(),
+    );
+  }
+}
+
+class AuthGate extends StatelessWidget {
+  const AuthGate({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        // User is not signed in
+        if (!snapshot.hasData) {
+          return const SignInScreen(providerConfigs: [
+            EmailProviderConfiguration(),
+          ]);
+        }
+
+        // Render your application if authenticated
+        return const MyHomePage(title: 'Flutter Demo Home Page');
+      },
     );
   }
 }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "420923339592",
+    "project_id": "symptomtracker-52fcc",
+    "storage_bucket": "symptomtracker-52fcc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420923339592:android:d3bea3ea748b86cfd7797d",
+        "android_client_info": {
+          "package_name": "com.blackangrydog.symptom_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "420923339592-jjv50thsk73gjqh6bfflevoli7mocb3p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNP-g92kzdpEGr2qMRpkKDPs6iG-DAa98"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "420923339592-jjv50thsk73gjqh6bfflevoli7mocb3p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
