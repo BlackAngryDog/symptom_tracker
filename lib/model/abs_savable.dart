@@ -1,21 +1,17 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:symptom_tracker/model/databaseTool.dart';
 
 abstract class AbsSavable {
-  AbsSavable();
+  static String _endpoint = '';
 
-  String getUserID() {
-    String uid = 'default';
-    if (FirebaseAuth.instance.currentUser != null &&
-        FirebaseAuth.instance.currentUser?.uid != null) {
-      uid = FirebaseAuth.instance.currentUser?.uid as String;
-    }
-    return uid;
+  AbsSavable(String endpoint) {
+    AbsSavable._endpoint = endpoint;
   }
 
-  void save(String? id, String endpoint, Map<String, Object?> json) {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("$endpoint/${getUserID()}");
+  void save(String? id, Map<String, Object?> json) {
+    DatabaseReference ref = DatabaseTools.getRef(_endpoint);
+
     if (id != null) {
       ref.update({
         id: json,
@@ -26,5 +22,13 @@ abstract class AbsSavable {
 
       ref.push().set(json);
     }
+  }
+
+  static Future<Map<dynamic, dynamic>> loadJson(String key) async {
+    DatabaseReference ref = DatabaseTools.getRef(_endpoint);
+    DatabaseEvent event = await ref.once();
+    return event.snapshot.value == null
+        ? <dynamic, dynamic>{}
+        : event.snapshot.value as Map<dynamic, dynamic>;
   }
 }
