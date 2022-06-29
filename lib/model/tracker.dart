@@ -15,7 +15,10 @@ class Tracker extends AbsSavable {
   // VALUE -THIS IS NOT SAVED HERE AS THAT IS FOR THE LOG!
 
   // set/update log for today for this tracker...
-  void UpdateLog() {}
+  void updateLog() {}
+
+  // get data from logs for day ?
+  void readLog()
 
   // PERSISTANCE
 

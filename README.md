@@ -1,6 +1,8 @@
 # symptom_tracker
 
-An App to track symptoms
+An App to track symptoms and log important events in an easy to read format that can be shared with heath professionals. 
+
+
 
 ## Getting Started
 

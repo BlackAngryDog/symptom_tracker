@@ -11,7 +11,7 @@ class DataLog extends AbsSavable {
 
   // How is are logs stored for retreaval and reading
 
-  // DATE, TITLE, VALUE, TYPE OF DATA
+  // DATE, TITLE, VALUE, TYPE OF DATA, NOTE/EVENT
 
   // update depending on type?
   void update() {}
@@ -21,8 +21,7 @@ class DataLog extends AbsSavable {
     return DataLog.fromJson(key, await AbsSavable.loadJson(key));
   }
 
-  DataLog.fromJson(String? key, Map<dynamic, dynamic> json)
-      : super('datalogs') {
+  DataLog.fromJson(String? key, Map<dynamic, dynamic> json) : super('datalogs') {
     id = key;
   }
 
