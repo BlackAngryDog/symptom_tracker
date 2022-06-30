@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutterfire_ui/auth.dart';
+import 'package:symptom_tracker/model/data_log.dart';
 
 import 'firebase_config.dart';
 
@@ -10,8 +11,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-        name: 'att', options: DefaultFirebaseConfig.platformOptions);
+    await Firebase.initializeApp(name: 'att', options: DefaultFirebaseConfig.platformOptions);
   } else {
     Firebase.app();
   }
@@ -97,6 +97,12 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
+
+      DataLog log = DataLog(
+        title: "test $_counter",
+        value: _counter.toString(),
+      );
+      log.save(null, log.toJson());
       _counter++;
     });
   }

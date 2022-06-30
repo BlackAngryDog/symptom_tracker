@@ -18,16 +18,15 @@ class Tracker extends AbsSavable {
   void updateLog() {}
 
   // get data from logs for day ?
-  void readLog()
+  void readLog() {}
 
   // PERSISTANCE
 
-  static Future<dynamic> load(String key) async {
+  static Future<Tracker> load(String key) async {
     return Tracker.fromJson(key, await AbsSavable.loadJson(key));
   }
 
-  Tracker.fromJson(String? key, Map<dynamic, dynamic> json)
-      : super('trackables') {
+  Tracker.fromJson(String? key, Map<dynamic, dynamic> json) : super('trackables') {
     id = key;
   }
 

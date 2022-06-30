@@ -6,8 +6,11 @@ import 'package:symptom_tracker/model/tracker.dart';
 class DataLog extends AbsSavable {
   String? id;
   String? title;
+  DateTime? time;
+  String? value;
+  String? type;
 
-  DataLog() : super('datalogs');
+  DataLog({this.id, this.title, this.time, this.value, this.type}) : super('datalogs');
 
   // How is are logs stored for retreaval and reading
 
@@ -23,9 +26,16 @@ class DataLog extends AbsSavable {
 
   DataLog.fromJson(String? key, Map<dynamic, dynamic> json) : super('datalogs') {
     id = key;
+    title = json['title'];
+    time = DateTime.fromMicrosecondsSinceEpoch(json['time']);
+    value = json['value'];
+    type = json['type'];
   }
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
         'title': title,
+        'time': time?.microsecondsSinceEpoch.toString(),
+        'value': value,
+        'type': type,
       };
 }

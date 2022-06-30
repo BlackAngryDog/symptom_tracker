@@ -38,8 +38,7 @@ class Trackable extends AbsSavable {
     return Trackable.fromJson(key, await AbsSavable.loadJson(key));
   }
 
-  Trackable.fromJson(String? key, Map<dynamic, dynamic> json)
-      : super('trackables') {
+  Trackable.fromJson(String? key, Map<dynamic, dynamic> json) : super('trackables') {
     id = key;
   }
 
