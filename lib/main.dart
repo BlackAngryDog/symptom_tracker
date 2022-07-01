@@ -15,15 +15,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-        name: 'att', options: DefaultFirebaseConfig.platformOptions);
+    await Firebase.initializeApp(name: 'att', options: DefaultFirebaseConfig.platformOptions);
   } else {
     Firebase.app();
   }
 
   // FacebookSdk.sdkInitialize();
-  FirebaseDatabase.instance.databaseURL =
-      DefaultFirebaseConfig.platformOptions.databaseURL;
+  FirebaseDatabase.instance.databaseURL = DefaultFirebaseConfig.platformOptions.databaseURL;
   FirebaseDatabase.instance.goOnline();
 
   runApp(const MyApp());

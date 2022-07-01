@@ -3,10 +3,38 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:symptom_tracker/model/abs_savable.dart';
 import 'package:symptom_tracker/model/trackable.dart';
+import 'package:symptom_tracker/model/user.dart';
 
 class DatabaseTools {
   //final DatabaseReference _timerRef =
   //    FirebaseDatabase.instance.ref().child('timers');
+
+  static Future<UserVo> getUser() {
+    String uid = getUserID();
+
+    final doc = FirebaseFirestore.instance.collection('users').doc(uid);
+
+    return doc
+        .get()
+        .then(
+          (data) => UserVo.fromJson(doc.id, data as Map<String, dynamic>),
+        )
+        .catchError(
+          (error, stackTrace) => UserVo("Dan", 'admin', id: uid).save(),
+        );
+  }
+
+  static save(ISavable item) {
+    CollectionReference collection = FirebaseFirestore.instance.collection(item.endpoint);
+
+    if (item.id != null) {
+      collection.doc(item.id).set(item.toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+      return;
+    }
+
+    collection.add(item.toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+    return;
+  }
 
   static void testFirestore() {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -23,20 +51,18 @@ class DatabaseTools {
   }
 
   static void SaveItem(String? id, String endpoint, Map<String, dynamic> json) {
-    CollectionReference collection =
-        FirebaseFirestore.instance.collection(endpoint);
+    CollectionReference collection = FirebaseFirestore.instance.collection(endpoint);
 
     dynamic snap = collection.doc(id).get();
 
-    collection
-        .add(json)
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+    if (id != null) {
+      collection.doc(id).set(json).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+      return;
+    }
 
-    final messageRef = FirebaseFirestore.instance
-        .collection("rooms")
-        .doc("roomA")
-        .collection("messages");
+    collection.add(json).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+    return;
+    final messageRef = FirebaseFirestore.instance.collection("rooms").doc("roomA").collection("messages");
     // ADDING SUBCOLLECTIONS
     messageRef.add({
       'full_name': 'test', // John Doe
@@ -62,23 +88,20 @@ class DatabaseTools {
 */
 
   static DatabaseReference getRef(String endpoint) {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("$endpoint/${getUserID()}");
+    DatabaseReference ref = FirebaseDatabase.instance.ref("$endpoint/${getUserID()}");
     return ref;
   }
 
   static String getUserID() {
     String uid = 'default';
-    if (FirebaseAuth.instance.currentUser != null &&
-        FirebaseAuth.instance.currentUser?.uid != null) {
+    if (FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser?.uid != null) {
       uid = FirebaseAuth.instance.currentUser?.uid as String;
     }
     return uid;
   }
 
   DatabaseReference getQuery(String endpoint) {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref("$endpoint/${getUserID()}");
+    DatabaseReference ref = FirebaseDatabase.instance.ref("$endpoint/${getUserID()}");
     return ref;
   }
 }

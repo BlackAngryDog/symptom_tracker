@@ -15,6 +15,8 @@ class _QualityTrackerState extends State<QualityTracker> {
   String subtitle = 'calue is today is 0';
 
   void updateData(double value) {
+    // save data log entry,
+
     currValue = value;
 
     setState(() {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
+import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/model/user.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
 import 'package:symptom_tracker/widgets/tracker_list.dart';
 
@@ -26,10 +28,17 @@ class TrackerPage extends StatefulWidget {
 class _TrackerPageState extends State<TrackerPage> {
   int _counter = 0;
   bool _finishedLoading = false;
+  late Trackable trackable;
 
   @override
   void initState() {
     super.initState();
+    // GET USER ID
+    DatabaseTools.getUser().then((value) => print('user id is ${value.id}'));
+
+    trackable = Trackable();
+    trackable.save();
+
     loadData();
   }
 
@@ -60,8 +69,11 @@ class _TrackerPageState extends State<TrackerPage> {
       );
       //log.save(null, log.toJson());
 
-      Tracker tracker = new Tracker(title: 'counter', type: 'counter');
-      tracker.save(null, tracker.toJson());
+      //Tracker tracker = Tracker(title: 'counter', type: 'counter');
+      //tracker.save();
+
+      Trackable trackable = Trackable();
+      trackable.save();
 
       _counter++;
     });
@@ -84,7 +96,7 @@ class _TrackerPageState extends State<TrackerPage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: TrackerList(),
+        child: TrackerList(trackable),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,

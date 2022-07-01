@@ -2,6 +2,15 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 
+class ISavable {
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{};
+  }
+
+  String? get id => null;
+  String get endpoint => '';
+}
+
 abstract class AbsSavable {
   static String _endpoint = '';
 
@@ -29,9 +38,7 @@ abstract class AbsSavable {
   static Future<Map<String, dynamic>> loadJson(String key) async {
     DatabaseReference ref = DatabaseTools.getRef(_endpoint);
     DatabaseEvent event = await ref.once();
-    return event.snapshot.value == null
-        ? <String, dynamic>{}
-        : event.snapshot.value as Map<String, dynamic>;
+    return event.snapshot.value == null ? <String, dynamic>{} : event.snapshot.value as Map<String, dynamic>;
   }
 
   String getEndpoint() {

@@ -9,7 +9,8 @@ import 'package:symptom_tracker/widgets/data_log_item.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 
 class TrackerList extends StatelessWidget {
-  TrackerList({Key? key}) : super(key: key);
+  final Trackable _trackable;
+  TrackerList(this._trackable, {Key? key}) : super(key: key);
 
   final db = FirebaseFirestore.instance;
 
@@ -18,10 +19,7 @@ class TrackerList extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).copyWith().size.height,
       child: StreamBuilder<QuerySnapshot>(
-        stream: db
-            .collection('trackers')
-            .where('type', isEqualTo: "quality")
-            .snapshots(),
+        stream: Tracker.getCollection(_trackable.id ?? "default").where('type', isEqualTo: "counter").snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -30,8 +28,7 @@ class TrackerList extends StatelessWidget {
           } else {
             return ListView(
               children: snapshot.data?.docs.map((doc) {
-                return TrackerItem(
-                    Tracker.fromJson(null, doc.data() as Map<String, dynamic>));
+                return TrackerItem(Tracker.fromJson(doc.id, doc.data() as Map<String, dynamic>));
               }).toList() as List<TrackerItem>,
             );
           }
