@@ -7,8 +7,11 @@ class Tracker extends AbsSavable {
 
   // tracker title (does this need to be unique in data?)
   String? title;
+  String? type;
 
-  Tracker() : super('trackers');
+  Tracker({this.title, this.type}) : super('trackers') {
+    readLog();
+  }
 
   // TYPE - counter, quality, duration, value
 
@@ -18,7 +21,9 @@ class Tracker extends AbsSavable {
   void updateLog() {}
 
   // get data from logs for day ?
-  void readLog() {}
+  void readLog() {
+    // Load data log for this tracker id
+  }
 
   // PERSISTANCE
 
@@ -26,11 +31,15 @@ class Tracker extends AbsSavable {
     return Tracker.fromJson(key, await AbsSavable.loadJson(key));
   }
 
-  Tracker.fromJson(String? key, Map<dynamic, dynamic> json) : super('trackables') {
+  Tracker.fromJson(String? key, Map<String, dynamic> json)
+      : super('trackables') {
     id = key;
+    title = json['title'];
+    type = json['type'];
   }
 
-  Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'title': title,
+        'type': type,
       };
 }

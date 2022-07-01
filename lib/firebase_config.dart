@@ -43,7 +43,7 @@ class DefaultFirebaseConfig {
         projectId: 'symptomtracker-52fcc',
         messagingSenderId: '448618578101',
         databaseURL:
-            'https://symptomtracker-52fcc-default-rtdb.europe-west1.firebasedatabase.app/',
+            'https://symptomtracker-52fcc-default-rtdb.europe-west1.firebasedatabase.app',
       );
     }
   }

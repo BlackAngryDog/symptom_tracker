@@ -25,20 +25,21 @@ class Trackable extends AbsSavable {
 
    */
   //retrieve all the information saved into the data logs [from] [to]
-  List<DataLog> getLog(DateTime from, DateTime to) {
-    List<DataLog> list = <DataLog>{} as List<DataLog>;
-    return list;
-  }
+  //List<DataLog> getLog(DateTime from, DateTime to) {
+  //  List<DataLog> list = <DataLog>{} as List<DataLog>;
+  //  return list;
+  //}
 
   // when a tracker changes update the log ()
-  void updateLog() {}
+  //void updateLog() {}
 
   // PERSISTANCE
   static Future<dynamic> load(String key) async {
     return Trackable.fromJson(key, await AbsSavable.loadJson(key));
   }
 
-  Trackable.fromJson(String? key, Map<dynamic, dynamic> json) : super('trackables') {
+  Trackable.fromJson(String? key, Map<dynamic, dynamic> json)
+      : super('trackables') {
     id = key;
   }
 

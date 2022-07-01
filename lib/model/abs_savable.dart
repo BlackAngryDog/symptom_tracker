@@ -9,8 +9,10 @@ abstract class AbsSavable {
     AbsSavable._endpoint = endpoint;
   }
 
-  void save(String? id, Map<dynamic, dynamic> json) {
-    DatabaseReference ref = DatabaseTools.getRef('$_endpoint/${getUserID()}');
+  void save(String? id, Map<String, dynamic> json) {
+    DatabaseTools.SaveItem(id, _endpoint, json);
+    return;
+    DatabaseReference ref = DatabaseTools.getRef(_endpoint);
 
     if (id != null) {
       ref.update({
@@ -24,9 +26,15 @@ abstract class AbsSavable {
     }
   }
 
-  static Future<Map<dynamic, dynamic>> loadJson(String key) async {
+  static Future<Map<String, dynamic>> loadJson(String key) async {
     DatabaseReference ref = DatabaseTools.getRef(_endpoint);
     DatabaseEvent event = await ref.once();
-    return event.snapshot.value == null ? <dynamic, dynamic>{} : event.snapshot.value as Map<dynamic, dynamic>;
+    return event.snapshot.value == null
+        ? <String, dynamic>{}
+        : event.snapshot.value as Map<String, dynamic>;
+  }
+
+  String getEndpoint() {
+    return _endpoint;
   }
 }

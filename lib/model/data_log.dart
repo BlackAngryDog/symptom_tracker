@@ -10,7 +10,8 @@ class DataLog extends AbsSavable {
   String? value;
   String? type;
 
-  DataLog({this.id, this.title, this.time, this.value, this.type}) : super('datalogs');
+  DataLog({this.id, this.title, this.time, this.value, this.type})
+      : super('datalogs');
 
   // How is are logs stored for retreaval and reading
 
@@ -24,10 +25,11 @@ class DataLog extends AbsSavable {
     return DataLog.fromJson(key, await AbsSavable.loadJson(key));
   }
 
-  DataLog.fromJson(String? key, Map<dynamic, dynamic> json) : super('datalogs') {
+  DataLog.fromJson(String? key, Map<dynamic, dynamic> json)
+      : super('datalogs') {
     id = key;
     title = json['title'];
-    time = DateTime.fromMicrosecondsSinceEpoch(json['time']);
+    time = DateTime.fromMicrosecondsSinceEpoch(json['time'] ?? 0);
     value = json['value'];
     type = json['type'];
   }
