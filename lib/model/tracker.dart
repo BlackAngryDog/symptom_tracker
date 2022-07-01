@@ -7,6 +7,8 @@ class Tracker extends AbsSavable {
 
   // tracker title (does this need to be unique in data?)
   String? title;
+  String? userID;
+  String? trackableID;
   String? type;
 
   Tracker({this.title, this.type}) : super('trackers') {
@@ -39,6 +41,7 @@ class Tracker extends AbsSavable {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
+        'userID': userID,
         'title': title,
         'type': type,
       };

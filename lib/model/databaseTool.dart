@@ -33,6 +33,17 @@ class DatabaseTools {
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
 
+    final messageRef = FirebaseFirestore.instance
+        .collection("rooms")
+        .doc("roomA")
+        .collection("messages");
+    // ADDING SUBCOLLECTIONS
+    messageRef.add({
+      'full_name': 'test', // John Doe
+      'company': 'company', // Stokes and Sons
+      'age': 'age' // 42
+    });
+
     /*FirebaseFirestore.instance
         .collection("$endpoint/${getUserID()}")
         //.where(FieldPath.documentId, whereIn: documentIds)

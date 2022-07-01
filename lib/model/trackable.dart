@@ -7,8 +7,8 @@ import 'tracker.dart';
 // Used to store details of thing bing tracked (a group of trackers)
 class Trackable extends AbsSavable {
   // Trackable object to store tracked data
+  String? userID;
   String? id;
-
   String? title;
 
   List<Tracker> _trackers = [];
@@ -45,6 +45,7 @@ class Trackable extends AbsSavable {
 
   Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
         'title': title,
+        'userID': userID,
         'timers': jsonEncode(_trackers.map((entry) => "${entry.id}").toList()),
       };
 }

@@ -18,7 +18,10 @@ class TrackerList extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).copyWith().size.height,
       child: StreamBuilder<QuerySnapshot>(
-        stream: db.collection('trackers').snapshots(),
+        stream: db
+            .collection('trackers')
+            .where('type', isEqualTo: "quality")
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
