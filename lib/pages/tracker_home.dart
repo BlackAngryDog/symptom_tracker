@@ -27,13 +27,40 @@ class _TrackerPageState extends State<TrackerPage> {
     DatabaseTools.getUser().then((value) => print('user id is ${value.id}'));
   }
 
+  void _startAddTracker(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+            child: Container(
+              height: 200,
+              color: Colors.amber,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const Text('Modal BottomSheet'),
+                    ElevatedButton(
+                      child: const Text('Close BottomSheet'),
+                      onPressed: () => Navigator.pop(context),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            onTap: () {},
+            behavior: HitTestBehavior.opaque,
+          );
+        });
+  }
+
   void _addTracker() {
     // DatabaseTools.testFirestore();
     _counter++;
     setState(() {
       // TODO - CREATE A NEW TRACKER IN THE TRACKABLE (NEEDS POPUP FOR PARAMS)
-      Tracker tracker = Tracker(widget.trackable.id ?? 'default',
-          title: "test $_counter", type: "counter");
+      Tracker tracker = Tracker(widget.trackable.id ?? 'default', title: "test $_counter", type: "counter");
       tracker.save();
     });
   }
@@ -75,7 +102,9 @@ class _TrackerPageState extends State<TrackerPage> {
         child: TrackerList(widget.trackable),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addTracker,
+        onPressed: () {
+          _startAddTracker(context);
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
