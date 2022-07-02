@@ -4,19 +4,22 @@ import 'package:flutterfire_ui/database.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
+import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/data_log_item.dart';
+import 'package:symptom_tracker/widgets/trackable_item.dart';
+import 'package:symptom_tracker/widgets/tracker_item.dart';
 
-class DataLogList extends StatelessWidget {
-  final Trackable _trackable;
+class TrackableList extends StatelessWidget {
+  TrackableList({Key? key}) : super(key: key);
 
-  const DataLogList(this._trackable, {Key? key}) : super(key: key);
+  final db = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).copyWith().size.height,
       child: StreamBuilder<QuerySnapshot>(
-        stream: DataLog.getCollection(_trackable.id ?? "Default").snapshots(),
+        stream: Trackable.getCollection().snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -25,9 +28,9 @@ class DataLogList extends StatelessWidget {
           } else {
             return ListView(
               children: snapshot.data?.docs.map((doc) {
-                return DataLogItem(DataLog.fromJson(
+                return TrackableItem(Trackable.fromJson(
                     doc.id, doc.data() as Map<String, dynamic>));
-              }).toList() as List<DataLogItem>,
+              }).toList() as List<TrackableItem>,
             );
           }
         },

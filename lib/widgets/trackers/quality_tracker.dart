@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 
 class QualityTracker extends StatefulWidget {
@@ -18,7 +19,10 @@ class _QualityTrackerState extends State<QualityTracker> {
     // save data log entry,
 
     currValue = value;
-
+    DataLog log = DataLog(widget._tracker.trackableID, DateTime.now(),
+        title: 'log ${widget._tracker}',
+        type: widget._tracker.type,
+        value: currValue);
     setState(() {
       subtitle = 'today is $currValue';
     });

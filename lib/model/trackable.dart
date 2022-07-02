@@ -40,16 +40,26 @@ class Trackable {
   Trackable save() {
     CollectionReference collection = getCollection();
     if (id != null) {
-      collection.doc(id).set(toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+      collection
+          .doc(id)
+          .set(toJson())
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
     } else {
-      collection.add(toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+      collection
+          .add(toJson())
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
     }
 
     return this;
   }
 
   static CollectionReference getCollection() {
-    return FirebaseFirestore.instance.collection('users').doc(DatabaseTools.getUserID()).collection('trackable');
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(DatabaseTools.getUserID())
+        .collection('trackable');
   }
 
   static Future<dynamic> load(String key) async {
@@ -58,6 +68,7 @@ class Trackable {
 
   Trackable.fromJson(String? key, Map<String, dynamic> json) {
     id = key;
+    title = json['title'];
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{

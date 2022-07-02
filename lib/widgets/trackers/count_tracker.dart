@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 
 class CountTracker extends StatefulWidget {
@@ -15,7 +16,10 @@ class _ValueTrackerState extends State<CountTracker> {
 
   void updateData() {
     currValue++;
-
+    DataLog log = DataLog(widget._tracker.trackableID, DateTime.now(),
+        title: 'log ${widget._tracker}',
+        type: widget._tracker.type,
+        value: currValue);
     setState(() {
       subtitle = 'count today is $currValue';
     });

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 
 class ValueTracker extends StatefulWidget {
@@ -38,7 +39,10 @@ class _ValueTrackerState extends State<ValueTracker> {
 
   void updateData(String value) {
     currValue = int.parse(value);
-
+    DataLog log = DataLog(widget._tracker.trackableID, DateTime.now(),
+        title: 'log ${widget._tracker}',
+        type: widget._tracker.type,
+        value: currValue);
     setState(() {
       subtitle = 'today is $currValue';
     });
