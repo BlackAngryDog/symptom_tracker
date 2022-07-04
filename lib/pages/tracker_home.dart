@@ -5,6 +5,7 @@ import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/model/user.dart';
 import 'package:symptom_tracker/pages/tracker_history.dart';
+import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
 import 'package:symptom_tracker/widgets/tracker_list.dart';
 
@@ -55,12 +56,27 @@ class _TrackerPageState extends State<TrackerPage> {
         });
   }
 
-  void _addTracker() {
+  void _addTrackerPopup(BuildContext ctx) {
+    showModalBottomSheet(
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+            child: AddTracker(_addTracker),
+            onTap: () {},
+            behavior: HitTestBehavior.opaque,
+          );
+        });
+  }
+
+  void _addTracker(Tracker value) {
     // DatabaseTools.testFirestore();
     _counter++;
     setState(() {
       // TODO - CREATE A NEW TRACKER IN THE TRACKABLE (NEEDS POPUP FOR PARAMS)
-      Tracker tracker = Tracker(widget.trackable.id ?? 'default', title: "test $_counter", type: "counter");
+
+      Tracker tracker = value;
+      tracker.trackableID = widget.trackable.id ?? 'default';
       tracker.save();
     });
   }
@@ -103,7 +119,7 @@ class _TrackerPageState extends State<TrackerPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _startAddTracker(context);
+          _addTrackerPopup(context);
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),

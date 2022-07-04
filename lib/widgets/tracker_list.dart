@@ -19,7 +19,8 @@ class TrackerList extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).copyWith().size.height,
       child: StreamBuilder<QuerySnapshot>(
-        stream: Tracker.getCollection(_trackable.id ?? "default").where('type', isEqualTo: "counter").snapshots(),
+        //stream: Tracker.getCollection(_trackable.id ?? "default").where('type', isEqualTo: "counter").snapshots(),
+        stream: Tracker.getCollection(_trackable.id ?? "default").snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -28,7 +29,8 @@ class TrackerList extends StatelessWidget {
           } else {
             return ListView(
               children: snapshot.data?.docs.map((doc) {
-                return TrackerItem(Tracker.fromJson(doc.id, doc.data() as Map<String, dynamic>));
+                return TrackerItem(Tracker.fromJson(
+                    doc.id, doc.data() as Map<String, dynamic>));
               }).toList() as List<TrackerItem>,
             );
           }

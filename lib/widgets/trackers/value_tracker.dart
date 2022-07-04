@@ -56,13 +56,13 @@ class _ValueTrackerState extends State<ValueTracker> {
         subtitle: Text(subtitle),
         trailing: SizedBox(
             width: 100,
-            child: new TextField(
-              decoration: new InputDecoration(
+            child: TextField(
+              decoration: const InputDecoration(
                   labelText: 'Update',
                   hintText: 'Hint',
-                  icon: new Icon(Icons.people)),
+                  icon: Icon(Icons.people)),
               autocorrect: true,
-
+              autofocus: false,
               //displaying number keyboard
               //keyboardType: TextInputType.number,
 
