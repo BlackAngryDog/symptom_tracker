@@ -4,6 +4,7 @@ import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/model/user.dart';
+import 'package:symptom_tracker/pages/calender_page.dart';
 import 'package:symptom_tracker/pages/tracker_history.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
@@ -91,6 +92,13 @@ class _TrackerPageState extends State<TrackerPage> {
     );
   }
 
+  void showCalendar(BuildContext ctx) {
+    Navigator.push(
+      ctx,
+      MaterialPageRoute(builder: (context) => CalenderPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -109,7 +117,12 @@ class _TrackerPageState extends State<TrackerPage> {
               onPressed: () {
                 showHistory(context);
               },
-              icon: const Icon(Icons.remove_red_eye))
+              icon: const Icon(Icons.remove_red_eye)),
+          IconButton(
+              onPressed: () {
+                showCalendar(context);
+              },
+              icon: const Icon(Icons.calendar_month)),
         ],
       ),
       body: Center(
