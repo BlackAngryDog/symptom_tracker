@@ -95,7 +95,7 @@ class _TrackerPageState extends State<TrackerPage> {
   void showCalendar(BuildContext ctx) {
     Navigator.push(
       ctx,
-      MaterialPageRoute(builder: (context) => CalenderPage()),
+      MaterialPageRoute(builder: (context) => CalenderPage(widget.trackable)),
     );
   }
 
