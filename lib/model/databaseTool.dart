@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:symptom_tracker/model/abs_savable.dart';
 import 'package:symptom_tracker/model/trackable.dart';
+import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/model/user.dart';
 
 class DatabaseTools {
@@ -104,4 +105,6 @@ class DatabaseTools {
     DatabaseReference ref = FirebaseDatabase.instance.ref("$endpoint/${getUserID()}");
     return ref;
   }
+
+
 }

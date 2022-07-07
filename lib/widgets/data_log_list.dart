@@ -16,7 +16,9 @@ class DataLogList extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).copyWith().size.height,
       child: StreamBuilder<QuerySnapshot>(
-        stream: DataLog.getCollection(_trackable.id ?? "Default").snapshots(),
+        stream: DataLog.getCollection(_trackable.id ?? "Default")
+            .orderBy('time', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(

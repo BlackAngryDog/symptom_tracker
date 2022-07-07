@@ -6,8 +6,10 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class CalenderPage extends StatefulWidget {
   final Trackable _trackable;
+  final CalendarView? calendarView;
 
-  const CalenderPage(this._trackable, {Key? key}) : super(key: key);
+  const CalenderPage(this._trackable, {Key? key, this.calendarView})
+      : super(key: key);
 
   @override
   State<CalenderPage> createState() => _CalenderPageState();
@@ -21,6 +23,17 @@ class _CalenderPageState extends State<CalenderPage> {
     super.initState();
     source = MeetingDataSource([]);
     //_getDataEvents();
+  }
+
+  void showDayView(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CalenderPage(
+                widget._trackable,
+                calendarView: CalendarView.day,
+              )),
+    );
   }
 
   @override
@@ -37,13 +50,15 @@ class _CalenderPageState extends State<CalenderPage> {
       ),
       body: SafeArea(
         child: SfCalendar(
-          view: CalendarView.month,
-          scheduleViewSettings: ScheduleViewSettings(monthHeaderSettings: MonthHeaderSettings(height: 50)),
+          view: widget.calendarView ?? CalendarView.month,
+          scheduleViewSettings: ScheduleViewSettings(
+              monthHeaderSettings: MonthHeaderSettings(height: 50)),
           dataSource: source,
           // by default the month appointment display mode set as Indicator, we can
           // change the display mode as appointment using the appointment display
           // mode property
-          monthViewSettings: const MonthViewSettings(appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
+          monthViewSettings: const MonthViewSettings(
+              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
           onViewChanged: (details) {
             DateTime start = details.visibleDates.first;
             DateTime end = details.visibleDates.last;
@@ -54,10 +69,11 @@ class _CalenderPageState extends State<CalenderPage> {
             print("date tapped ${tapped.resource.toString()}");
           },
           onTap: (CalendarTapDetails details) {
-            DateTime date = details.date!;
-            dynamic appointments = details.appointments;
-            CalendarElement view = details.targetElement;
-            print("date tapped ${appointments.toString()}");
+            // DateTime date = details.date!;
+            //dynamic appointments = details.appointments;
+            //CalendarElement view = details.targetElement;
+            //print("date tapped ${appointments.toString()}");
+            if (widget.calendarView != CalendarView.day) showDayView(context);
           },
         ),
       ),
@@ -68,14 +84,22 @@ class _CalenderPageState extends State<CalenderPage> {
 
   Future<List<DataLog>> _getDataEvents(DateTime start, DateTime end) async {
     List<DataLog> logs = [];
-    await DataLog.getCollection(widget._trackable.id ?? "Default").where('time', isGreaterThanOrEqualTo: start).where('time', isLessThanOrEqualTo: end).get(const GetOptions(source: Source.serverAndCache)).then((data) {
+
+    start = DateTime(start.year, start.month, start.day);
+    end = DateTime(end.year, end.month, end.day, 11, 59, 59);
+
+    await DataLog.getCollection(widget._trackable.id ?? "Default")
+        .where('time', isGreaterThanOrEqualTo: start)
+        .where('time', isLessThanOrEqualTo: end)
+        .get(const GetOptions(source: Source.serverAndCache))
+        .then((data) {
       logs = data.docs.map((doc) {
         return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();
       setState(() {
         source = MeetingDataSource(logs);
       });
-      print("LOADED DATA");
+      print("LOADED DATA ${start} to ${end} cound is ${logs.length}");
       return logs;
     }); // TODO - ADD ERROR
     return logs;
@@ -86,7 +110,8 @@ class _CalenderPageState extends State<CalenderPage> {
     final DateTime today = DateTime.now();
     final DateTime startTime = DateTime(today.year, today.month, today.day, 9);
     final DateTime endTime = startTime.add(const Duration(hours: 2));
-    meetings.add(Meeting('Conference', startTime, endTime, const Color(0xFF0F8644), false));
+    meetings.add(Meeting(
+        'Conference', startTime, endTime, const Color(0xFF0F8644), false));
     return meetings;
   }
 }
@@ -109,7 +134,7 @@ class MeetingDataSource extends CalendarDataSource {
 
   @override
   DateTime getEndTime(int index) {
-    return _getMeetingData(index).time;
+    return _getMeetingData(index).time.add(Duration(hours: 1));
   }
 
   @override

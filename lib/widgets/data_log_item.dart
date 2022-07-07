@@ -14,6 +14,8 @@ class DataLogItem extends StatelessWidget {
           title: Text(
             log.title ?? "",
           ),
+          subtitle: Text(log.time.toString()),
+          trailing: Text(log.value.toString()),
         ),
       ),
     );

@@ -9,6 +9,7 @@ import 'package:symptom_tracker/pages/tracker_history.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
 import 'package:symptom_tracker/widgets/tracker_list.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class TrackerPage extends StatefulWidget {
   final Trackable trackable;
@@ -95,7 +96,11 @@ class _TrackerPageState extends State<TrackerPage> {
   void showCalendar(BuildContext ctx) {
     Navigator.push(
       ctx,
-      MaterialPageRoute(builder: (context) => CalenderPage(widget.trackable)),
+      MaterialPageRoute(
+          builder: (context) => CalenderPage(
+                widget.trackable,
+                calendarView: CalendarView.week,
+              )),
     );
   }
 

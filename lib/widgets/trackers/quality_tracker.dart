@@ -19,10 +19,7 @@ class _QualityTrackerState extends State<QualityTracker> {
     // save data log entry,
 
     currValue = value;
-    DataLog log = DataLog(widget._tracker.trackableID, DateTime.now(),
-        title: 'log ${widget._tracker}',
-        type: widget._tracker.type,
-        value: currValue);
+    widget._tracker.updateLog(value);
     setState(() {
       subtitle = 'today is $currValue';
     });
