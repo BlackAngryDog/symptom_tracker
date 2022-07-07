@@ -14,10 +14,13 @@ class CalenderPage extends StatefulWidget {
 }
 
 class _CalenderPageState extends State<CalenderPage> {
+  late MeetingDataSource source;
+
   @override
   void initState() {
     super.initState();
-    _getDataEvents();
+    source = MeetingDataSource([]);
+    //_getDataEvents();
   }
 
   @override
@@ -34,15 +37,28 @@ class _CalenderPageState extends State<CalenderPage> {
       ),
       body: SafeArea(
         child: SfCalendar(
-          view: CalendarView.schedule,
-          scheduleViewSettings: ScheduleViewSettings(
-              monthHeaderSettings: MonthHeaderSettings(height: 50)),
-          dataSource: MeetingDataSource([]),
+          view: CalendarView.month,
+          scheduleViewSettings: ScheduleViewSettings(monthHeaderSettings: MonthHeaderSettings(height: 50)),
+          dataSource: source,
           // by default the month appointment display mode set as Indicator, we can
           // change the display mode as appointment using the appointment display
           // mode property
-          monthViewSettings: const MonthViewSettings(
-              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
+          monthViewSettings: const MonthViewSettings(appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
+          onViewChanged: (details) {
+            DateTime start = details.visibleDates.first;
+            DateTime end = details.visibleDates.last;
+            print("date change events");
+            _getDataEvents(start, end);
+          },
+          onSelectionChanged: (tapped) {
+            print("date tapped ${tapped.resource.toString()}");
+          },
+          onTap: (CalendarTapDetails details) {
+            DateTime date = details.date!;
+            dynamic appointments = details.appointments;
+            CalendarElement view = details.targetElement;
+            print("date tapped ${appointments.toString()}");
+          },
         ),
       ),
     );
@@ -50,19 +66,19 @@ class _CalenderPageState extends State<CalenderPage> {
 
   List<DataLog> _dataLogs = [];
 
-  void _getDataEvents() {
-    var test = DataLog.getCollection(widget._trackable.id ?? "Default")
-        .snapshots()
-        .map((QuerySnapshot document) {
-      var data = document.docs!;
-    });
-
-    var test2 = test
-        .map((value) => DataLog.fromJson('', value as Map<String, dynamic>));
-
-    //for (var i = 0; i < results.length; i++) {
-    //  Map<String, dynamic> map = Map.from(results[i] as Map<String, dynamic>);
-    //}
+  Future<List<DataLog>> _getDataEvents(DateTime start, DateTime end) async {
+    List<DataLog> logs = [];
+    await DataLog.getCollection(widget._trackable.id ?? "Default").where('time', isGreaterThanOrEqualTo: start).where('time', isLessThanOrEqualTo: end).get(const GetOptions(source: Source.serverAndCache)).then((data) {
+      logs = data.docs.map((doc) {
+        return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+      setState(() {
+        source = MeetingDataSource(logs);
+      });
+      print("LOADED DATA");
+      return logs;
+    }); // TODO - ADD ERROR
+    return logs;
   }
 
   List<Meeting> _getDataSource() {
@@ -70,8 +86,7 @@ class _CalenderPageState extends State<CalenderPage> {
     final DateTime today = DateTime.now();
     final DateTime startTime = DateTime(today.year, today.month, today.day, 9);
     final DateTime endTime = startTime.add(const Duration(hours: 2));
-    meetings.add(Meeting(
-        'Conference', startTime, endTime, const Color(0xFF0F8644), false));
+    meetings.add(Meeting('Conference', startTime, endTime, const Color(0xFF0F8644), false));
     return meetings;
   }
 }
@@ -83,6 +98,7 @@ class MeetingDataSource extends CalendarDataSource {
   /// Creates a meeting data source, which used to set the appointment
   /// collection to the calendar
   MeetingDataSource(List<DataLog> source) {
+    // TODO - CONDENSE EVENTS OF SAVE TYPE ?
     appointments = source;
   }
 
@@ -103,6 +119,7 @@ class MeetingDataSource extends CalendarDataSource {
 
   @override
   Color getColor(int index) {
+    // TODO - SWITCH EVENT FOR COLOUR
     return const Color(0xFF0F8644);
   }
 

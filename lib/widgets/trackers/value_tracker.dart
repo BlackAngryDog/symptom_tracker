@@ -39,10 +39,7 @@ class _ValueTrackerState extends State<ValueTracker> {
 
   void updateData(String value) {
     currValue = int.parse(value);
-    DataLog log = DataLog(widget._tracker.trackableID, DateTime.now(),
-        title: 'log ${widget._tracker}',
-        type: widget._tracker.type,
-        value: currValue);
+    DataLog log = DataLog(widget._tracker.trackableID, DateTime.now(), title: 'log ${widget._tracker.title}', type: widget._tracker.type, value: currValue);
     setState(() {
       subtitle = 'today is $currValue';
     });
@@ -57,10 +54,7 @@ class _ValueTrackerState extends State<ValueTracker> {
         trailing: SizedBox(
             width: 100,
             child: TextField(
-              decoration: const InputDecoration(
-                  labelText: 'Update',
-                  hintText: 'Hint',
-                  icon: Icon(Icons.people)),
+              decoration: const InputDecoration(labelText: 'Update', hintText: 'Hint', icon: Icon(Icons.people)),
               autocorrect: true,
               autofocus: false,
               //displaying number keyboard
