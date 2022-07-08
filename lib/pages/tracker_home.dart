@@ -5,6 +5,7 @@ import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/model/user.dart';
 import 'package:symptom_tracker/pages/calender_page.dart';
+import 'package:symptom_tracker/pages/chart_page.dart';
 import 'package:symptom_tracker/pages/tracker_history.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
@@ -93,6 +94,16 @@ class _TrackerPageState extends State<TrackerPage> {
     );
   }
 
+  void showChart(BuildContext ctx) {
+    Navigator.push(
+      ctx,
+      MaterialPageRoute(
+          builder: (context) => ChartPage(
+                widget.trackable,
+              )),
+    );
+  }
+
   void showCalendar(BuildContext ctx) {
     Navigator.push(
       ctx,
@@ -118,6 +129,11 @@ class _TrackerPageState extends State<TrackerPage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.trackable.title ?? ""),
         actions: [
+          IconButton(
+              onPressed: () {
+                showChart(context);
+              },
+              icon: const Icon(Icons.pie_chart)),
           IconButton(
               onPressed: () {
                 showHistory(context);
