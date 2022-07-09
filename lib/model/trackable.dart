@@ -35,6 +35,27 @@ class Trackable {
   // when a tracker changes update the log ()
   //void updateLog() {}
 
+  Future<List<DataLog>> getDataLogs(DateTime start, DateTime end) async {
+    List<DataLog> logs = [];
+    if (id == null) return logs;
+
+    start = DateTime(start.year, start.month, start.day);
+    end = DateTime(end.year, end.month, end.day, 11, 59, 59);
+
+    return await DataLog.getCollection(id ?? "Default")
+        .where('time', isGreaterThanOrEqualTo: start)
+        .where('time', isLessThanOrEqualTo: end)
+        .get(const GetOptions(source: Source.serverAndCache))
+        .then((data) {
+      logs = data.docs.map((doc) {
+        return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      print("LOADED DATA ${start} to ${end} cound is ${logs.length}");
+      return logs;
+    }); // TODO - ADD ERROR
+  }
+
   // PERSISTANCE
 
   Trackable save() {
