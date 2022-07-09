@@ -27,10 +27,7 @@ class Tracker {
   Future updateLog(dynamic value) {
     // GET ANY LOGS WITHIN THE TIMEFRAME AND UPDATE IT RATHER THAN CREATE A NEW LOG
     DateTime minTimeFrame = DateTime.now().add(const Duration(hours: -1));
-    DataLog.getCollection(trackableID ?? "Default")
-        .where('time', isGreaterThanOrEqualTo: minTimeFrame)
-        .get()
-        .then((data) {
+    DataLog.getCollection(trackableID).where('time', isGreaterThanOrEqualTo: minTimeFrame).get().then((data) {
       DataLog? log = data.docs
           .map((doc) {
             return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
@@ -39,8 +36,7 @@ class Tracker {
           .where((element) => element.title == title)
           .firstOrNull;
 
-      log ??= DataLog(trackableID, DateTime.now(),
-          title: title, type: type, value: value);
+      log ??= DataLog(trackableID, DateTime.now(), title: title, type: type, value: value);
       log.time = DateTime.now();
       log.value = value;
       log.save();
@@ -59,36 +55,23 @@ class Tracker {
   Tracker save() {
     CollectionReference collection = getCollection(trackableID);
     if (id != null) {
-      collection
-          .doc(id)
-          .set(toJson())
-          .then((value) => print("User Added"))
-          .catchError((error) => print("Failed to add user: $error"));
+      collection.doc(id).set(toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
     } else {
-      collection
-          .add(toJson())
-          .then((value) => print("User Added"))
-          .catchError((error) => print("Failed to add user: $error"));
+      collection.add(toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
     }
 
     return this;
   }
 
   static CollectionReference getCollection(String owner) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(DatabaseTools.getUserID())
-        .collection('trackable')
-        .doc(owner)
-        .collection('trackers');
+    return FirebaseFirestore.instance.collection('users').doc(DatabaseTools.getUserID()).collection('trackable').doc(owner).collection('trackers');
   }
 
   static Future<Tracker> load(String key) async {
     return Tracker.fromJson(key, await AbsSavable.loadJson(key));
   }
 
-  Tracker.fromJson(String? key, Map<String, dynamic> json)
-      : trackableID = json['trackableID'] {
+  Tracker.fromJson(String? key, Map<String, dynamic> json) : trackableID = json['trackableID'] {
     id = key;
     title = json['title'];
     type = json['type'];

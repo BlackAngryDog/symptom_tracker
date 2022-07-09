@@ -46,8 +46,7 @@ class _ChartPageState extends State<ChartPage> {
             },
             elements: [
               IntervalElement(
-                label: LabelAttr(
-                    encoder: (tuple) => Label(tuple['name'].toString())),
+                label: LabelAttr(encoder: (tuple) => Label(tuple['name'].toString())),
                 shape: ShapeAttr(
                     value: RectShape(
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -56,7 +55,11 @@ class _ChartPageState extends State<ChartPage> {
                 elevation: ElevationAttr(value: 5),
               )
             ],
-            coord: PolarCoord(startRadius: 0.15),
+            //coord: PolarCoord(startRadius: 0.15),
+            axes: [
+              Defaults.horizontalAxis,
+              Defaults.verticalAxis,
+            ],
           ),
         ),
       ),
