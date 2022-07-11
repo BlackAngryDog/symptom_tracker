@@ -15,6 +15,8 @@ class Tracker {
   String trackableID;
   String? type;
 
+  List<DataLog> dataLog = [];
+
   Tracker(this.trackableID, {this.title, this.type}) {
     readLog();
   }
@@ -24,59 +26,100 @@ class Tracker {
   // VALUE -THIS IS NOT SAVED HERE AS THAT IS FOR THE LOG!
 
   // set/update log for today for this tracker...
-  Future updateLog(dynamic value) {
+  Future updateLog(dynamic value) async {
     // GET ANY LOGS WITHIN THE TIMEFRAME AND UPDATE IT RATHER THAN CREATE A NEW LOG
     DateTime minTimeFrame = DateTime.now().add(const Duration(hours: -1));
-    DataLog.getCollection(trackableID).where('time', isGreaterThanOrEqualTo: minTimeFrame).get().then((data) {
-      DataLog? log = data.docs
-          .map((doc) {
-            return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
-          })
-          .toList()
-          .where((element) => element.title == title)
-          .firstOrNull;
-
-      log ??= DataLog(trackableID, DateTime.now(), title: title, type: type, value: value);
-      log.time = DateTime.now();
-      log.value = value;
-      log.save();
-    });
-
-    return Future.value();
+    List<DataLog> logs = await getLogs(minTimeFrame, DateTime.now());
+    DataLog? log = logs.firstOrNull;
+    log ??= DataLog(trackableID, DateTime.now(),
+        title: title, type: type, value: value);
+    log.time = DateTime.now();
+    log.value = value;
+    log.save();
   }
 
   // get data from logs for day ?
-  void readLog() {
-    // Load data log for this tracker id
+  Future readLog() async {
+    // Load data log for this tracker
+    DateTime minTimeFrame =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    List<DataLog> log = await getLogs(
+        minTimeFrame, minTimeFrame.add(const Duration(hours: 24)));
+    //.where((element) => element.title == title).toList();
+    print("DAYS LOG IS ${log.toString()}");
+    dataLog.addAll(log);
   }
 
+  Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
+    print(' Getting tracker logs ');
 
+    return DataLog.getCollection(trackableID)
+        .where('title', isEqualTo: title ?? 'Default')
+        .where('time', isGreaterThanOrEqualTo: start)
+        .where('time', isLessThanOrEqualTo: end)
+        .get()
+        .then((data) {
+      List<DataLog> log = data.docs.map((doc) {
+        return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+      print(' got tracker logs ${log.length}');
+      return log;
+    });
+  }
+
+  Future<DataLog?> getLastEntry() async {
+    return await DataLog.getCollection(trackableID)
+        .where('title', isEqualTo: title ?? 'Default')
+        .limit(1)
+        .orderBy('time', descending: true)
+        .get()
+        .then((data) {
+      List<DataLog> log = data.docs.map((doc) {
+        return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+      return log.lastOrNull;
+    });
+  }
 
   // PERSISTANCE
 
   Tracker save() {
     CollectionReference collection = getCollection(trackableID);
     if (id != null) {
-      collection.doc(id).set(toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+      collection
+          .doc(id)
+          .set(toJson())
+          .then((value) => print("Tracker Saved"))
+          .catchError((error) => print("Failed to save tracker: $error"));
     } else {
-      collection.add(toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+      collection
+          .add(toJson())
+          .then((value) => print("Tracker created"))
+          .catchError((error) => print("Failed to create tracker: $error"));
     }
 
     return this;
   }
 
   static CollectionReference getCollection(String owner) {
-    return FirebaseFirestore.instance.collection('users').doc(DatabaseTools.getUserID()).collection('trackable').doc(owner).collection('trackers');
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(DatabaseTools.getUserID())
+        .collection('trackable')
+        .doc(owner)
+        .collection('trackers');
   }
 
   static Future<Tracker> load(String key) async {
     return Tracker.fromJson(key, await AbsSavable.loadJson(key));
   }
 
-  Tracker.fromJson(String? key, Map<String, dynamic> json) : trackableID = json['trackableID'] {
+  Tracker.fromJson(String? key, Map<String, dynamic> json)
+      : trackableID = json['trackableID'] {
     id = key;
     title = json['title'];
     type = json['type'];
+    readLog();
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

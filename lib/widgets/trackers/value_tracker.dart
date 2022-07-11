@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/pages/tracker_info.dart';
 
 class ValueTracker extends StatefulWidget {
   final Tracker _tracker;
@@ -19,6 +20,7 @@ class _ValueTrackerState extends State<ValueTracker> {
 
     // Start listening to changes.
     myController.addListener(_printLatestValue);
+    getCurrValue();
   }
 
   void _printLatestValue() {
@@ -34,46 +36,63 @@ class _ValueTrackerState extends State<ValueTracker> {
     super.dispose();
   }
 
-  int currValue = 0; // TODO - GET TODYS COUNT FOR TRACKER
+  String currValue = ''; // TODO - GET TODYS COUNT FOR TRACKER
   String subtitle = 'calue is today is 0';
 
-  void updateData(String value) {
-    // should data be consolidated each day?
+  Future updateData(String value) async {
+    await widget._tracker.updateLog(value);
+    getCurrValue();
+  }
 
-    currValue = int.parse(value);
-    widget._tracker.updateLog(value);
-
-    //DataLog log = DataLog(widget._tracker.trackableID, DateTime.now(), title: 'log ${widget._tracker.title}', type: widget._tracker.type, value: currValue);
+  Future getCurrValue() async {
+    DataLog? log = await widget._tracker.getLastEntry();
+    currValue = log!.value;
     setState(() {
       subtitle = 'today is $currValue';
     });
   }
 
+  void showHistory(BuildContext ctx) {
+    Navigator.push(
+      ctx,
+      MaterialPageRoute(
+        builder: (context) => TrackerSummeryPage(
+          widget._tracker,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(widget._tracker.title ?? ""),
-        subtitle: Text(subtitle),
-        trailing: SizedBox(
-            width: 100,
-            child: TextField(
-              decoration: const InputDecoration(
-                  labelText: 'Update',
-                  hintText: 'Hint',
-                  icon: Icon(Icons.people)),
-              autocorrect: true,
-              autofocus: false,
-              //displaying number keyboard
-              //keyboardType: TextInputType.number,
+    return GestureDetector(
+      child: Card(
+        child: ListTile(
+          title: Text(widget._tracker.title ?? ""),
+          subtitle: Text(subtitle),
+          trailing: SizedBox(
+              width: 100,
+              child: TextField(
+                decoration: const InputDecoration(
+                    labelText: 'Update',
+                    hintText: 'Hint',
+                    icon: Icon(Icons.people)),
+                autocorrect: true,
+                autofocus: false,
+                //displaying number keyboard
+                //keyboardType: TextInputType.number,
 
-              //displaying text keyboard
-              keyboardType: TextInputType.number,
+                //displaying text keyboard
+                keyboardType: TextInputType.number,
 
-              //onChanged: _onChanged,
-              onSubmitted: updateData,
-            )),
+                //onChanged: _onChanged,
+                onSubmitted: updateData,
+              )),
+        ),
       ),
+      onTap: () {
+        showHistory(context);
+      },
     );
   }
 }

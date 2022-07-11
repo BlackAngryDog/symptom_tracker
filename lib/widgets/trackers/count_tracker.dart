@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/pages/tracker_info.dart';
 
 class CountTracker extends StatefulWidget {
   final Tracker _tracker;
@@ -14,33 +15,84 @@ class _ValueTrackerState extends State<CountTracker> {
   int currValue = 0; // TODO - GET TODYS COUNT FOR TRACKER
   String subtitle = 'count today is 0';
 
-  void updateData() {
+  @override
+  void initState() {
+    super.initState();
+    getCurrValue();
+  }
+
+  Future updateData() async {
     currValue++;
-    widget._tracker.updateLog(currValue);
+
+    await widget._tracker.updateLog(currValue);
+    print('val');
+    getCurrValue();
+  }
+
+  Future getCurrValue() async {
+    DataLog? log = await widget._tracker.getLastEntry();
+    currValue = log!.value ?? 0;
     setState(() {
-      subtitle = 'count today is $currValue';
+      subtitle = 'today is $currValue';
     });
+  }
+
+  void showHistory(BuildContext ctx) {
+    Navigator.push(
+      ctx,
+      MaterialPageRoute(
+        builder: (context) => TrackerSummeryPage(
+          widget._tracker,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(widget._tracker.title ?? ""),
-        subtitle: Text(subtitle),
-        trailing: SizedBox(
-          width: 100,
-          child: Row(
-            children: [
-              IconButton(
+    return GestureDetector(
+      child: Card(
+        child: ListTile(
+          title: Text(widget._tracker.title ?? ""),
+          subtitle: Text(subtitle),
+          trailing: SizedBox(
+            width: 100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                IconButton(
                   onPressed: () {
                     updateData();
                   },
-                  icon: const Icon(Icons.add))
-            ],
+                  icon: const Icon(Icons.add),
+                ),
+                /*PopupMenuButton(
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(
+                        value: 'edit',
+                        child: Text('Edit'),
+                      ),
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Text('Delete'),
+                      )
+                    ];
+                  },
+                  onSelected: (String value) {
+                    print('You Click on po up menu item');
+                  },
+                )*/
+              ],
+            ),
           ),
         ),
       ),
+      onTap: () {
+        showHistory(context);
+      },
     );
   }
 }
