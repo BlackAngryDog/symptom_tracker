@@ -45,7 +45,7 @@ class _ValueTrackerState extends State<ValueTracker> {
   }
 
   Future getCurrValue() async {
-    DataLog? log = await widget._tracker.getLastEntry();
+    DataLog? log = await widget._tracker.getLastEntry(true);
     currValue = log!.value;
     setState(() {
       subtitle = 'today is $currValue';
@@ -73,10 +73,7 @@ class _ValueTrackerState extends State<ValueTracker> {
           trailing: SizedBox(
               width: 100,
               child: TextField(
-                decoration: const InputDecoration(
-                    labelText: 'Update',
-                    hintText: 'Hint',
-                    icon: Icon(Icons.people)),
+                decoration: const InputDecoration(labelText: 'Update', hintText: 'Hint', icon: Icon(Icons.people)),
                 autocorrect: true,
                 autofocus: false,
                 //displaying number keyboard

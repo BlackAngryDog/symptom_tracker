@@ -30,7 +30,7 @@ class _ValueTrackerState extends State<CountTracker> {
   }
 
   Future getCurrValue() async {
-    DataLog? log = await widget._tracker.getLastEntry();
+    DataLog? log = await widget._tracker.getLastEntry(true);
     currValue = log!.value ?? 0;
     setState(() {
       subtitle = 'today is $currValue';
