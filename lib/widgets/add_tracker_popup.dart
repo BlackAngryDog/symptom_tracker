@@ -25,6 +25,7 @@ class _AddTrackerState extends State<AddTracker> {
       DropdownMenuItem(child: Text("counter"), value: "counter"),
       DropdownMenuItem(child: Text("quality"), value: "quality"),
       DropdownMenuItem(child: Text("value"), value: "value"),
+      DropdownMenuItem(child: Text("diet"), value: "diet"),
     ];
     return menuItems;
   }
@@ -58,8 +59,7 @@ class _AddTrackerState extends State<AddTracker> {
   Icon _icon = Icon(Icons.search_outlined);
 
   _pickIcon() async {
-    IconData? icon = await FlutterIconPicker.showIconPicker(context,
-        iconPackModes: [IconPack.fontAwesomeIcons]);
+    IconData? icon = await FlutterIconPicker.showIconPicker(context, iconPackModes: [IconPack.fontAwesomeIcons]);
 
     _icon = Icon(icon);
     setState(() {});
