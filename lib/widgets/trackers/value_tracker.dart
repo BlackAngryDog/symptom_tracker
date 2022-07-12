@@ -38,6 +38,7 @@ class _ValueTrackerState extends State<ValueTracker> {
 
   String currValue = ''; // TODO - GET TODYS COUNT FOR TRACKER
   String subtitle = 'calue is today is 0';
+  IconData icon = Icons.arrow_right;
 
   Future updateData(String value) async {
     await widget._tracker.updateLog(value);
@@ -45,10 +46,23 @@ class _ValueTrackerState extends State<ValueTracker> {
   }
 
   Future getCurrValue() async {
-    DataLog? log = await widget._tracker.getLastEntry(true);
-    currValue = log!.value;
+    double curr =
+        double.tryParse(await widget._tracker.getLastValue(false)) ?? 0;
+    double last = double.tryParse(await widget._tracker
+            .getLastValueFor(DateTime.now().add(const Duration(days: -1)))) ??
+        0;
+
+    // GET TREND ICON
+    icon = Icons.arrow_right;
+    if (curr > last) {
+      icon = Icons.arrow_drop_up;
+    } else if (curr < last) {
+      icon = Icons.arrow_drop_down;
+    }
+    currValue = curr.toString();
+    print('last ${last} , curr ${curr}');
     setState(() {
-      subtitle = 'today is $currValue';
+      subtitle = currValue.toString();
     });
   }
 
@@ -69,11 +83,19 @@ class _ValueTrackerState extends State<ValueTracker> {
       child: Card(
         child: ListTile(
           title: Text(widget._tracker.title ?? ""),
-          subtitle: Text(subtitle),
+          subtitle: Row(
+            children: [
+              Icon(icon),
+              Text(subtitle),
+            ],
+          ),
           trailing: SizedBox(
               width: 100,
               child: TextField(
-                decoration: const InputDecoration(labelText: 'Update', hintText: 'Hint', icon: Icon(Icons.people)),
+                decoration: const InputDecoration(
+                    labelText: 'Update',
+                    hintText: 'Hint',
+                    icon: Icon(Icons.people)),
                 autocorrect: true,
                 autofocus: false,
                 //displaying number keyboard

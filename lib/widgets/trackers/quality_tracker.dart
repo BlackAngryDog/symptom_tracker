@@ -28,8 +28,7 @@ class _QualityTrackerState extends State<QualityTracker> {
   }
 
   Future getCurrValue() async {
-    DataLog? log = await widget._tracker.getLastEntry(true);
-    currValue = log!.value;
+    currValue = double.tryParse(await widget._tracker.getLastValue(false)) ?? 0;
     setState(() {
       subtitle = 'today is $currValue';
     });
