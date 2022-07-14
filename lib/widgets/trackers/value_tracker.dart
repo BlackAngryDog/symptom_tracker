@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/pages/tracker_info.dart';
+import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
 class ValueTracker extends StatefulWidget {
   final Tracker _tracker;

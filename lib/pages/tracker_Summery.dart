@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/widgets/diet_chart.dart';
 import 'package:symptom_tracker/widgets/line_chart.dart';
 
 class TrackerSummeryPage extends StatelessWidget {
@@ -14,6 +15,8 @@ class TrackerSummeryPage extends StatelessWidget {
         return CountTrackerInfo(_tracker);
       case "quality":
         return QualityTrackerInfo(_tracker);
+      case "diet":
+        return DietTrackerInfo(_tracker);
       default:
         return ValueTrackerInfo(_tracker);
     }
@@ -40,6 +43,7 @@ class CountTrackerInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Text('Summery of ${_tracker.title}'),
         LineChart(_tracker),
       ],
     );
@@ -70,6 +74,20 @@ class ValueTrackerInfo extends StatelessWidget {
     return Column(
       children: [
         LineChart(_tracker),
+      ],
+    );
+  }
+}
+
+class DietTrackerInfo extends StatelessWidget {
+  final Tracker _tracker;
+  const DietTrackerInfo(this._tracker, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        DietChart(_tracker),
       ],
     );
   }

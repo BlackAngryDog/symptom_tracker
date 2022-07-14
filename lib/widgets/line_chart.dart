@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:intl/intl.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:collection/collection.dart';
 
 class LineChartData {
   final DateTime time;
@@ -33,17 +35,34 @@ class LineChart extends StatelessWidget {
 
     List<DataLog> logs = await _tracker.getLogs(
         DateTime.now().add(const Duration(days: -31)), DateTime.now());
+
+    // logs.clear();
+    if (logs.isEmpty) return list;
+
     print(' logs is ${logs.length}');
     for (DataLog log in logs) {
       // TODO - NEED TO JUST DO ONE ENTRY PER DAY
-      double? d = double.parse(log.value.toStringAsFixed(2));
+      double d = double.parse(
+          log.value is String ? log.value : log.value.toStringAsFixed(2));
       //double? d = double.tryParse(log.value.toString())!.roundToDouble();
-      print(' data entry ${log.time}, ${d ?? 0}');
-      list.add(LineChartData(log.time, d ?? 0));
+      print(' data entry ${log.time}, d');
+      list.add(LineChartData(log.time, d));
 
-      if (d! > scaleMax) scaleMax = (d * 1.5).ceilToDouble();
-      if (d! < scaleMin) scaleMin = (d).floorToDouble();
+      if (d > scaleMax) scaleMax = (d * 1.5).ceilToDouble();
+      if (d < scaleMin) scaleMin = (d).floorToDouble();
     }
+    // ADD IN TODAY IF NOT AVAILABLE
+
+    DataLog last = logs.last;
+    print('checking last ${last.time}');
+    if (last.time.isBefore(DateTimeExt.today)) {
+      print('adding today');
+
+      double d = double.parse(
+          last.value is String ? last.value : last.value.toStringAsFixed(2));
+      list.add(LineChartData(DateTime.now(), d));
+    }
+
     print(' list is ${list.length}');
     return list;
   }

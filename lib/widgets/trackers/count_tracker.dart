@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/pages/tracker_info.dart';
+import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
 class CountTracker extends StatefulWidget {
   final Tracker _tracker;
@@ -30,7 +30,7 @@ class _ValueTrackerState extends State<CountTracker> {
   }
 
   Future getCurrValue() async {
-    currValue = int.tryParse(await widget._tracker.getLastValue(false)) ?? 0;
+    currValue = int.tryParse(await widget._tracker.getLastValue(true)) ?? 0;
 
     setState(() {
       subtitle = 'today is $currValue';

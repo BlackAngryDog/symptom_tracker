@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/pages/tracker_info.dart';
+import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
 class QualityTracker extends StatefulWidget {
   final Tracker _tracker;

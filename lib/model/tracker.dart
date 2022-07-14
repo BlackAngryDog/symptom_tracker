@@ -86,7 +86,7 @@ class Tracker {
       if (log.lastOrNull == null) return null;
 
       DataLog? lastEntry = log.lastOrNull;
-      DateTime time = lastEntry!.time ?? DateTime.now();
+      DateTime time = lastEntry!.time;
       Duration diff = DateTime.now().difference(time);
       print('days diff is ${diff.inDays}');
       if (today == true && diff.inDays >= 1) return null;
