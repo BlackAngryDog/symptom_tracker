@@ -14,6 +14,15 @@ class DietChartData {
   DietChartData(this.name, this.value);
 }
 
+class DietTimelineData {
+  final DateTime start;
+  final DateTime end;
+  final DataLog dietLog;
+  final Map<Tracker, List<DataLog>> history;
+
+  DietTimelineData(this.start, this.end, this.dietLog, this.history);
+}
+
 class DietChart extends StatelessWidget {
   final Tracker _tracker;
   DietChart(this._tracker, {Key? key}) : super(key: key) {
@@ -45,9 +54,41 @@ class DietChart extends StatelessWidget {
   ];
 
   Future<List<DietChartData>> _getData() async {
-    return _chartData;
-
     // TODO - GET ALL OTHER DATA LOGS TO COMPARE WITH EACH FOOD OPTION!
+
+    // Read data as a list of diet changes.
+    List<DataLog> dietLogs =
+        await _tracker.getLogs(DateTimeExt.lastMonth, DateTime.now());
+
+    //Make sure data is sorted by time
+    dietLogs.sort((a, b) => a.time.compareTo(b.time));
+
+    DateTime start = DateTimeExt.lastMonth;
+
+    final List<Tracker> trackers =
+        await Tracker.getCollection(_tracker.trackableID)
+            .where('title', isNotEqualTo: _tracker.title)
+            .get()
+            .then((data) {
+      List<Tracker> log = data.docs.map((doc) {
+        return Tracker.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+      return [];
+    });
+
+    List<DietTimelineData> timeline = [];
+    // extract date data to then read other trackers to compare.
+    for (DataLog data in dietLogs) {
+      Map<Tracker, List<DataLog>> history = <Tracker, List<DataLog>>{};
+      for (Tracker t in trackers) {
+        history[t] = await t.getLogs(start, data.time);
+      }
+
+      timeline.add(DietTimelineData(start, data.time, data, history));
+      start = data.time;
+    }
+
+    return _chartData;
 
     /*
     List<DietChartData> list = [];
