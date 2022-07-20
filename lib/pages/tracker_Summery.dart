@@ -44,7 +44,7 @@ class CountTrackerInfo extends StatelessWidget {
     return Column(
       children: [
         Text('Summery of ${_tracker.title}'),
-        LineChart(_tracker),
+        LineChartWidget(_tracker),
       ],
     );
   }
@@ -59,7 +59,7 @@ class QualityTrackerInfo extends StatelessWidget {
     return Column(
       children: [
         Text('Summery of ${_tracker.title}'),
-        LineChart(_tracker),
+        LineChartWidget(_tracker),
       ],
     );
   }
@@ -73,7 +73,7 @@ class ValueTrackerInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        LineChart(_tracker),
+        LineChartWidget(_tracker),
       ],
     );
   }
@@ -85,10 +85,6 @@ class DietTrackerInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        DietChart(_tracker),
-      ],
-    );
+    return DietChart(_tracker);
   }
 }

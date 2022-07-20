@@ -31,8 +31,7 @@ class Tracker {
     DateTime minTimeFrame = DateTime.now().add(const Duration(hours: -1));
     List<DataLog> logs = await getLogs(minTimeFrame, DateTime.now());
     DataLog? log = logs.firstOrNull;
-    log ??= DataLog(trackableID, DateTime.now(),
-        title: title, type: type, value: value);
+    log ??= DataLog(trackableID, DateTime.now(), title: title, type: type, value: value);
     log.time = DateTime.now();
     log.value = value;
     log.save();
@@ -41,28 +40,21 @@ class Tracker {
   // get data from logs for day ?
   Future readLog() async {
     // Load data log for this tracker
-    DateTime minTimeFrame =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    List<DataLog> log = await getLogs(
-        minTimeFrame, minTimeFrame.add(const Duration(hours: 24)));
-    //.where((element) => element.title == title).toList();
-    print("DAYS LOG IS ${log.toString()}");
+    DateTime minTimeFrame = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    List<DataLog> log = await getLogs(minTimeFrame, minTimeFrame.add(const Duration(hours: 24)));
     dataLog.addAll(log);
   }
 
   Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
-    print(' Getting tracker logs ');
-
     return DataLog.getCollection(trackableID)
         .where('title', isEqualTo: title ?? 'Default')
         .where('time', isGreaterThanOrEqualTo: start)
         .where('time', isLessThanOrEqualTo: end)
-        .get()
+        .get(GetOptions(source: Source.cache))
         .then((data) {
       List<DataLog> log = data.docs.map((doc) {
         return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();
-      print(' got tracker logs ${log.length}');
       return log;
     });
   }
@@ -103,8 +95,7 @@ class Tracker {
   }
 
   Future<String> getLastValueFor(DateTime day) async {
-    DataLog? dataLog = await getLastEntry(false,
-        before: DateTime(day.year, day.month, day.day, 23, 59));
+    DataLog? dataLog = await getLastEntry(false, before: DateTime(day.year, day.month, day.day, 23, 59));
     return dataLog?.value.toString() ?? '';
   }
 
@@ -116,22 +107,20 @@ class Tracker {
 
   // PERSISTANCE
 
-  Tracker save() {
+  Future save() async {
     CollectionReference collection = getCollection(trackableID);
     if (id != null) {
-      collection
+      return await collection
           .doc(id)
           .set(toJson())
           .then((value) => print("Tracker Saved"))
           .catchError((error) => print("Failed to save tracker: $error"));
     } else {
-      collection
+      return await collection
           .add(toJson())
           .then((value) => print("Tracker created"))
           .catchError((error) => print("Failed to create tracker: $error"));
     }
-
-    return this;
   }
 
   static CollectionReference getCollection(String owner) {
@@ -147,8 +136,7 @@ class Tracker {
     return Tracker.fromJson(key, await AbsSavable.loadJson(key));
   }
 
-  Tracker.fromJson(String? key, Map<String, dynamic> json)
-      : trackableID = json['trackableID'] {
+  Tracker.fromJson(String? key, Map<String, dynamic> json) : trackableID = json['trackableID'] {
     id = key;
     title = json['title'];
     type = json['type'];

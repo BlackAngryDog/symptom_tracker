@@ -19,7 +19,7 @@ class Trackable {
   List<DataLog> _log = [];
   List<DataLog> get log => _log;
 
-  Trackable();
+  Trackable({this.title});
 
   /*
     Get log - between dates (retrieve all the information saved into the data logs )
@@ -58,29 +58,24 @@ class Trackable {
 
   // PERSISTANCE
 
-  Trackable save() {
+  Future save() async {
     CollectionReference collection = getCollection();
     if (id != null) {
       collection
           .doc(id)
           .set(toJson())
-          .then((value) => print("User Added"))
+          .then((value) => print("updated user"))
           .catchError((error) => print("Failed to add user: $error"));
     } else {
-      collection
+      await collection
           .add(toJson())
-          .then((value) => print("User Added"))
+          .then((value) => {id = value.id})
           .catchError((error) => print("Failed to add user: $error"));
     }
-
-    return this;
   }
 
   static CollectionReference getCollection() {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(DatabaseTools.getUserID())
-        .collection('trackable');
+    return FirebaseFirestore.instance.collection('users').doc(DatabaseTools.getUserID()).collection('trackable');
   }
 
   static Future<dynamic> load(String key) async {

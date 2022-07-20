@@ -90,7 +90,7 @@ class _ValueTrackerState extends State<CountTracker> {
           ),
         ),
       ),
-      onTap: () {
+      onDoubleTap: () {
         showHistory(context);
       },
     );

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/pages/trackable_setup_page.dart';
+import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
 import 'package:symptom_tracker/widgets/trackable_list.dart';
 
 class TrackableSelectionPage extends StatefulWidget {
@@ -18,6 +20,15 @@ class _TrackableSelectionPageState extends State<TrackableSelectionPage> {
     // TEMP - CHECK IF NO TRACKABLES
   }
 
+  void addTrackable(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TrackableSetupPage()),
+    );
+  }
+
+  void logOut() {}
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -31,6 +42,20 @@ class _TrackableSelectionPageState extends State<TrackableSelectionPage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              addTrackable(context);
+            },
+            icon: const Icon(Icons.add),
+          ),
+          AppBarMenuButton({
+            'Add': () {
+              addTrackable(context);
+            },
+            'Logout': logOut
+          })
+        ],
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it

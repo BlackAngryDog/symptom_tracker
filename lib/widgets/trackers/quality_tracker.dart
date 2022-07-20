@@ -69,7 +69,7 @@ class _QualityTrackerState extends State<QualityTracker> {
           ),
         ),
       ),
-      onTap: () {
+      onDoubleTap: () {
         showHistory(context);
       },
     );

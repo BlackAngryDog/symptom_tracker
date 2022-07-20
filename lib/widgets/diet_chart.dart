@@ -1,17 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:graphic/graphic.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:intl/intl.dart';
+import 'package:symptom_tracker/model/diet_option.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
 
 class DietChartData {
+  //final DateTime time;
   final String name;
-  final double value;
+  final num value;
+  final int index;
 
-  DietChartData(this.name, this.value);
+  DietChartData(this.name, this.value, this.index);
 }
 
 class DietTimelineData {
@@ -21,6 +24,20 @@ class DietTimelineData {
   final Map<Tracker, List<DataLog>> history;
 
   DietTimelineData(this.start, this.end, this.dietLog, this.history);
+}
+
+class DietData {
+  final String symptom;
+  final Map<String, List<DataLog>> history = <String, List<DataLog>>{};
+
+  DietData(this.symptom);
+
+  void addLog(String dietOption, DataLog log) {
+    if (!history.containsKey(dietOption)) {
+      history[dietOption] = <DataLog>[];
+    }
+    history[dietOption]!.add(log);
+  }
 }
 
 class DietChart extends StatelessWidget {
@@ -33,13 +50,15 @@ class DietChart extends StatelessWidget {
   double scaleMax = 1;
   final _monthDayFormat = DateFormat('MM-dd');
 
-  final _chartData = [
-    DietChartData("test 1", 10),
-    DietChartData("test 2", 20),
-    DietChartData("test 3", 30),
-    DietChartData("test 4", 10),
-    DietChartData("test 5", 40),
-    DietChartData("test 6", 30),
+  final Map<String, List<DietChartData>> _chartMap = <String, List<DietChartData>>{};
+
+  var _chartData = [
+    DietChartData("test 1", 10, 1),
+    DietChartData("test 2", 20, 2),
+    DietChartData("test 3", 30, 3),
+    DietChartData("test 4", 10, 4),
+    DietChartData("test 5", 40, 5),
+    DietChartData("test 6", 30, 6),
   ];
 
   final roseData = [
@@ -53,80 +72,115 @@ class DietChart extends StatelessWidget {
     {'value': 29, 'name': 'rose 8'},
   ];
 
+  final Map<String, List<PieChartSectionData>> _pieSections = <String, List<PieChartSectionData>>{};
+
   Future<List<DietChartData>> _getData() async {
-    // TODO - GET ALL OTHER DATA LOGS TO COMPARE WITH EACH FOOD OPTION!
+    // TODO - GET ALL OTHER DATA LOGS TO COMPARE WITH EACH FOOD OPTION!?
 
     // Read data as a list of diet changes.
-    List<DataLog> dietLogs =
-        await _tracker.getLogs(DateTimeExt.lastMonth, DateTime.now());
+    List<DataLog> dietLogs = await _tracker.getLogs(DateTimeExt.lastMonth, DateTime.now());
 
     //Make sure data is sorted by time
     dietLogs.sort((a, b) => a.time.compareTo(b.time));
 
     DateTime start = DateTimeExt.lastMonth;
 
-    final List<Tracker> trackers =
-        await Tracker.getCollection(_tracker.trackableID)
-            .where('title', isNotEqualTo: _tracker.title)
-            .get()
-            .then((data) {
+    // Get tracker options
+    final List<Tracker> trackers = await Tracker.getCollection(_tracker.trackableID)
+        .where('title', isNotEqualTo: _tracker.title)
+        .get()
+        .then((data) {
       List<Tracker> log = data.docs.map((doc) {
         return Tracker.fromJson(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();
-      return [];
+      return log;
     });
 
-    List<DietTimelineData> timeline = [];
+    // map to symptom, diet title, logs.
+    List<DietData> dietDataList = [];
+
     // extract date data to then read other trackers to compare.
     for (DataLog data in dietLogs) {
-      Map<Tracker, List<DataLog>> history = <Tracker, List<DataLog>>{};
       for (Tracker t in trackers) {
-        history[t] = await t.getLogs(start, data.time);
+        List<DataLog> trackerLogs = await t.getLogs(start, data.time);
+
+        Map<String, bool> options = Map<String, bool>.from(data.value);
+        for (DataLog trackerLog in trackerLogs) {
+          for (String option in options.keys) {
+            if (options[option] == true) {
+              DietData? data = dietDataList.where((element) => element.symptom == t.title).firstOrNull;
+              if (data == null) {
+                dietDataList.add(data = DietData(t.title ?? ""));
+              }
+              data.addLog(option, trackerLog);
+            }
+          }
+        }
       }
 
-      timeline.add(DietTimelineData(start, data.time, data, history));
+      //timeline.add(DietTimelineData(start, data.time, data, history));
       start = data.time;
     }
 
+    for (DietData data in dietDataList) {
+      int i = 0;
+      for (MapEntry entry in data.history.entries) {
+        num total = 0;
+        if (_chartMap[data.symptom] == null) _chartMap[data.symptom] = [];
+
+        for (DataLog log in entry.value) {
+          num v = num.parse(log.value is String ? log.value : log.value.toString());
+          total += v;
+          // int index =
+          //     _chartMap[data.symptom]!.where((element) => element.name == entry.key).toList(growable: false).length;
+          // _chartMap[data.symptom]!.add(DietChartData(entry.key, v, index));
+        }
+
+        // Get adverage value.
+        _chartMap[data.symptom]!.add(DietChartData(entry.key, total / data.history.entries.length, 0));
+        if (_pieSections[data.symptom] == null) _pieSections[data.symptom] = [];
+        _pieSections[data.symptom]!.add(PieChartSectionData(
+          title: entry.key,
+          value: total / data.history.entries.length,
+          color: Colors.redAccent,
+          radius: 80,
+          titleStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
+        ));
+        i++;
+      }
+
+      _chartData = _chartMap[data.symptom] ?? _chartData;
+    }
+    print(' got chart data');
     return _chartData;
+  }
 
-    /*
-    List<DietChartData> list = [];
-
-    List<DataLog> logs = await _tracker.getLogs(
-        DateTime.now().add(const Duration(days: -31)), DateTime.now());
-
-    // logs.clear();
-    if (logs.isEmpty) return list;
-
-    print(' logs is ${logs.length}');
-    for (DataLog log in logs) {
-      // TODO - NEED TO JUST DO ONE ENTRY PER DAY
-      double d = double.parse(
-          log.value is String ? log.value : log.value.toStringAsFixed(2));
-      //double? d = double.tryParse(log.value.toString())!.roundToDouble();
-      print(' data entry ${log.time}, d');
-      list.add(DietChartData(log.time, d));
-
-      if (d > scaleMax) scaleMax = (d * 1.5).ceilToDouble();
-      if (d < scaleMin) scaleMin = (d).floorToDouble();
+  List<Widget> getFLPieCharts() {
+    List<Widget> list = [];
+    //i<5, pass your dynamic limit as per your requirment
+    for (MapEntry<String, List<PieChartSectionData>> entry in _pieSections.entries) {
+      list.add(Column(
+        children: [
+          Text(entry.key),
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            width: 350,
+            height: 200,
+            child: PieChart(
+              PieChartData(
+                // read about it in the PieChartData section
+                sections: entry.value,
+                centerSpaceRadius: 10,
+                sectionsSpace: 10,
+              ),
+              swapAnimationDuration: Duration(milliseconds: 150), // Optional
+              swapAnimationCurve: Curves.linear, // Optional
+            ),
+          ),
+        ],
+      ));
     }
-    // ADD IN TODAY IF NOT AVAILABLE
-
-    DataLog last = logs.last;
-    print('checking last ${last.time}');
-    if (last.time.isBefore(DateTimeExt.today)) {
-      print('adding today');
-
-      double d = double.parse(
-          last.value is String ? last.value : last.value.toStringAsFixed(2));
-      list.add(DietChartData(DateTime.now(), d));
-    }
-
-    print(' list is ${list.length}');
-    return list;
-
-     */
+    return list; // all widget added now retrun the list here
   }
 
   @override
@@ -135,35 +189,14 @@ class DietChart extends StatelessWidget {
         future: _getData(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Container(
-              margin: const EdgeInsets.only(top: 10),
-              width: 350,
-              height: 200,
-              child: Chart(
-                data: snapshot.data ?? dynamic,
-                variables: {
-                  'name': Variable(
-                    accessor: (DietChartData map) => map.name as String,
+            return SizedBox(
+              height: MediaQuery.of(context).copyWith().size.height - 80,
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    children: getFLPieCharts(),
                   ),
-                  'value': Variable(
-                    accessor: (DietChartData map) => map.value as double,
-                    scale: LinearScale(min: 0, marginMax: 0),
-                  ),
-                },
-                elements: [
-                  IntervalElement(
-                    label: LabelAttr(
-                        encoder: (tuple) => Label(tuple['name'].toString())),
-                    shape: ShapeAttr(
-                        value: RectShape(
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    )),
-                    color:
-                        ColorAttr(variable: 'name', values: Defaults.colors10),
-                    elevation: ElevationAttr(value: 5),
-                  )
-                ],
-                coord: PolarCoord(startRadius: 0.15),
+                ),
               ),
             );
           } else {

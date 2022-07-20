@@ -69,7 +69,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
       ),
       body: SafeArea(
         child: Container(
-          height: MediaQuery.of(context).copyWith().size.height,
+          height: MediaQuery.of(context).copyWith().size.height ,
           child: StreamBuilder<QuerySnapshot>(
               stream: DietOption.getCollection().orderBy('title').snapshots(),
               builder: (context, snapshot) {
