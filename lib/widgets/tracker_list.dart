@@ -24,8 +24,7 @@ class _TrackerListState extends State<TrackerList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).copyWith().size.height,
+    return Flexible(
       child: StreamBuilder<QuerySnapshot>(
         //stream: Tracker.getCollection(_trackable.id ?? "default").where('type', isEqualTo: "counter").snapshots(),
         stream: Tracker.getCollection(widget._trackable.id ?? "default").snapshots(),

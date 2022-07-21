@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
@@ -10,6 +11,8 @@ import 'package:symptom_tracker/pages/tracker_history.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
+import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
+import 'package:symptom_tracker/widgets/tracker_item.dart';
 import 'package:symptom_tracker/widgets/tracker_list.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:symptom_tracker/pages/trackable_selection_page.dart';
@@ -168,7 +171,100 @@ class _TrackerPageState extends State<TrackerPage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: TrackerList(widget.trackable),
+        child: Column(
+          children: [
+            // Title Text
+            // THE FIVE TESTS
+            // DRINKING, POO OK, WEIGHT OK, HAPPY, EATING OK
+
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8, top: 70, bottom: 10),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      SizedBox(
+                        height: 100,
+                        child: Card(
+                          color: Colors.orangeAccent,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 70,
+                                  color: Colors.transparent,
+                                  width: MediaQuery.of(context).copyWith().size.width,
+                                  child: Text(
+                                    widget.trackable.title ?? "DOG",
+                                    style: Theme.of(context).textTheme.headline2,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Divider(
+                                  thickness: 6,
+                                  indent: 20,
+                                  endIndent: 20,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        width: MediaQuery.of(context).copyWith().size.width,
+                        bottom: -90,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            //MiniCountTracker(Tracker('default')),
+                            //MiniCountTracker(Tracker('default')),
+                            //MiniCountTracker(Tracker('default')),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        width: MediaQuery.of(context).copyWith().size.width,
+                        top: -60,
+                        child: CircleAvatar(
+                          minRadius: 60,
+                          backgroundColor: Colors.grey.shade800,
+                          child: const FaIcon(
+                            FontAwesomeIcons.dog,
+                            size: 45,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Divider(
+              thickness: 3,
+              indent: 20,
+              endIndent: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                MiniCountTracker(Tracker(widget.trackable!.id ?? "default", title: 'Poo Count', type: 'counter')),
+                MiniCountTracker(Tracker(widget.trackable!.id ?? "default", title: 'Diet', type: 'diet')),
+                MiniCountTracker(Tracker(widget.trackable!.id ?? "default", title: 'Diet', type: 'diet')),
+              ],
+            ),
+
+            TrackerList(widget.trackable),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
