@@ -15,8 +15,8 @@ class TrackableList extends StatelessWidget {
 
   final db = FirebaseFirestore.instance;
 
-  bool _hasTracker() {
-    return false;
+  bool _hasTracker(List? data) {
+    return data!.isNotEmpty;
   }
 
   @override
@@ -31,7 +31,7 @@ class TrackableList extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else {
-            return _hasTracker()
+            return _hasTracker(snapshot.data?.docs)
                 ? ListView(
                     children: snapshot.data?.docs.map((doc) {
                       return TrackableItem(Trackable.fromJson(doc.id, doc.data() as Map<String, dynamic>));

@@ -51,10 +51,6 @@ class DataLog {
         .collection('datalogs');
   }
 
-  static Future<dynamic> load(String key) async {
-    return DataLog.fromJson(key, await AbsSavable.loadJson(key));
-  }
-
   DataLog.fromJson(String? key, Map<String, dynamic> json)
       : trackableID = json['trackableID'],
         time = (json['time'] as Timestamp).toDate() {

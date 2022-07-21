@@ -79,7 +79,16 @@ class Trackable {
   }
 
   static Future<Trackable> load(String key) async {
-    return Trackable.fromJson(key, await AbsSavable.loadJson(key));
+    final doc = getCollection().doc(key);
+
+    return doc
+        .get()
+        .then(
+          (snapshot) => Trackable.fromJson(doc.id, snapshot.data() as Map<String, dynamic>),
+        )
+        .catchError(
+          (error, stackTrace) => Trackable(),
+        );
   }
 
   Trackable.fromJson(String? key, Map<String, dynamic> json) {

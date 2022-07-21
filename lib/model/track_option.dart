@@ -44,8 +44,17 @@ class TrackOption {
     return FirebaseFirestore.instance.collection('users').doc(DatabaseTools.getUserID()).collection('trackOptions');
   }
 
-  static Future<dynamic> load(String key) async {
-    return TrackOption.fromJson(key, await AbsSavable.loadJson(key));
+  static Future<TrackOption> load(String key) async {
+    final doc = getCollection().doc(key);
+
+    return doc
+        .get()
+        .then(
+          (snapshot) => TrackOption.fromJson(doc.id, snapshot.data() as Map<String, dynamic>),
+        )
+        .catchError(
+          (error, stackTrace) => TrackOption(),
+        );
   }
 
   TrackOption.fromJson(String? key, Map<String, dynamic> json) {

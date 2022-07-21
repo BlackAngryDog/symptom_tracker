@@ -8,7 +8,7 @@ import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/user.dart';
-import 'package:symptom_tracker/pages/trackable_selection_page.dart';
+
 import 'package:symptom_tracker/pages/trackable_setup_page.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
 

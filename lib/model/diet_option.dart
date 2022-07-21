@@ -42,8 +42,17 @@ class DietOption {
     return FirebaseFirestore.instance.collection('users').doc(DatabaseTools.getUserID()).collection('dietOptions');
   }
 
-  static Future<dynamic> load(String key) async {
-    return DietOption.fromJson(key, await AbsSavable.loadJson(key));
+  static Future<DietOption> load(String key) async {
+    final doc = getCollection().doc(key);
+
+    return doc
+        .get()
+        .then(
+          (snapshot) => DietOption.fromJson(doc.id, snapshot.data() as Map<String, dynamic>),
+        )
+        .catchError(
+          (error, stackTrace) => DietOption(),
+        );
   }
 
   DietOption.fromJson(String? key, Map<String, dynamic> json) {

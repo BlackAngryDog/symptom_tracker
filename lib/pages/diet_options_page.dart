@@ -40,10 +40,12 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
   Future<List<DietOptionItem>> _getData() async {
     DataLog? log = await widget._tracker.getLastEntry(false);
 
+    if (log == null) return options;
+
     // SELECT OPTIONS FROM DATA
     final test = log?.value;
 
-    for (var entry in test.entries) {
+    for (var entry in test!.entries) {
       DietOptionItem? option = options.where((element) => element.item.title == entry.key).firstOrNull;
       option?.selected = entry.value;
     }
@@ -69,7 +71,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
       ),
       body: SafeArea(
         child: Container(
-          height: MediaQuery.of(context).copyWith().size.height ,
+          height: MediaQuery.of(context).copyWith().size.height,
           child: StreamBuilder<QuerySnapshot>(
               stream: DietOption.getCollection().orderBy('title').snapshots(),
               builder: (context, snapshot) {
@@ -79,7 +81,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
                   );
                 } else {
                   options = snapshot.data?.docs.map((doc) {
-                    return DietOptionItem(true, DietOption.fromJson(doc.id, doc.data() as Map<String, dynamic>));
+                    return DietOptionItem(false, DietOption.fromJson(doc.id, doc.data() as Map<String, dynamic>));
                   }).toList() as List<DietOptionItem>;
 
                   return FutureBuilder<List<DietOptionItem>>(

@@ -25,7 +25,7 @@ class AppBarMenuButton extends StatelessWidget {
           return getPopupItems();
         },
         onSelected: (String value) {
-          print('You Click on po up menu item $value');
+          menuItems[value]?.call();
         },
       ),
     );

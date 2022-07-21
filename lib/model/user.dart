@@ -15,26 +15,10 @@ class UserVo {
   UserVo(this.name, this.role, {this.id});
 
   // PERSISTANCE
-  /*
-  Future save() async {
-    CollectionReference collection = FirebaseFirestore.instance.collection('users');
 
-    if (id != null) {
-      return await collection
-          .doc(id)
-          .set(toJson())
-          .then((value) => print("User Added"))
-          .catchError((error) => print("Failed to add user: $error"));
-    } else {
-      return await collection
-          .add(toJson())
-          .then((value) => print("User Added"))
-          .catchError((error) => print("Failed to add user: $error"));
-    }
-    return this;
+  static CollectionReference getCollection() {
+    return FirebaseFirestore.instance.collection('users');
   }
-
-   */
 
   Future<UserVo> save() async {
     CollectionReference collection = FirebaseFirestore.instance.collection('users');
@@ -43,18 +27,27 @@ class UserVo {
           .doc(id)
           .set(toJson())
           .then((value) => print("User Saved"))
-          .catchError((error) => print("Failed to save tracker: $error"));
+          .catchError((error) => print("Failed to save user: $error"));
     } else {
       await collection
           .add(toJson())
           .then((value) => {id = value.id})
-          .catchError((error) => print("Failed to create tracker: $error"));
+          .catchError((error) => print("Failed to create user: $error"));
     }
     return this;
   }
 
   static Future<UserVo> load(String key) async {
-    return UserVo.fromJson(key, await AbsSavable.loadJson(key));
+    final doc = getCollection().doc(key);
+
+    return doc
+        .get()
+        .then(
+          (snapshot) => UserVo.fromJson(doc.id, snapshot.data() as Map<String, dynamic>),
+        )
+        .catchError(
+          (error, stackTrace) => UserVo("NONE", 'None'),
+        );
   }
 
   UserVo.fromJson(String? key, Map<String, dynamic> json) : super() {

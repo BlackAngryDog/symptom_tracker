@@ -132,10 +132,6 @@ class Tracker {
         .collection('trackers');
   }
 
-  static Future<Tracker> load(String key) async {
-    return Tracker.fromJson(key, await AbsSavable.loadJson(key));
-  }
-
   Tracker.fromJson(String? key, Map<String, dynamic> json) : trackableID = json['trackableID'] {
     id = key;
     title = json['title'];

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
@@ -33,12 +34,6 @@ abstract class AbsSavable {
 
       ref.push().set(json);
     }
-  }
-
-  static Future<Map<String, dynamic>> loadJson(String key) async {
-    DatabaseReference ref = DatabaseTools.getRef(_endpoint);
-    DatabaseEvent event = await ref.once();
-    return event.snapshot.value == null ? <String, dynamic>{} : event.snapshot.value as Map<String, dynamic>;
   }
 
   String getEndpoint() {

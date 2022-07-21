@@ -8,9 +8,11 @@ import 'package:symptom_tracker/pages/calender_page.dart';
 import 'package:symptom_tracker/pages/chart_page.dart';
 import 'package:symptom_tracker/pages/tracker_history.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
+import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
 import 'package:symptom_tracker/widgets/tracker_list.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 
 class TrackerPage extends StatefulWidget {
   final Trackable trackable;
@@ -118,6 +120,13 @@ class _TrackerPageState extends State<TrackerPage> {
     );
   }
 
+  void showTrackableList(BuildContext ctx) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const TrackableSelectionPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -130,7 +139,8 @@ class _TrackerPageState extends State<TrackerPage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.trackable.title ?? ""),
+        automaticallyImplyLeading: true,
+        title: Text(widget.trackable.title ?? "DOG"),
         actions: [
           IconButton(
               onPressed: () {
@@ -147,6 +157,12 @@ class _TrackerPageState extends State<TrackerPage> {
                 showCalendar(context);
               },
               icon: const Icon(Icons.calendar_month)),
+          AppBarMenuButton({
+            'Switch': () {
+              showTrackableList(context);
+            },
+            'Logout': () {},
+          })
         ],
       ),
       body: Center(
