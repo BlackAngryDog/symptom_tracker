@@ -10,7 +10,7 @@ class DatabaseTools {
   //final DatabaseReference _timerRef =
   //    FirebaseDatabase.instance.ref().child('timers');
 
-  static Future<UserVo> getUser() {
+  static Future<UserVo> getUser() async {
     String uid = getUserID();
 
     final doc = FirebaseFirestore.instance.collection('users').doc(uid);
@@ -18,7 +18,7 @@ class DatabaseTools {
     return doc
         .get()
         .then(
-          (data) => UserVo.fromJson(doc.id, data as Map<String, dynamic>),
+          (snapshot) => UserVo.fromJson(doc.id, snapshot.data() as Map<String, dynamic>),
         )
         .catchError(
           (error, stackTrace) => UserVo("Dan", 'admin', id: uid).save(),
@@ -29,11 +29,18 @@ class DatabaseTools {
     CollectionReference collection = FirebaseFirestore.instance.collection(item.endpoint);
 
     if (item.id != null) {
-      collection.doc(item.id).set(item.toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+      collection
+          .doc(item.id)
+          .set(item.toJson())
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
       return;
     }
 
-    collection.add(item.toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+    collection
+        .add(item.toJson())
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
     return;
   }
 
@@ -57,11 +64,18 @@ class DatabaseTools {
     dynamic snap = collection.doc(id).get();
 
     if (id != null) {
-      collection.doc(id).set(json).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+      collection
+          .doc(id)
+          .set(json)
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
       return;
     }
 
-    collection.add(json).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+    collection
+        .add(json)
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
     return;
     final messageRef = FirebaseFirestore.instance.collection("rooms").doc("roomA").collection("messages");
     // ADDING SUBCOLLECTIONS
@@ -105,6 +119,4 @@ class DatabaseTools {
     DatabaseReference ref = FirebaseDatabase.instance.ref("$endpoint/${getUserID()}");
     return ref;
   }
-
-
 }

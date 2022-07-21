@@ -28,7 +28,10 @@ class _TrackerPageState extends State<TrackerPage> {
   void initState() {
     super.initState();
     // GET USER ID
-    DatabaseTools.getUser().then((value) => print('user id is ${value.id}'));
+    DatabaseTools.getUser().then((value) {
+      value.selectedID = widget.trackable.id;
+      value.save();
+    });
   }
 
   void _startAddTracker(BuildContext ctx) {

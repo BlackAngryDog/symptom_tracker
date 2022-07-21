@@ -10,18 +10,46 @@ class UserVo {
   String? name;
   String? role;
 
+  String? selectedID;
+
   UserVo(this.name, this.role, {this.id});
 
   // PERSISTANCE
-  UserVo save() {
+  /*
+  Future save() async {
     CollectionReference collection = FirebaseFirestore.instance.collection('users');
 
     if (id != null) {
-      collection.doc(id).set(toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+      return await collection
+          .doc(id)
+          .set(toJson())
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
     } else {
-      collection.add(toJson()).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error"));
+      return await collection
+          .add(toJson())
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
     }
+    return this;
+  }
 
+   */
+
+  Future<UserVo> save() async {
+    CollectionReference collection = FirebaseFirestore.instance.collection('users');
+    if (id != null) {
+      await collection
+          .doc(id)
+          .set(toJson())
+          .then((value) => print("User Saved"))
+          .catchError((error) => print("Failed to save tracker: $error"));
+    } else {
+      await collection
+          .add(toJson())
+          .then((value) => {id = value.id})
+          .catchError((error) => print("Failed to create tracker: $error"));
+    }
     return this;
   }
 
@@ -33,10 +61,12 @@ class UserVo {
     id = key;
     name = json['name'];
     role = json['role'];
+    selectedID = json['selectedID'];
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'name': name,
         'role': role,
+        'selectedID': selectedID,
       };
 }

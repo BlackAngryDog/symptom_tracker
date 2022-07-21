@@ -78,7 +78,7 @@ class Trackable {
     return FirebaseFirestore.instance.collection('users').doc(DatabaseTools.getUserID()).collection('trackable');
   }
 
-  static Future<dynamic> load(String key) async {
+  static Future<Trackable> load(String key) async {
     return Trackable.fromJson(key, await AbsSavable.loadJson(key));
   }
 

@@ -10,9 +10,14 @@ import 'package:symptom_tracker/widgets/trackable_item.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 
 class TrackableList extends StatelessWidget {
-  TrackableList({Key? key}) : super(key: key);
+  Function(BuildContext)? addTrackerPage;
+  TrackableList({Key? key, this.addTrackerPage}) : super(key: key);
 
   final db = FirebaseFirestore.instance;
+
+  bool _hasTracker() {
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +31,18 @@ class TrackableList extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else {
-            return ListView(
-              children: snapshot.data?.docs.map((doc) {
-                return TrackableItem(Trackable.fromJson(
-                    doc.id, doc.data() as Map<String, dynamic>));
-              }).toList() as List<TrackableItem>,
-            );
+            return _hasTracker()
+                ? ListView(
+                    children: snapshot.data?.docs.map((doc) {
+                      return TrackableItem(Trackable.fromJson(doc.id, doc.data() as Map<String, dynamic>));
+                    }).toList() as List<TrackableItem>,
+                  )
+                : Center(
+                    child: ElevatedButton(
+                      child: const Text("Create"),
+                      onPressed: () => {addTrackerPage!(context)},
+                    ),
+                  );
           }
         },
       ),

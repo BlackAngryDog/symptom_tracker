@@ -60,7 +60,9 @@ class _TrackableSelectionPageState extends State<TrackableSelectionPage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: TrackableList(),
+        child: TrackableList(
+          addTrackerPage: addTrackable,
+        ),
       ),
       /*floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,

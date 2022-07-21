@@ -7,7 +7,9 @@ import 'package:flutterfire_ui/auth.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
+import 'package:symptom_tracker/model/user.dart';
 import 'package:symptom_tracker/pages/trackable_selection_page.dart';
+import 'package:symptom_tracker/pages/trackable_setup_page.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
 
 import 'firebase_config.dart';
@@ -16,15 +18,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-        name: 'att', options: DefaultFirebaseConfig.platformOptions);
+    await Firebase.initializeApp(name: 'att', options: DefaultFirebaseConfig.platformOptions);
   } else {
     Firebase.app();
   }
 
   // FacebookSdk.sdkInitialize();
-  FirebaseDatabase.instance.databaseURL =
-      DefaultFirebaseConfig.platformOptions.databaseURL;
+  FirebaseDatabase.instance.databaseURL = DefaultFirebaseConfig.platformOptions.databaseURL;
   FirebaseDatabase.instance.goOnline();
 
   runApp(const MyApp());
@@ -70,9 +70,36 @@ class AuthGate extends StatelessWidget {
           ]);
         }
 
-        // TODO - CHECK PAGE TO MOVE TO
-        // return const TrackerPage(title: 'Tracker Page');
-        return const TrackableSelectionPage();
+        // Load UserData
+        return FutureBuilder<UserVo>(
+          future: DatabaseTools.getUser(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              // Check if CurrTrackable set
+              if (snapshot.data!.selectedID == null) {
+                // Open On-boarding
+                return TrackableSetupPage();
+              } else {
+                // Open tracker summery page
+                return FutureBuilder<Trackable?>(
+                    future: Trackable.load(snapshot.data!.selectedID ?? 'default'),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return TrackerPage(snapshot.data ?? Trackable());
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    });
+              }
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        );
       },
     );
   }
