@@ -31,7 +31,7 @@ class DietOption {
     } else {
       collection
           .add(toJson())
-          .then((value) => print("User Added"))
+          .then((value) => {id = value.id})
           .catchError((error) => print("Failed to add user: $error"));
     }
 
@@ -39,10 +39,7 @@ class DietOption {
   }
 
   static CollectionReference getCollection() {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(DatabaseTools.getUserID())
-        .collection('dietOptions');
+    return FirebaseFirestore.instance.collection('users').doc(DatabaseTools.getUserID()).collection('dietOptions');
   }
 
   static Future<dynamic> load(String key) async {

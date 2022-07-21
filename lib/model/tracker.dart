@@ -118,7 +118,7 @@ class Tracker {
     } else {
       return await collection
           .add(toJson())
-          .then((value) => print("Tracker created"))
+          .then((value) => {id = value.id})
           .catchError((error) => print("Failed to create tracker: $error"));
     }
   }

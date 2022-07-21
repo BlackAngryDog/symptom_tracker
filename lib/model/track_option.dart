@@ -33,7 +33,7 @@ class TrackOption {
     } else {
       collection
           .add(toJson())
-          .then((value) => print("User Added"))
+          .then((value) => {id = value.id})
           .catchError((error) => print("Failed to add user: $error"));
     }
 
