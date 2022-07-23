@@ -12,6 +12,7 @@ import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
 import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
+import 'package:symptom_tracker/widgets/mini_trackers/diet_tracker.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 import 'package:symptom_tracker/widgets/tracker_list.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -180,12 +181,12 @@ class _TrackerPageState extends State<TrackerPage> {
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8, top: 70, bottom: 10),
+                  padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 4),
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
                       SizedBox(
-                        height: 100,
+                        width: MediaQuery.of(context).size.width,
                         child: Card(
                           color: Colors.orangeAccent,
                           child: Align(
@@ -202,11 +203,6 @@ class _TrackerPageState extends State<TrackerPage> {
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
-                                Divider(
-                                  thickness: 6,
-                                  indent: 20,
-                                  endIndent: 20,
-                                ),
                               ],
                             ),
                           ),
@@ -214,7 +210,7 @@ class _TrackerPageState extends State<TrackerPage> {
                       ),
                       Positioned(
                         width: MediaQuery.of(context).copyWith().size.width,
-                        bottom: -90,
+                        bottom: 0,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -227,14 +223,15 @@ class _TrackerPageState extends State<TrackerPage> {
                         ),
                       ),
                       Positioned(
-                        width: MediaQuery.of(context).copyWith().size.width,
-                        top: -60,
+                        //width: MediaQuery.of(context).copyWith().size.width,
+                        top: 10,
+                        left: 10,
                         child: CircleAvatar(
-                          minRadius: 60,
+                          minRadius: 30,
                           backgroundColor: Colors.grey.shade800,
                           child: const FaIcon(
                             FontAwesomeIcons.dog,
-                            size: 45,
+                            size: 35,
                           ),
                         ),
                       ),
@@ -243,23 +240,28 @@ class _TrackerPageState extends State<TrackerPage> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
+
             Divider(
               thickness: 3,
               indent: 20,
               endIndent: 20,
             ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                MiniCountTracker(Tracker(widget.trackable!.id ?? "default", title: 'Poo Count', type: 'counter')),
-                MiniCountTracker(Tracker(widget.trackable!.id ?? "default", title: 'Diet', type: 'diet')),
-                MiniCountTracker(Tracker(widget.trackable!.id ?? "default", title: 'Diet', type: 'diet')),
+                MiniCountTracker(Tracker(widget.trackable.id ?? "default", title: 'Poo Count', type: 'counter')),
+                MiniDietTracker(Tracker(widget.trackable.id ?? "default", title: 'Diet', type: 'diet')),
+                MiniCountTracker(Tracker(widget.trackable.id ?? "default", title: 'Weight', type: 'value')),
               ],
+            ),
+
+            Divider(
+              thickness: 3,
+              indent: 20,
+              endIndent: 20,
             ),
 
             TrackerList(widget.trackable),
@@ -272,6 +274,34 @@ class _TrackerPageState extends State<TrackerPage> {
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
+      bottomSheet: Text('test'),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.blue,
+        child: IconTheme(
+          data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                tooltip: 'Open navigation menu',
+                icon: const Icon(Icons.menu),
+                onPressed: () {},
+              ),
+              const Spacer(),
+              IconButton(
+                tooltip: 'Search',
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+              ),
+              IconButton(
+                tooltip: 'Favorite',
+                icon: const Icon(Icons.favorite),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
