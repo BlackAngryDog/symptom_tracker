@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/widgets/tracker_button_grid.dart';
 import 'package:symptom_tracker/widgets/tracker_list.dart';
+import 'dart:math';
 
 class BottomTrackerSelectionPanel extends StatefulWidget {
   final Trackable _trackable;
@@ -15,13 +17,25 @@ class BottomTrackerSelectionPanel extends StatefulWidget {
 class _BottomTrackerSelectionPanelState extends State<BottomTrackerSelectionPanel> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: SizedBox(
-        height: 200,
-        child: TrackerList(widget._trackable, (tracker) {
-          widget.onTrackerSelected(tracker);
-        }),
-      ),
+    return LayoutBuilder(
+      builder: (BuildContext ctx, BoxConstraints constraints) {
+        return Card(
+          color: Colors.orange,
+          child: Flex(
+            direction: Axis.horizontal,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Flexible(
+                fit: FlexFit.tight,
+                child: TrackerButtonGrid(widget._trackable, (tracker) {
+                  widget.onTrackerSelected(tracker);
+                }),
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -9,8 +9,7 @@ class TrackerInfoPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      fit: FlexFit.tight,
+    return SizedBox(
       child: Card(
         color: Colors.blueGrey.withAlpha(10),
         elevation: 1,

@@ -9,20 +9,21 @@ import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
 class TrackerItem extends StatelessWidget {
   final Tracker item;
+  bool? useMini = true;
 
-  const TrackerItem(this.item, {Key? key}) : super(key: key);
+  TrackerItem(this.item, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     switch (item.type) {
       case "counter":
-        return CountTracker(item);
+        return useMini == true ? MiniCountTracker(item) : CountTracker(item);
       case "quality":
-        return QualityTracker(item);
+        return useMini == true ? MiniCountTracker(item) : QualityTracker(item);
       case "diet":
-        return DietTracker(item);
+        return useMini == true ? MiniCountTracker(item) : DietTracker(item);
       default:
-        return ValueTracker(item);
+        return useMini == true ? MiniCountTracker(item) : ValueTracker(item);
     }
   }
 }

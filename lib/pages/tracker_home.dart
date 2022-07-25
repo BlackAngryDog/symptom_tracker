@@ -30,15 +30,15 @@ class TrackerPage extends StatefulWidget {
 }
 
 class _TrackerPageState extends State<TrackerPage> {
-  int _counter = 0;
-  bool _finishedLoading = false;
-
   bool _showBottomPanel = false;
+
+  late Widget _bottomButtonPanel;
 
   @override
   void initState() {
     super.initState();
     print("init");
+    _bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
     // GET USER ID
   }
 
@@ -92,7 +92,7 @@ class _TrackerPageState extends State<TrackerPage> {
 
   void _addTracker(Tracker value) {
     // DatabaseTools.testFirestore();
-    _counter++;
+
     setState(() {
       // TODO - CREATE A NEW TRACKER IN THE TRACKABLE (NEEDS POPUP FOR PARAMS)
 
@@ -153,6 +153,7 @@ class _TrackerPageState extends State<TrackerPage> {
 
     setState(() {
       widget.trackable = result;
+      _bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
       _selectedTracker = null;
       _showBottomPanel = false;
     });
@@ -308,7 +309,7 @@ class _TrackerPageState extends State<TrackerPage> {
               child: const Icon(Icons.add),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
-      bottomSheet: _showBottomPanel == false ? null : BottomTrackerSelectionPanel(widget.trackable, setActiveTracker),
+      bottomSheet: _showBottomPanel == false ? null : _bottomButtonPanel,
       bottomNavigationBar: BottomAppBar(
         color: Colors.blue,
         child: IconTheme(
