@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 
 class MiniCountTracker extends StatefulWidget {
@@ -52,9 +53,9 @@ class _MiniCountTrackerState extends State<MiniCountTracker> {
               Positioned(
                 right: 10,
                 bottom: 10,
-                child: Icon(
-                  Icons.add,
-                  size: 40,
+                child: const FaIcon(
+                  FontAwesomeIcons.weightScale,
+                  size: 45,
                 ),
               ),
               Align(

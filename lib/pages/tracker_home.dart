@@ -10,17 +10,20 @@ import 'package:symptom_tracker/pages/chart_page.dart';
 import 'package:symptom_tracker/pages/tracker_history.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
+import 'package:symptom_tracker/widgets/bottom_tracker_panel.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
+import 'package:symptom_tracker/widgets/line_chart.dart';
 import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
 import 'package:symptom_tracker/widgets/mini_trackers/diet_tracker.dart';
+import 'package:symptom_tracker/widgets/tracker_info_panel.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 import 'package:symptom_tracker/widgets/tracker_list.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 
 class TrackerPage extends StatefulWidget {
-  final Trackable trackable;
-  const TrackerPage(this.trackable, {Key? key}) : super(key: key);
+  Trackable trackable;
+  TrackerPage(this.trackable, {Key? key}) : super(key: key);
 
   @override
   State<TrackerPage> createState() => _TrackerPageState();
@@ -30,14 +33,20 @@ class _TrackerPageState extends State<TrackerPage> {
   int _counter = 0;
   bool _finishedLoading = false;
 
+  bool _showBottomPanel = false;
+
   @override
   void initState() {
     super.initState();
+    print("init");
     // GET USER ID
-    DatabaseTools.getUser().then((value) {
-      value.selectedID = widget.trackable.id;
-      value.save();
-    });
+  }
+
+  @override
+  void activate() {
+    super.activate();
+    print("activeted");
+    // GET USER ID
   }
 
   void _startAddTracker(BuildContext ctx) {
@@ -124,11 +133,37 @@ class _TrackerPageState extends State<TrackerPage> {
     );
   }
 
-  void showTrackableList(BuildContext ctx) {
-    Navigator.push(
+  Future<void> showTrackableList(BuildContext ctx) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const TrackableSelectionPage()),
     );
+
+    // When a BuildContext is used from a StatefulWidget, the mounted property
+    // must be checked after an asynchronous gap.
+    if (!mounted) return;
+
+    // After the Selection Screen returns a result, hide any previous snackbars
+    // and show the new result.
+    //ScaffoldMessenger.of(context)
+    //  ..removeCurrentSnackBar()
+    //  ..showSnackBar(SnackBar(content: Text('$result')));
+
+    setState(() {
+      widget.trackable = result;
+      _selectedTracker = null;
+      _showBottomPanel = false;
+    });
+  }
+
+  Tracker? _selectedTracker;
+  void setActiveTracker(Tracker? tracker) {
+    setState(() {
+      _selectedTracker = tracker;
+      _showBottomPanel = false;
+    });
   }
 
   @override
@@ -139,6 +174,7 @@ class _TrackerPageState extends State<TrackerPage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    print("build");
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -241,12 +277,7 @@ class _TrackerPageState extends State<TrackerPage> {
               ],
             ),
 
-            Divider(
-              thickness: 3,
-              indent: 20,
-              endIndent: 20,
-            ),
-
+            /*
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -257,26 +288,27 @@ class _TrackerPageState extends State<TrackerPage> {
                 MiniCountTracker(Tracker(widget.trackable.id ?? "default", title: 'Weight', type: 'value')),
               ],
             ),
+*/
 
-            Divider(
-              thickness: 3,
-              indent: 20,
-              endIndent: 20,
-            ),
+            // Show selected tracker history info and controls
 
-            TrackerList(widget.trackable),
+            if (_selectedTracker != null && _showBottomPanel == false) TrackerInfoPanel(_selectedTracker!),
+
+            //TrackerList(widget.trackable),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _addTrackerPopup(context);
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: _showBottomPanel == true
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                _addTrackerPopup(context);
+              },
+              tooltip: 'Increment',
+              child: const Icon(Icons.add),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
-      bottomSheet: Text('test'),
+      bottomSheet: _showBottomPanel == false ? null : BottomTrackerSelectionPanel(widget.trackable, setActiveTracker),
       bottomNavigationBar: BottomAppBar(
         color: Colors.blue,
         child: IconTheme(
@@ -286,7 +318,11 @@ class _TrackerPageState extends State<TrackerPage> {
               IconButton(
                 tooltip: 'Open navigation menu',
                 icon: const Icon(Icons.menu),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    _showBottomPanel = !_showBottomPanel;
+                  });
+                },
               ),
               const Spacer(),
               IconButton(

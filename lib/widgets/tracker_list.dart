@@ -10,8 +10,9 @@ import 'package:symptom_tracker/widgets/line_chart.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 
 class TrackerList extends StatefulWidget {
+  final Function(Tracker? tracker) onTrackerSelected;
   final Trackable _trackable;
-  TrackerList(this._trackable, {Key? key}) : super(key: key);
+  TrackerList(this._trackable, this.onTrackerSelected, {Key? key}) : super(key: key);
 
   @override
   State<TrackerList> createState() => _TrackerListState();
@@ -36,7 +37,7 @@ class _TrackerListState extends State<TrackerList> {
           } else {
             return Column(
               children: [
-                _selectedTracker == null ? SizedBox() : LineChartWidget(_selectedTracker),
+                //_selectedTracker == null ? SizedBox() : LineChartWidget(_selectedTracker),
                 Expanded(
                   child: ListView(
                     children: snapshot.data?.docs.map((doc) {
@@ -45,6 +46,7 @@ class _TrackerListState extends State<TrackerList> {
                         onTap: () => {
                           setState(() {
                             _selectedTracker = Tracker.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+                            widget.onTrackerSelected(_selectedTracker);
                           }),
                         },
                       );

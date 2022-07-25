@@ -104,7 +104,10 @@ class LineChartWidget extends StatelessWidget {
   }
 
   Widget FLLineChart() {
-    return LineChart(mainData());
+    return LineChart(
+      mainData(),
+      swapAnimationDuration: Duration(),
+    );
   }
 
   LineChartData mainData() {

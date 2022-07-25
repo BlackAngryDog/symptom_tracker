@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
+import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
@@ -12,13 +13,11 @@ class TrackableItem extends StatelessWidget {
   const TrackableItem(this.item, {Key? key}) : super(key: key);
 
   void select(BuildContext ctx) {
-    Navigator.push(
-      ctx,
-      MaterialPageRoute(
-          builder: (context) => TrackerPage(
-                item,
-              )),
-    );
+    DatabaseTools.getUser().then((value) {
+      value.selectedID = item.id;
+      value.save();
+      Navigator.pop(ctx, item);
+    });
   }
 
   @override
@@ -30,9 +29,7 @@ class TrackableItem extends StatelessWidget {
           trailing: SizedBox(
             width: 100,
             child: Row(
-              children: [
-                IconButton(onPressed: () {}, icon: const Icon(Icons.add))
-              ],
+              children: [IconButton(onPressed: () {}, icon: const Icon(Icons.add))],
             ),
           ),
         ),
