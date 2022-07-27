@@ -85,6 +85,6 @@ class DietTrackerInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DietChart(_tracker);
+    return Container(); //;DietChart(_tracker, Tracker('weight'));
   }
 }

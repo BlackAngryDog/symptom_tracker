@@ -5,6 +5,7 @@ import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:intl/intl.dart';
 import 'package:symptom_tracker/model/diet_option.dart';
+import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
 
@@ -41,8 +42,9 @@ class DietData {
 }
 
 class DietChart extends StatelessWidget {
+  final Trackable _target;
   final Tracker _tracker;
-  DietChart(this._tracker, {Key? key}) : super(key: key) {
+  DietChart(this._target, this._tracker, {Key? key}) : super(key: key) {
     print(' building diet chart');
   }
 
@@ -78,7 +80,8 @@ class DietChart extends StatelessWidget {
     // TODO - GET ALL OTHER DATA LOGS TO COMPARE WITH EACH FOOD OPTION!?
 
     // Read data as a list of diet changes.
-    List<DataLog> dietLogs = await _tracker.getLogs(DateTimeExt.lastMonth, DateTime.now());
+    Tracker dietTracker = await _target.getDietTracker();
+    List<DataLog> dietLogs = await dietTracker.getLogs(DateTimeExt.lastMonth, DateTime.now());
 
     //Make sure data is sorted by time
     dietLogs.sort((a, b) => a.time.compareTo(b.time));
@@ -86,6 +89,7 @@ class DietChart extends StatelessWidget {
     DateTime start = DateTimeExt.lastMonth;
 
     // Get tracker options
+    /*
     final List<Tracker> trackers = await Tracker.getCollection(_tracker.trackableID)
         .where('title', isNotEqualTo: _tracker.title)
         .get()
@@ -95,27 +99,28 @@ class DietChart extends StatelessWidget {
       }).toList();
       return log;
     });
+    */
 
     // map to symptom, diet title, logs.
     List<DietData> dietDataList = [];
 
     // extract date data to then read other trackers to compare.
     for (DataLog data in dietLogs) {
-      for (Tracker t in trackers) {
-        List<DataLog> trackerLogs = await t.getLogs(start, data.time);
+      // for (Tracker t in trackers) {
+      List<DataLog> trackerLogs = await _tracker.getLogs(start, data.time);
 
-        Map<String, bool> options = Map<String, bool>.from(data.value);
-        for (DataLog trackerLog in trackerLogs) {
-          for (String option in options.keys) {
-            if (options[option] == true) {
-              DietData? data = dietDataList.where((element) => element.symptom == t.title).firstOrNull;
-              if (data == null) {
-                dietDataList.add(data = DietData(t.title ?? ""));
-              }
-              data.addLog(option, trackerLog);
+      Map<String, bool> options = Map<String, bool>.from(data.value);
+      for (DataLog trackerLog in trackerLogs) {
+        for (String option in options.keys) {
+          if (options[option] == true) {
+            DietData? data = dietDataList.where((element) => element.symptom == _tracker.title).firstOrNull;
+            if (data == null) {
+              dietDataList.add(data = DietData(_tracker.title ?? ""));
             }
+            data.addLog(option, trackerLog);
           }
         }
+        // }
       }
 
       //timeline.add(DietTimelineData(start, data.time, data, history));
@@ -158,6 +163,7 @@ class DietChart extends StatelessWidget {
   List<Widget> getFLPieCharts() {
     List<Widget> list = [];
     //i<5, pass your dynamic limit as per your requirment
+    print('found ${_pieSections.entries.length} pie entries');
     for (MapEntry<String, List<PieChartSectionData>> entry in _pieSections.entries) {
       list.add(Column(
         children: [
@@ -189,15 +195,8 @@ class DietChart extends StatelessWidget {
         future: _getData(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return SizedBox(
-              height: MediaQuery.of(context).copyWith().size.height - 80,
-              child: SingleChildScrollView(
-                child: Center(
-                  child: Column(
-                    children: getFLPieCharts(),
-                  ),
-                ),
-              ),
+            return Column(
+              children: getFLPieCharts(),
             );
           } else {
             return Container(

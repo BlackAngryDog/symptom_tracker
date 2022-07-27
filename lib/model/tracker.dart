@@ -107,20 +107,21 @@ class Tracker {
 
   // PERSISTANCE
 
-  Future save() async {
+  Future<Tracker> save() async {
     CollectionReference collection = getCollection(trackableID);
     if (id != null) {
-      return await collection
+      await collection
           .doc(id)
           .set(toJson())
           .then((value) => print("Tracker Saved"))
           .catchError((error) => print("Failed to save tracker: $error"));
     } else {
-      return await collection
+      await collection
           .add(toJson())
           .then((value) => {id = value.id})
           .catchError((error) => print("Failed to create tracker: $error"));
     }
+    return this;
   }
 
   static CollectionReference getCollection(String owner) {

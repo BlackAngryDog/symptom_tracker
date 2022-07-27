@@ -13,6 +13,9 @@ class Trackable {
   String? id;
   String? title;
 
+  String? _dietTrackerId;
+  Tracker? _dietTracker;
+
   List<Tracker> _trackers = [];
   List<Tracker> get trackers => _trackers;
 
@@ -34,6 +37,43 @@ class Trackable {
 
   // when a tracker changes update the log ()
   //void updateLog() {}
+  Future<Tracker> getDietTracker() async {
+    if (_dietTracker != null) return _dietTracker as Tracker;
+
+    Tracker? query = await Tracker.getCollection(id!).where("type", isEqualTo: 'diet').get().then(
+      (res) async {
+        if (res.docs.isNotEmpty) {
+          return Tracker.fromJson(res.docs.first.id, res.docs.first.data() as Map<String, dynamic>);
+        } else {
+          return await Tracker(id!, title: 'Diet Tracker', type: 'diet').save();
+        }
+      },
+      onError: (e) => Tracker(id!, title: 'Diet Tracker', type: 'diet').save(),
+    );
+    _dietTracker = query;
+    return _dietTracker as Tracker;
+    // Create tracker as no id saved
+    if (_dietTracker == null) {
+      _dietTracker = await Tracker(id!, title: 'Diet Tracker', type: 'diet').save();
+      return _dietTracker as Tracker;
+    }
+
+    // Get Tracker from ID - could use First or Null ?
+    final doc = Tracker.getCollection(id!).doc(_dietTrackerId);
+
+    _dietTracker = doc
+        .get()
+        .then(
+          (snapshot) => Tracker.fromJson(doc.id, snapshot.data() as Map<String, dynamic>),
+        )
+        .catchError(
+      (error, stackTrace) {
+        print(error);
+      },
+    ) as Tracker;
+
+    return _dietTracker as Tracker;
+  }
 
   Future<List<DataLog>> getDataLogs(DateTime start, DateTime end) async {
     List<DataLog> logs = [];
@@ -94,9 +134,11 @@ class Trackable {
   Trackable.fromJson(String? key, Map<String, dynamic> json) {
     id = key;
     title = json['title'];
+    _dietTrackerId = json['_dietTrackerId'];
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
         'title': title,
+        '_dietTrackerId': _dietTrackerId,
       };
 }

@@ -7,6 +7,7 @@ import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/model/user.dart';
 import 'package:symptom_tracker/pages/calender_page.dart';
 import 'package:symptom_tracker/pages/chart_page.dart';
+import 'package:symptom_tracker/pages/diet_options_page.dart';
 import 'package:symptom_tracker/pages/tracker_history.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
@@ -30,15 +31,11 @@ class TrackerPage extends StatefulWidget {
 }
 
 class _TrackerPageState extends State<TrackerPage> {
-  bool _showBottomPanel = false;
-
-  late Widget _bottomButtonPanel;
-
   @override
   void initState() {
     super.initState();
     print("init");
-    _bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
+    //_bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
     // GET USER ID
   }
 
@@ -47,34 +44,6 @@ class _TrackerPageState extends State<TrackerPage> {
     super.activate();
     print("activeted");
     // GET USER ID
-  }
-
-  void _startAddTracker(BuildContext ctx) {
-    showModalBottomSheet(
-        context: ctx,
-        builder: (_) {
-          return GestureDetector(
-            child: Container(
-              height: 200,
-              color: Colors.amber,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const Text('Modal BottomSheet'),
-                    ElevatedButton(
-                      child: const Text('Close BottomSheet'),
-                      onPressed: () => Navigator.pop(context),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            onTap: () {},
-            behavior: HitTestBehavior.opaque,
-          );
-        });
   }
 
   void _addTrackerPopup(BuildContext ctx) {
@@ -93,13 +62,13 @@ class _TrackerPageState extends State<TrackerPage> {
   void _addTracker(Tracker value) {
     // DatabaseTools.testFirestore();
 
-    setState(() {
-      // TODO - CREATE A NEW TRACKER IN THE TRACKABLE (NEEDS POPUP FOR PARAMS)
+    // setState(() {
+    // TODO - CREATE A NEW TRACKER IN THE TRACKABLE (NEEDS POPUP FOR PARAMS)
 
-      Tracker tracker = value;
-      tracker.trackableID = widget.trackable.id ?? 'default';
-      tracker.save();
-    });
+    Tracker tracker = value;
+    tracker.trackableID = widget.trackable.id ?? 'default';
+    tracker.save();
+    //});
   }
 
   void showHistory(BuildContext ctx) {
@@ -133,6 +102,17 @@ class _TrackerPageState extends State<TrackerPage> {
     );
   }
 
+  Future showDietOptions(BuildContext ctx) async {
+    // SHOW FOOD LIST
+    Tracker dietTracker = await widget.trackable.getDietTracker();
+    Navigator.push(
+      ctx,
+      MaterialPageRoute(
+        builder: (context) => DietOptionsPage(dietTracker),
+      ),
+    );
+  }
+
   Future<void> showTrackableList(BuildContext ctx) async {
     // Navigator.push returns a Future that completes after calling
     // Navigator.pop on the Selection Screen.
@@ -153,9 +133,8 @@ class _TrackerPageState extends State<TrackerPage> {
 
     setState(() {
       widget.trackable = result;
-      _bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
+      //_bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
       _selectedTracker = null;
-      _showBottomPanel = false;
     });
   }
 
@@ -163,8 +142,21 @@ class _TrackerPageState extends State<TrackerPage> {
   void setActiveTracker(Tracker? tracker) {
     setState(() {
       _selectedTracker = tracker;
-      _showBottomPanel = false;
+      Navigator.of(context).pop();
     });
+  }
+
+  void _showTrackerPanel(BuildContext ctx) {
+    showModalBottomSheet(
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+            child: BottomTrackerSelectionPanel(widget.trackable, setActiveTracker),
+            onTap: () {},
+            behavior: HitTestBehavior.opaque,
+          );
+        });
   }
 
   @override
@@ -206,9 +198,7 @@ class _TrackerPageState extends State<TrackerPage> {
           })
         ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: SingleChildScrollView(
         child: Column(
           children: [
             // Title Text
@@ -293,23 +283,21 @@ class _TrackerPageState extends State<TrackerPage> {
 
             // Show selected tracker history info and controls
 
-            if (_selectedTracker != null && _showBottomPanel == false) TrackerInfoPanel(_selectedTracker!),
+            if (_selectedTracker != null) TrackerInfoPanel(widget.trackable, _selectedTracker!),
 
             //TrackerList(widget.trackable),
           ],
         ),
       ),
-      floatingActionButton: _showBottomPanel == true
-          ? null
-          : FloatingActionButton(
-              onPressed: () {
-                _addTrackerPopup(context);
-              },
-              tooltip: 'Increment',
-              child: const Icon(Icons.add),
-            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _addTrackerPopup(context);
+        },
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
-      bottomSheet: _showBottomPanel == false ? null : _bottomButtonPanel,
+
       bottomNavigationBar: BottomAppBar(
         color: Colors.blue,
         child: IconTheme(
@@ -320,9 +308,7 @@ class _TrackerPageState extends State<TrackerPage> {
                 tooltip: 'Open navigation menu',
                 icon: const Icon(Icons.menu),
                 onPressed: () {
-                  setState(() {
-                    _showBottomPanel = !_showBottomPanel;
-                  });
+                  _showTrackerPanel(context);
                 },
               ),
               const Spacer(),
@@ -333,8 +319,10 @@ class _TrackerPageState extends State<TrackerPage> {
               ),
               IconButton(
                 tooltip: 'Favorite',
-                icon: const Icon(Icons.favorite),
-                onPressed: () {},
+                icon: const Icon(Icons.rice_bowl_rounded),
+                onPressed: () {
+                  showDietOptions(context);
+                },
               ),
             ],
           ),
