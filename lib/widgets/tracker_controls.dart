@@ -7,22 +7,22 @@ import 'package:symptom_tracker/widgets/trackers/diet_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
-class TrackerItem extends StatelessWidget {
+class TrackerControls extends StatelessWidget {
   final Tracker item;
 
-  TrackerItem(this.item, {Key? key}) : super(key: key);
+  TrackerControls(this.item, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     switch (item.type) {
       case "counter":
-        return MiniCountTracker(item);
+        return CountTracker(item);
       case "quality":
-        return MiniCountTracker(item);
+        return QualityTracker(item);
       case "diet":
-        return MiniCountTracker(item);
+        return DietTracker(item);
       default:
-        return MiniCountTracker(item);
+        return ValueTracker(item);
     }
   }
 }

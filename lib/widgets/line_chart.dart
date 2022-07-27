@@ -32,11 +32,7 @@ class LineChartWidget extends StatelessWidget {
   double scaleYMax = 1;
   final _monthDayFormat = DateFormat('MM-dd');
 
-  final _chartData = [
-    LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1),
-    LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2),
-    LineChartWidgetData(DateTime.now(), 1)
-  ];
+  final _chartData = [LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1), LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2), LineChartWidgetData(DateTime.now(), 1)];
 
   final List<FlSpot> _spots = [];
 
@@ -113,7 +109,7 @@ class LineChartWidget extends StatelessWidget {
   LineChartData mainData() {
     return LineChartData(
       gridData: FlGridData(
-        show: true,
+        show: false,
         drawVerticalLine: true,
         horizontalInterval: 1,
         verticalInterval: 1,
@@ -181,7 +177,7 @@ class LineChartWidget extends StatelessWidget {
   LineChartBarData get lineChartBarData1_2 => LineChartBarData(
         isCurved: true,
         color: const Color(0xffaa4cfc),
-        barWidth: 8,
+        barWidth: 4,
         isStrokeCapRound: true,
         dotData: FlDotData(show: false),
         belowBarData: BarAreaData(
@@ -280,15 +276,10 @@ class LineChartWidget extends StatelessWidget {
           if (snapshot.hasData) {
             return SizedBox(
               width: MediaQuery.of(context).copyWith().size.width,
-              child: Card(
-                color: Colors.white60,
-                elevation: 5,
-                child: Container(
-                  margin: const EdgeInsets.all(25),
-                  width: 350,
-                  height: 200,
-                  child: FLLineChart(), //lineChart(snapshot.data ?? []);
-                ),
+              child: Container(
+                margin: const EdgeInsets.all(25),
+                height: 100,
+                child: FLLineChart(), //lineChart(snapshot.data ?? []);
               ),
             );
           } else {

@@ -57,6 +57,7 @@ class _ValueTrackerState extends State<CountTracker> {
           subtitle: Text(subtitle),
           trailing: SizedBox(
             width: 100,
+            height: 100,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,

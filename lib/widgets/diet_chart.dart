@@ -148,8 +148,8 @@ class DietChart extends StatelessWidget {
           title: entry.key,
           value: total / data.history.entries.length,
           color: Colors.redAccent,
-          radius: 80,
-          titleStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
+          radius: 40,
+          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
         ));
         i++;
       }
@@ -167,11 +167,10 @@ class DietChart extends StatelessWidget {
     for (MapEntry<String, List<PieChartSectionData>> entry in _pieSections.entries) {
       list.add(Column(
         children: [
-          Text(entry.key),
           Container(
             margin: const EdgeInsets.only(top: 10),
-            width: 350,
-            height: 200,
+            width: 100,
+            height: 100,
             child: PieChart(
               PieChartData(
                 // read about it in the PieChartData section
@@ -201,8 +200,9 @@ class DietChart extends StatelessWidget {
           } else {
             return Container(
               margin: const EdgeInsets.only(top: 10),
-              width: 350,
-              height: 200,
+              color: Colors.black,
+              width: 100,
+              height: 100,
             );
           }
         });

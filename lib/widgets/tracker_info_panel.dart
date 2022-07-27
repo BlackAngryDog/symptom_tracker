@@ -3,6 +3,7 @@ import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/diet_chart.dart';
 import 'package:symptom_tracker/widgets/line_chart.dart';
+import 'package:symptom_tracker/widgets/tracker_controls.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 
 class TrackerInfoPanel extends StatelessWidget {
@@ -19,9 +20,16 @@ class TrackerInfoPanel extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(_selectedTracker.title ?? ''),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TrackerItem(_selectedTracker!),
+              DietChart(_selectedTarget, _selectedTracker),
+            ],
+          ),
           LineChartWidget(_selectedTracker),
-          DietChart(_selectedTarget, _selectedTracker),
-          TrackerItem(_selectedTracker!),
+          TrackerControls(
+            _selectedTracker!,
         ],
       ),
     );
