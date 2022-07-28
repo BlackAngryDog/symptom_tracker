@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
@@ -21,22 +22,15 @@ class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
   Tracker? _selectedTracker;
 
   late StreamSubscription trackableSubscription;
-  late StreamSubscription trackerSubscription;
 
   @override
   void initState() {
     super.initState();
-    TrackerPage.trackableController.stream.listen((event) {
-      print("target updated");
-      //setState(() {
-      //   _selectedTarget = event;
-      // });
-    });
-    TrackerPage.trackerController.stream.listen((event) {
-      print("tracker updated");
-      //setState(() {
-      //   _selectedTracker = event;
-      //});
+    trackableSubscription = EventManager.stream.listen((event) {
+      setState(() {
+        _selectedTarget = EventManager.selectedTarget;
+        _selectedTracker = EventManager.selectedTracker;
+      });
     });
   }
 
@@ -44,7 +38,6 @@ class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
   void dispose() {
     super.dispose();
     trackableSubscription.cancel();
-    trackerSubscription.cancel();
   }
 
   @override

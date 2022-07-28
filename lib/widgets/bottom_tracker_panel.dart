@@ -6,9 +6,7 @@ import 'package:symptom_tracker/widgets/tracker_list.dart';
 import 'dart:math';
 
 class BottomTrackerSelectionPanel extends StatefulWidget {
-  final Trackable _trackable;
-  final Function(Tracker? tracker) onTrackerSelected;
-  const BottomTrackerSelectionPanel(this._trackable, this.onTrackerSelected, {Key? key}) : super(key: key);
+  const BottomTrackerSelectionPanel({Key? key}) : super(key: key);
 
   @override
   State<BottomTrackerSelectionPanel> createState() => _BottomTrackerSelectionPanelState();
@@ -28,9 +26,7 @@ class _BottomTrackerSelectionPanelState extends State<BottomTrackerSelectionPane
             children: <Widget>[
               Flexible(
                 fit: FlexFit.tight,
-                child: TrackerButtonGrid(widget._trackable, (tracker) {
-                  widget.onTrackerSelected(tracker);
-                }),
+                child: TrackerButtonGrid(),
               )
             ],
           ),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:intl/intl.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
@@ -30,14 +31,17 @@ class _LineChartWidgetState extends State<LineChartWidget> {
   Tracker? _selectedTracker;
   late StreamSubscription trackerSubscription;
 
+  late LineChartData data;
+
   @override
   void initState() {
     super.initState();
-
-    TrackerPage.trackerController.stream.listen((event) {
-      setState(() {
-        _selectedTracker = event;
-      });
+    data = mainData();
+    _getData();
+    trackerSubscription = EventManager.stream.listen((event) {
+      _selectedTracker = EventManager.selectedTracker;
+      _getData();
+      //data = mainData();
     });
   }
 
@@ -62,15 +66,12 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
   final _monthDayFormat = DateFormat('MM-dd');
 
-  final _chartData = [
-    LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1),
-    LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2),
-    LineChartWidgetData(DateTime.now(), 1)
-  ];
+  final _chartData = [LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1), LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2), LineChartWidgetData(DateTime.now(), 1)];
 
-  final List<FlSpot> _spots = [];
+  List<FlSpot> _spots = [];
 
   Future<List<LineChartWidgetData>> _getData() async {
+    _spots = [];
     List<LineChartWidgetData> list = [];
     if (_selectedTracker == null) return list;
 
@@ -120,6 +121,10 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     }
 
     print(' list is ${list.length}');
+    setState(() {
+      data = mainData();
+    });
+
     return list;
   }
 
@@ -135,7 +140,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
   Widget FLLineChart() {
     return LineChart(
-      mainData(),
+      data,
       swapAnimationDuration: Duration(),
     );
   }
@@ -298,10 +303,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
   }
 
   /*
-      return ;
-
-       */
-  @override
+     @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<LineChartWidgetData>>(
         future: _getData(),
@@ -323,5 +325,15 @@ class _LineChartWidgetState extends State<LineChartWidget> {
             );
           }
         });
+  }
+
+       */
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(25),
+      height: 100,
+      child: FLLineChart(), //lineChart(snapshot.data ?? []);
+    );
   }
 }

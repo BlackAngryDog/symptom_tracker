@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
 import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
@@ -25,9 +26,9 @@ class _TrackerControlsState extends State<TrackerControls> {
   void initState() {
     super.initState();
 
-    TrackerPage.trackerController.stream.listen((event) {
+    trackerSubscription = EventManager.stream.listen((event) {
       setState(() {
-        _selectedTracker = event;
+        _selectedTracker = EventManager.selectedTracker;
       });
     });
   }

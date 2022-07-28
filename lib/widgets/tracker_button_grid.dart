@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/database.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/data_log_item.dart';
@@ -10,9 +11,7 @@ import 'package:symptom_tracker/widgets/line_chart.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 
 class TrackerButtonGrid extends StatefulWidget {
-  final Function(Tracker? tracker) onTrackerSelected;
-  final Trackable _trackable;
-  TrackerButtonGrid(this._trackable, this.onTrackerSelected, {Key? key}) : super(key: key);
+  TrackerButtonGrid({Key? key}) : super(key: key);
 
   @override
   State<TrackerButtonGrid> createState() => _TrackerButtonGridState();
@@ -39,7 +38,7 @@ class _TrackerButtonGridState extends State<TrackerButtonGrid> {
     return Container(
       child: StreamBuilder<QuerySnapshot>(
         //stream: Tracker.getCollection(_trackable.id ?? "default").where('type', isEqualTo: "counter").snapshots(),
-        stream: Tracker.getCollection(widget._trackable.id ?? "default").snapshots(),
+        stream: Tracker.getCollection(EventManager.selectedTarget.id ?? "default").where('type', isNotEqualTo: 'diet').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Card(
@@ -63,7 +62,8 @@ class _TrackerButtonGridState extends State<TrackerButtonGrid> {
                     setState(() {
                       Navigator.of(context).pop();
                       _selectedTracker = Tracker.fromJson(doc.id, doc.data() as Map<String, dynamic>);
-                      widget.onTrackerSelected(_selectedTracker);
+                      if (_selectedTracker != null) EventManager.selectedTracker = _selectedTracker;
+                      ;
                     }),
                   },
                 );

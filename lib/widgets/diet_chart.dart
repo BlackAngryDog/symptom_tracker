@@ -7,6 +7,7 @@ import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:intl/intl.dart';
 import 'package:symptom_tracker/model/diet_option.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
@@ -58,22 +59,17 @@ class _DietChartState extends State<DietChart> {
   Tracker? _selectedTracker;
 
   late StreamSubscription trackableSubscription;
-  late StreamSubscription trackerSubscription;
 
   List<PieChartSectionData> _pieData = [];
 
   @override
   void initState() {
     super.initState();
-    TrackerPage.trackableController.stream.listen((event) {
+    trackableSubscription = EventManager.stream.listen((event) {
       //setState(() {
-      _selectedTarget = event;
-      //});
-      _getData();
-    });
-    TrackerPage.trackerController.stream.listen((event) {
-      // setState(() {
-      _selectedTracker = event;
+
+      _selectedTarget = EventManager.selectedTarget;
+      _selectedTracker = EventManager.selectedTracker;
       //});
       _getData();
     });
@@ -83,7 +79,6 @@ class _DietChartState extends State<DietChart> {
   void dispose() {
     super.dispose();
     trackableSubscription.cancel();
-    trackerSubscription.cancel();
   }
 
   double scaleMin = 0;

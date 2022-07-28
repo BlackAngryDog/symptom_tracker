@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/model/user.dart';
@@ -26,10 +27,12 @@ import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 
 class TrackerPage extends StatelessWidget {
   Trackable trackable;
-  TrackerPage(this.trackable, {Key? key}) : super(key: key);
+  TrackerPage(this.trackable, {Key? key}) : super(key: key) {
+    EventManager(trackable);
+  }
 
-  static StreamController<Trackable> trackableController = StreamController<Trackable>.broadcast();
-  static StreamController<Tracker> trackerController = StreamController<Tracker>.broadcast();
+  //static StreamController<Trackable> trackableController = StreamController<Trackable>.broadcast();
+  //static StreamController<Tracker> trackerController = StreamController<Tracker>.broadcast();
 
   void _addTrackerPopup(BuildContext ctx) {
     showModalBottomSheet(
@@ -118,19 +121,11 @@ class TrackerPage extends StatelessWidget {
 
     //setState(() {
     //_trackerInfoPanel..setTrackable(result);
-    if (result != null) trackableController.add(result);
+    if (result != null) EventManager.selectedTarget = result;
     // trackable = result;
     //_bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
     // _selectedTracker = null;
     // });
-  }
-
-  Tracker? _selectedTracker;
-  void setActiveTracker(Tracker? tracker) {
-    //setState(() {
-    // _trackerInfoPanel.setTracker(tracker);
-    if (tracker != null) trackerController.add(tracker);
-    //});
   }
 
   void _showTrackerPanel(BuildContext ctx) {
@@ -139,7 +134,7 @@ class TrackerPage extends StatelessWidget {
         context: ctx,
         builder: (_) {
           return GestureDetector(
-            child: BottomTrackerSelectionPanel(trackable, setActiveTracker),
+            child: BottomTrackerSelectionPanel(),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
           );
