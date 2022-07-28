@@ -61,6 +61,7 @@ class _TrackerButtonGridState extends State<TrackerButtonGrid> {
                   child: TrackerItem(Tracker.fromJson(doc.id, doc.data() as Map<String, dynamic>)),
                   onTap: () => {
                     setState(() {
+                      Navigator.of(context).pop();
                       _selectedTracker = Tracker.fromJson(doc.id, doc.data() as Map<String, dynamic>);
                       widget.onTrackerSelected(_selectedTracker);
                     }),

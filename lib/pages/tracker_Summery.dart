@@ -44,7 +44,7 @@ class CountTrackerInfo extends StatelessWidget {
     return Column(
       children: [
         Text('Summery of ${_tracker.title}'),
-        LineChartWidget(_tracker),
+        //LineChartWidget(_tracker),
       ],
     );
   }
@@ -59,7 +59,7 @@ class QualityTrackerInfo extends StatelessWidget {
     return Column(
       children: [
         Text('Summery of ${_tracker.title}'),
-        LineChartWidget(_tracker),
+        //LineChartWidget(_tracker),
       ],
     );
   }
@@ -73,7 +73,7 @@ class ValueTrackerInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        LineChartWidget(_tracker),
+        // LineChartWidget(_tracker),
       ],
     );
   }

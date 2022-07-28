@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:symptom_tracker/model/diet_option.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
+import 'package:symptom_tracker/pages/tracker_home.dart';
 
 class DietChartData {
   //final DateTime time;
@@ -41,15 +44,52 @@ class DietData {
   }
 }
 
-class DietChart extends StatelessWidget {
-  final Trackable _target;
-  final Tracker _tracker;
-  DietChart(this._target, this._tracker, {Key? key}) : super(key: key) {
+class DietChart extends StatefulWidget {
+  DietChart({Key? key}) : super(key: key) {
     print(' building diet chart');
   }
 
+  @override
+  State<DietChart> createState() => _DietChartState();
+}
+
+class _DietChartState extends State<DietChart> {
+  Trackable? _selectedTarget;
+  Tracker? _selectedTracker;
+
+  late StreamSubscription trackableSubscription;
+  late StreamSubscription trackerSubscription;
+
+  List<PieChartSectionData> _pieData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    TrackerPage.trackableController.stream.listen((event) {
+      //setState(() {
+      _selectedTarget = event;
+      //});
+      _getData();
+    });
+    TrackerPage.trackerController.stream.listen((event) {
+      // setState(() {
+      _selectedTracker = event;
+      //});
+      _getData();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    trackableSubscription.cancel();
+    trackerSubscription.cancel();
+  }
+
   double scaleMin = 0;
+
   double scaleMax = 1;
+
   final _monthDayFormat = DateFormat('MM-dd');
 
   final Map<String, List<DietChartData>> _chartMap = <String, List<DietChartData>>{};
@@ -74,13 +114,13 @@ class DietChart extends StatelessWidget {
     {'value': 29, 'name': 'rose 8'},
   ];
 
-  final Map<String, List<PieChartSectionData>> _pieSections = <String, List<PieChartSectionData>>{};
+  //final Map<String, List<PieChartSectionData>> _pieSections = <String, List<PieChartSectionData>>{};
 
-  Future<List<DietChartData>> _getData() async {
+  Future<List<PieChartSectionData>> _getData() async {
     // TODO - GET ALL OTHER DATA LOGS TO COMPARE WITH EACH FOOD OPTION!?
-
+    Map<String, List<PieChartSectionData>> _pieSections = <String, List<PieChartSectionData>>{};
     // Read data as a list of diet changes.
-    Tracker dietTracker = await _target.getDietTracker();
+    Tracker dietTracker = await _selectedTarget!.getDietTracker();
     List<DataLog> dietLogs = await dietTracker.getLogs(DateTimeExt.lastMonth, DateTime.now());
 
     //Make sure data is sorted by time
@@ -107,15 +147,15 @@ class DietChart extends StatelessWidget {
     // extract date data to then read other trackers to compare.
     for (DataLog data in dietLogs) {
       // for (Tracker t in trackers) {
-      List<DataLog> trackerLogs = await _tracker.getLogs(start, data.time);
+      List<DataLog> trackerLogs = await _selectedTracker!.getLogs(start, data.time);
 
       Map<String, bool> options = Map<String, bool>.from(data.value);
       for (DataLog trackerLog in trackerLogs) {
         for (String option in options.keys) {
           if (options[option] == true) {
-            DietData? data = dietDataList.where((element) => element.symptom == _tracker.title).firstOrNull;
+            DietData? data = dietDataList.where((element) => element.symptom == _selectedTracker!.title).firstOrNull;
             if (data == null) {
-              dietDataList.add(data = DietData(_tracker.title ?? ""));
+              dietDataList.add(data = DietData(_selectedTracker!.title ?? ""));
             }
             data.addLog(option, trackerLog);
           }
@@ -151,15 +191,21 @@ class DietChart extends StatelessWidget {
           radius: 40,
           titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
         ));
+        setState(() {
+          _pieData = _pieSections[data.symptom] ?? [];
+        });
+
         i++;
       }
 
       _chartData = _chartMap[data.symptom] ?? _chartData;
     }
     print(' got chart data');
-    return _chartData;
+
+    return _pieData;
   }
 
+/*
   List<Widget> getFLPieCharts() {
     List<Widget> list = [];
     //i<5, pass your dynamic limit as per your requirment
@@ -185,9 +231,29 @@ class DietChart extends StatelessWidget {
         ],
       ));
     }
+
     return list; // all widget added now retrun the list here
   }
-
+*/
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 10),
+      width: 100,
+      height: 100,
+      child: PieChart(
+        PieChartData(
+          // read about it in the PieChartData section
+          sections: _pieData,
+          centerSpaceRadius: 10,
+          sectionsSpace: 10,
+        ),
+        swapAnimationDuration: Duration(milliseconds: 150), // Optional
+        swapAnimationCurve: Curves.linear, // Optional
+      ),
+    );
+  }
+/*
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
@@ -207,4 +273,6 @@ class DietChart extends StatelessWidget {
           }
         });
   }
+
+ */
 }

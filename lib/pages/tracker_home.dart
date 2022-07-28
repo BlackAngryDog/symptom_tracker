@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:symptom_tracker/model/data_log.dart';
@@ -22,29 +24,12 @@ import 'package:symptom_tracker/widgets/tracker_list.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 
-class TrackerPage extends StatefulWidget {
+class TrackerPage extends StatelessWidget {
   Trackable trackable;
   TrackerPage(this.trackable, {Key? key}) : super(key: key);
 
-  @override
-  State<TrackerPage> createState() => _TrackerPageState();
-}
-
-class _TrackerPageState extends State<TrackerPage> {
-  @override
-  void initState() {
-    super.initState();
-    print("init");
-    //_bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
-    // GET USER ID
-  }
-
-  @override
-  void activate() {
-    super.activate();
-    print("activeted");
-    // GET USER ID
-  }
+  static StreamController<Trackable> trackableController = StreamController<Trackable>.broadcast();
+  static StreamController<Tracker> trackerController = StreamController<Tracker>.broadcast();
 
   void _addTrackerPopup(BuildContext ctx) {
     showModalBottomSheet(
@@ -66,7 +51,7 @@ class _TrackerPageState extends State<TrackerPage> {
     // TODO - CREATE A NEW TRACKER IN THE TRACKABLE (NEEDS POPUP FOR PARAMS)
 
     Tracker tracker = value;
-    tracker.trackableID = widget.trackable.id ?? 'default';
+    tracker.trackableID = trackable.id ?? 'default';
     tracker.save();
     //});
   }
@@ -76,7 +61,7 @@ class _TrackerPageState extends State<TrackerPage> {
       ctx,
       MaterialPageRoute(
           builder: (context) => TrackerHistoryPage(
-                widget.trackable,
+                trackable,
               )),
     );
   }
@@ -86,7 +71,7 @@ class _TrackerPageState extends State<TrackerPage> {
       ctx,
       MaterialPageRoute(
           builder: (context) => ChartPage(
-                widget.trackable,
+                trackable,
               )),
     );
   }
@@ -96,7 +81,7 @@ class _TrackerPageState extends State<TrackerPage> {
       ctx,
       MaterialPageRoute(
           builder: (context) => CalenderPage(
-                widget.trackable,
+                trackable,
                 calendarView: CalendarView.week,
               )),
     );
@@ -104,7 +89,7 @@ class _TrackerPageState extends State<TrackerPage> {
 
   Future showDietOptions(BuildContext ctx) async {
     // SHOW FOOD LIST
-    Tracker dietTracker = await widget.trackable.getDietTracker();
+    Tracker dietTracker = await trackable.getDietTracker();
     Navigator.push(
       ctx,
       MaterialPageRoute(
@@ -117,13 +102,13 @@ class _TrackerPageState extends State<TrackerPage> {
     // Navigator.push returns a Future that completes after calling
     // Navigator.pop on the Selection Screen.
     final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const TrackableSelectionPage()),
+      ctx,
+      MaterialPageRoute(builder: (ctx) => const TrackableSelectionPage()),
     );
 
     // When a BuildContext is used from a StatefulWidget, the mounted property
     // must be checked after an asynchronous gap.
-    if (!mounted) return;
+    //if (!mounted) return;
 
     // After the Selection Screen returns a result, hide any previous snackbars
     // and show the new result.
@@ -131,19 +116,21 @@ class _TrackerPageState extends State<TrackerPage> {
     //  ..removeCurrentSnackBar()
     //  ..showSnackBar(SnackBar(content: Text('$result')));
 
-    setState(() {
-      widget.trackable = result;
-      //_bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
-      _selectedTracker = null;
-    });
+    //setState(() {
+    //_trackerInfoPanel..setTrackable(result);
+    if (result != null) trackableController.add(result);
+    // trackable = result;
+    //_bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
+    // _selectedTracker = null;
+    // });
   }
 
   Tracker? _selectedTracker;
   void setActiveTracker(Tracker? tracker) {
-    setState(() {
-      _selectedTracker = tracker;
-      Navigator.of(context).pop();
-    });
+    //setState(() {
+    // _trackerInfoPanel.setTracker(tracker);
+    if (tracker != null) trackerController.add(tracker);
+    //});
   }
 
   void _showTrackerPanel(BuildContext ctx) {
@@ -152,12 +139,14 @@ class _TrackerPageState extends State<TrackerPage> {
         context: ctx,
         builder: (_) {
           return GestureDetector(
-            child: BottomTrackerSelectionPanel(widget.trackable, setActiveTracker),
+            child: BottomTrackerSelectionPanel(trackable, setActiveTracker),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
           );
         });
   }
+
+  TrackerInfoPanel _trackerInfoPanel = TrackerInfoPanel();
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +162,7 @@ class _TrackerPageState extends State<TrackerPage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         automaticallyImplyLeading: true,
-        title: Text(widget.trackable.title ?? "DOG"),
+        title: Text(trackable.title ?? "DOG"),
         actions: [
           IconButton(
               onPressed: () {
@@ -225,7 +214,7 @@ class _TrackerPageState extends State<TrackerPage> {
                                   color: Colors.transparent,
                                   width: MediaQuery.of(context).copyWith().size.width,
                                   child: Text(
-                                    widget.trackable.title ?? "DOG",
+                                    trackable.title ?? "DOG",
                                     style: Theme.of(context).textTheme.headline2,
                                     textAlign: TextAlign.center,
                                   ),
@@ -283,7 +272,7 @@ class _TrackerPageState extends State<TrackerPage> {
 
             // Show selected tracker history info and controls
 
-            if (_selectedTracker != null) TrackerInfoPanel(widget.trackable, _selectedTracker!),
+            _trackerInfoPanel,
 
             //TrackerList(widget.trackable),
           ],

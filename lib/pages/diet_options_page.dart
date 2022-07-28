@@ -43,7 +43,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
     if (log == null) return options;
 
     // SELECT OPTIONS FROM DATA
-    final test = log?.value;
+    final test = log.value;
 
     for (var entry in test!.entries) {
       DietOptionItem? option = options.where((element) => element.item.title == entry.key).firstOrNull;

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:symptom_tracker/model/data_log.dart';
 import 'package:intl/intl.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
+import 'package:symptom_tracker/pages/tracker_home.dart';
 
 class LineChartWidgetData {
   final DateTime time;
@@ -14,11 +17,34 @@ class LineChartWidgetData {
   LineChartWidgetData(this.time, this.value);
 }
 
-class LineChartWidget extends StatelessWidget {
-  final Tracker? _tracker;
-
-  LineChartWidget(this._tracker, {Key? key}) : super(key: key) {
+class LineChartWidget extends StatefulWidget {
+  LineChartWidget({Key? key}) : super(key: key) {
     print(' building line chart');
+  }
+
+  @override
+  State<LineChartWidget> createState() => _LineChartWidgetState();
+}
+
+class _LineChartWidgetState extends State<LineChartWidget> {
+  Tracker? _selectedTracker;
+  late StreamSubscription trackerSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    TrackerPage.trackerController.stream.listen((event) {
+      setState(() {
+        _selectedTracker = event;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    trackerSubscription.cancel();
   }
 
   List<Color> gradientColors = [
@@ -27,28 +53,36 @@ class LineChartWidget extends StatelessWidget {
   ];
 
   double scaleXMin = 0;
+
   double scaleXMax = 1;
+
   double scaleYMin = 0;
+
   double scaleYMax = 1;
+
   final _monthDayFormat = DateFormat('MM-dd');
 
-  final _chartData = [LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1), LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2), LineChartWidgetData(DateTime.now(), 1)];
+  final _chartData = [
+    LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1),
+    LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2),
+    LineChartWidgetData(DateTime.now(), 1)
+  ];
 
   final List<FlSpot> _spots = [];
 
   Future<List<LineChartWidgetData>> _getData() async {
     List<LineChartWidgetData> list = [];
-    if (_tracker == null) return list;
+    if (_selectedTracker == null) return list;
 
     DateTime startDate = DateTimeExt.lastWeek.add(Duration(days: 0));
     DateTime endDate = startDate.add(const Duration(days: 7)).endOfDay;
     scaleXMax = 7;
 
-    List<DataLog> logs = await _tracker!.getLogs(startDate, endDate);
+    List<DataLog> logs = await _selectedTracker!.getLogs(startDate, endDate);
 
     if (logs.isEmpty) return list;
 
-    DataLog? start = await _tracker!.getLastEntry(false, before: startDate);
+    DataLog? start = await _selectedTracker!.getLastEntry(false, before: startDate);
     if (start != null) {
       double d = double.parse(start.value is String ? start.value : start.value.toStringAsFixed(2));
       _spots.add(FlSpot(0, getValueFromLog(start)));
@@ -267,7 +301,6 @@ class LineChartWidget extends StatelessWidget {
       return ;
 
        */
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<LineChartWidgetData>>(
