@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
@@ -42,13 +43,13 @@ class _ValueTrackerState extends State<ValueTracker> {
 
   Future updateData(String value) async {
     await widget._tracker.updateLog(value);
+    EventManager.dispatchUpdate();
     getCurrValue();
   }
 
   Future getCurrValue() async {
     double curr = double.tryParse(await widget._tracker.getLastValue(false)) ?? 0;
-    double last =
-        double.tryParse(await widget._tracker.getLastValueFor(DateTime.now().add(const Duration(days: -1)))) ?? 0;
+    double last = double.tryParse(await widget._tracker.getLastValueFor(DateTime.now().add(const Duration(days: -1)))) ?? 0;
 
     // GET TREND ICON
     icon = Icons.arrow_right;

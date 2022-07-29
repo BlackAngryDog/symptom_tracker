@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_iconpicker/Models/IconPack.dart';
-import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:intl/intl.dart';
 import 'package:symptom_tracker/model/diet_option.dart';
 import 'package:symptom_tracker/model/tracker.dart';

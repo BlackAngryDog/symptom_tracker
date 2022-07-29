@@ -66,11 +66,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
   final _monthDayFormat = DateFormat('MM-dd');
 
-  final _chartData = [
-    LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1),
-    LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2),
-    LineChartWidgetData(DateTime.now(), 1)
-  ];
+  final _chartData = [LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1), LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2), LineChartWidgetData(DateTime.now(), 1)];
 
   List<FlSpot> _spots = [];
 
@@ -95,7 +91,8 @@ class _LineChartWidgetState extends State<LineChartWidget> {
       double d = double.parse(start.value is String ? start.value : start.value.toStringAsFixed(2));
       _spots.add(FlSpot(0, getValueFromLog(start)));
     } else {
-      _spots.add(FlSpot(0, 0));
+      start = logs[0];
+      _spots.add(FlSpot(0, getValueFromLog(start)));
     }
 
     // logs.clear();

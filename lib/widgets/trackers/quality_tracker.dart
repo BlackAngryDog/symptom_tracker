@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:symptom_tracker/model/data_log.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
@@ -24,6 +25,7 @@ class _QualityTrackerState extends State<QualityTracker> {
 
   Future updateData(double value) async {
     await widget._tracker.updateLog(value);
+    EventManager.dispatchUpdate();
     getCurrValue();
   }
 

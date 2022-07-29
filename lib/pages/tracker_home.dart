@@ -65,7 +65,7 @@ class TrackerPage extends StatelessWidget {
       ctx,
       MaterialPageRoute(
           builder: (context) => TrackerHistoryPage(
-                trackable,
+                EventManager.selectedTarget,
               )),
     );
   }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_iconpicker/Models/IconPack.dart';
-import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:intl/intl.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 
@@ -56,17 +54,6 @@ class _AddTrackerState extends State<AddTracker> {
         });
   }
 
-  Icon _icon = Icon(Icons.search_outlined);
-
-  _pickIcon() async {
-    IconData? icon = await FlutterIconPicker.showIconPicker(context, iconPackModes: [IconPack.fontAwesomeIcons]);
-
-    _icon = Icon(icon);
-    setState(() {});
-
-    debugPrint('Picked Icon:  $icon');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -76,7 +63,6 @@ class _AddTrackerState extends State<AddTracker> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            IconButton(onPressed: _pickIcon, icon: _icon),
             TextField(
               decoration: InputDecoration(labelText: 'Title'),
               controller: titleController,
