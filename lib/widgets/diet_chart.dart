@@ -71,7 +71,7 @@ class _DietChartState extends State<DietChart> {
       _selectedTarget = EventManager.selectedTarget;
       _selectedTracker = EventManager.selectedTracker;
       //});
-      _getData();
+      if (_selectedTracker != null) _getData();
     });
   }
 
@@ -233,7 +233,6 @@ class _DietChartState extends State<DietChart> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 10),
       width: 100,
       height: 100,
       child: PieChart(
@@ -241,7 +240,7 @@ class _DietChartState extends State<DietChart> {
           // read about it in the PieChartData section
           sections: _pieData,
           centerSpaceRadius: 10,
-          sectionsSpace: 10,
+          sectionsSpace: 2,
         ),
         swapAnimationDuration: Duration(milliseconds: 150), // Optional
         swapAnimationCurve: Curves.linear, // Optional

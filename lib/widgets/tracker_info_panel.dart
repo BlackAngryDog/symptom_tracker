@@ -8,6 +8,7 @@ import 'package:symptom_tracker/pages/tracker_home.dart';
 import 'package:symptom_tracker/widgets/diet_chart.dart';
 import 'package:symptom_tracker/widgets/line_chart.dart';
 import 'package:symptom_tracker/widgets/tracker_controls.dart';
+import 'package:symptom_tracker/widgets/tracker_info_widgets/AdvTrackerInfo.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 
 class TrackerInfoPanel extends StatefulWidget {
@@ -53,11 +54,7 @@ class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               // const TrackerItem(),
-              Container(
-                width: 100,
-                height: 100,
-                color: Colors.tealAccent,
-              ),
+              AdvTrackerInfo(),
               DietChart(),
             ],
           ),

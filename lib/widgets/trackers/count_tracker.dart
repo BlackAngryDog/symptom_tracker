@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
@@ -26,6 +27,7 @@ class _ValueTrackerState extends State<CountTracker> {
 
     await widget._tracker.updateLog(currValue);
     print('val');
+    EventManager.dispatchUpdate();
     getCurrValue();
   }
 

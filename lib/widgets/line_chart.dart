@@ -33,11 +33,10 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
   late LineChartData data;
 
-  @override
-  void initState() {
-    super.initState();
+  _LineChartWidgetState() {
     data = mainData();
     _getData();
+    print("Line chart sub");
     trackerSubscription = EventManager.stream.listen((event) {
       _selectedTracker = EventManager.selectedTracker;
       _getData();
@@ -48,6 +47,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
   @override
   void dispose() {
     super.dispose();
+    print("Line chart unsub");
     trackerSubscription.cancel();
   }
 
@@ -66,11 +66,18 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
   final _monthDayFormat = DateFormat('MM-dd');
 
-  final _chartData = [LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1), LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2), LineChartWidgetData(DateTime.now(), 1)];
+  final _chartData = [
+    LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1),
+    LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2),
+    LineChartWidgetData(DateTime.now(), 1)
+  ];
 
   List<FlSpot> _spots = [];
 
   Future<List<LineChartWidgetData>> _getData() async {
+    scaleYMin = scaleXMin = 0;
+    scaleYMax = scaleXMax = 1;
+
     _spots = [];
     List<LineChartWidgetData> list = [];
     if (_selectedTracker == null) return list;

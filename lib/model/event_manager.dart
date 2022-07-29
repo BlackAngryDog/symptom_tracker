@@ -15,13 +15,14 @@ class EventManager {
   Tracker? _selectedTracker;
 
   static set selectedTarget(Trackable value) {
+    instance._selectedTracker = null;
     instance._selectedTarget = value;
-    instance.trackableController.add(UpdateEvent("Update_Target"));
+    dispatchUpdate();
   }
 
   static set selectedTracker(Tracker? value) {
     instance._selectedTracker = value;
-    instance.trackableController.add(UpdateEvent("Update_Tracker"));
+    dispatchUpdate();
   }
 
   static Trackable get selectedTarget => instance._selectedTarget;
@@ -34,5 +35,9 @@ class EventManager {
   EventManager(this._selectedTarget) {
     // TODO - MAKE SINGLETON
     instance = this;
+  }
+
+  static void dispatchUpdate() {
+    instance.trackableController.add(UpdateEvent("Update_Tracker"));
   }
 }
