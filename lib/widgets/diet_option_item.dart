@@ -6,8 +6,8 @@ import 'package:symptom_tracker/widgets/trackers/count_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
-class DietOptionItem extends StatefulWidget {
-  final dynamic item;
+class DietOptionItem<T> extends StatefulWidget {
+  final T item;
   bool selected;
 
   DietOptionItem(this.selected, this.item, {Key? key}) : super(key: key);

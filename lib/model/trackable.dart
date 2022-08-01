@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:symptom_tracker/model/abs_savable.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
+import 'package:symptom_tracker/model/diet_option.dart';
+import 'package:symptom_tracker/model/track_option.dart';
 
 import 'tracker.dart';
 
@@ -13,11 +15,9 @@ class Trackable {
   String? id;
   String? title;
 
-  String? _dietTrackerId;
   Tracker? _dietTracker;
 
-  List<Tracker> _trackers = [];
-  List<Tracker> get trackers => _trackers;
+  List<TrackOption> trackers = [];
 
   List<DataLog> _log = [];
   List<DataLog> get log => _log;
@@ -37,9 +37,14 @@ class Trackable {
 
   // when a tracker changes update the log ()
   //void updateLog() {}
-  Future<Tracker> getDietTracker() async {
+
+  // GET A DIET TRACKER FOR LOGGIN (STANDARD TRACKERS NEED FOR IMPLEMENTATION)
+  Tracker getDietTracker() {
     if (_dietTracker != null) return _dietTracker as Tracker;
 
+    _dietTracker = Tracker(id ?? '', title: 'Diet Tracker', type: 'diet');
+    return _dietTracker as Tracker;
+    /*
     Tracker? query = await Tracker.getCollection(id!).where("type", isEqualTo: 'diet').get().then(
       (res) async {
         if (res.docs.isNotEmpty) {
@@ -73,6 +78,8 @@ class Trackable {
     ) as Tracker;
 
     return _dietTracker as Tracker;
+
+     */
   }
 
   Future<List<DataLog>> getDataLogs(DateTime start, DateTime end) async {
@@ -134,11 +141,14 @@ class Trackable {
   Trackable.fromJson(String? key, Map<String, dynamic> json) {
     id = key;
     title = json['title'];
-    _dietTrackerId = json['_dietTrackerId'];
+
+    trackers = json['trackers'].map((doc) {
+      return TrackOption.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+    }).toList() as List<TrackOption>;
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
         'title': title,
-        '_dietTrackerId': _dietTrackerId,
+        'trackers': Map.fromEntries(trackers.map((value) => MapEntry(value.id, value.toJson()))),
       };
 }

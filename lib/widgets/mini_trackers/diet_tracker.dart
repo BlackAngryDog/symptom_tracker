@@ -24,9 +24,7 @@ class _MiniDietTrackerState extends State<MiniDietTracker> {
     Navigator.push(
       ctx,
       MaterialPageRoute(
-        builder: (context) => DietOptionsPage(
-          widget._tracker,
-        ),
+        builder: (context) => DietOptionsPage(),
       ),
     );
   }

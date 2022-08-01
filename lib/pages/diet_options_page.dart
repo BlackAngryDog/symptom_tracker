@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/diet_option.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/add_diet_option_popup.dart';
 import 'package:symptom_tracker/widgets/diet_option_item.dart';
 import 'package:collection/collection.dart';
 
 class DietOptionsPage extends StatefulWidget {
-  final Tracker _tracker;
-  const DietOptionsPage(this._tracker, {Key? key}) : super(key: key);
+  const DietOptionsPage({Key? key}) : super(key: key);
 
   @override
   State<DietOptionsPage> createState() => _DietOptionsPageState();
@@ -38,7 +38,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
   }
 
   Future<List<DietOptionItem>> _getData() async {
-    DataLog? log = await widget._tracker.getLastEntry(false);
+    DataLog? log = await EventManager.selectedTarget.getDietTracker().getLastEntry(false);
 
     if (log == null) return options;
 
@@ -93,8 +93,8 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
                           );
                         } else {
                           return Center(
-                            child: CircularProgressIndicator(),
-                          );
+                              //child: CircularProgressIndicator(),
+                              );
                         }
                       });
                 }
@@ -108,7 +108,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
             onPressed: () {
               // To do - save data
               final result = Map.fromEntries(options.map((value) => MapEntry(value.item.title, value.selected)));
-              widget._tracker.updateLog(result);
+              EventManager.selectedTarget.getDietTracker().updateLog(result);
               Navigator.of(context).pop();
             },
           ),

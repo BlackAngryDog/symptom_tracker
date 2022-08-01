@@ -12,6 +12,7 @@ import 'package:symptom_tracker/pages/calender_page.dart';
 import 'package:symptom_tracker/pages/chart_page.dart';
 import 'package:symptom_tracker/pages/diet_options_page.dart';
 import 'package:symptom_tracker/pages/tracker_history.dart';
+import 'package:symptom_tracker/pages/tracker_options_page.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
 import 'package:symptom_tracker/widgets/bottom_tracker_panel.dart';
@@ -56,7 +57,8 @@ class TrackerPage extends StatelessWidget {
 
     Tracker tracker = value;
     tracker.trackableID = trackable.id ?? 'default';
-    tracker.save();
+    // TODO - Switch to tracker options list update
+    //tracker.save();
     //});
   }
 
@@ -97,7 +99,18 @@ class TrackerPage extends StatelessWidget {
     Navigator.push(
       ctx,
       MaterialPageRoute(
-        builder: (context) => DietOptionsPage(dietTracker),
+        builder: (context) => DietOptionsPage(),
+      ),
+    );
+  }
+
+  Future showTrackingOptions(BuildContext ctx) async {
+    // SHOW FOOD LIST
+
+    Navigator.push(
+      ctx,
+      MaterialPageRoute(
+        builder: (context) => TrackerOptionsPage(EventManager.selectedTarget),
       ),
     );
   }
@@ -221,7 +234,9 @@ class TrackerPage extends StatelessWidget {
               IconButton(
                 tooltip: 'Search',
                 icon: const Icon(Icons.search),
-                onPressed: () {},
+                onPressed: () {
+                  showTrackingOptions(context);
+                },
               ),
               IconButton(
                 tooltip: 'Favorite',

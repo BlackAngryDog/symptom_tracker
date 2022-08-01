@@ -95,6 +95,21 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
         });
   }
 
+  Future<List<DietOptionItem>> _getData() async {
+    List<TrackOption> entries = widget._trackable.trackers;
+
+    if (entries.isEmpty) return options;
+
+    // SELECT OPTIONS FROM DATA
+
+    for (TrackOption entry in entries) {
+      DietOptionItem? option = options.where((element) => element.item.title == entry.title).firstOrNull;
+      option?.selected = true;
+    }
+
+    return options;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,11 +138,23 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
                   );
                 } else {
                   options = snapshot.data?.docs.map((doc) {
-                    return DietOptionItem(true, TrackOption.fromJson(doc.id, doc.data() as Map<String, dynamic>));
+                    return DietOptionItem<TrackOption>(
+                        false, TrackOption.fromJson(doc.id, doc.data() as Map<String, dynamic>));
                   }).toList() as List<DietOptionItem>;
-                  return ListView(
-                    children: options,
-                  );
+
+                  return FutureBuilder<List<DietOptionItem>>(
+                      future: _getData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView(
+                            children: options,
+                          );
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      });
                 }
               }),
         ),
@@ -155,17 +182,21 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
   }
 
   Future initialiseTrackable(BuildContext context) async {
+    widget._trackable.trackers = options
+        .where((element) => element.selected == true)
+        .map((value) => TrackOption(title: value.item.title, trackType: value.item.trackType))
+        .toList();
     await widget._trackable.save();
     // Update tracking data for trackable (how to delete?)
     // TODO - MAKE THIS A FUNCTION
-    for (DietOptionItem item in options) {
-      if (item.selected) {
-        TrackOption option = item.item;
-        Tracker tracker = Tracker(widget._trackable.id ?? 'default', title: option.title, type: option.trackType);
-        // TODO - NEED TO CHECK IF ADDING/REMOVING
-        await tracker.save();
-      }
-    }
+    //for (DietOptionItem item in options) {
+    //  if (item.selected) {
+    //    TrackOption option = item.item;
+    //    Tracker tracker = Tracker(widget._trackable.id ?? 'default', title: option.title, type: option.trackType);
+    // TODO - NEED TO CHECK IF ADDING/REMOVING
+    //    await tracker.save();
+    //  }
+    // }
 
     Navigator.of(context).pop();
     Navigator.push(

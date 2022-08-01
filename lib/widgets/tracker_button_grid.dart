@@ -23,6 +23,16 @@ class _TrackerButtonGridState extends State<TrackerButtonGrid> {
   final db = FirebaseFirestore.instance;
   bool test = false;
 
+  late final List<Tracker> _trackers;
+
+  @override
+  initState() {
+    super.initState();
+    _trackers = EventManager.selectedTarget.trackers
+        .map((e) => Tracker(EventManager.selectedTarget.id ?? '', type: e.trackType, title: e.title))
+        .toList();
+  }
+
   int getMaxCount(int length) {
     double d = length.toDouble();
 
@@ -33,6 +43,35 @@ class _TrackerButtonGridState extends State<TrackerButtonGrid> {
     return (d / 2).round();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: GridView(
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: getMaxCount(_trackers.length),
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          mainAxisExtent: 150,
+          childAspectRatio: .1,
+        ),
+        children: _trackers.map((tracker) {
+          return GestureDetector(
+            child: TrackerItem(tracker),
+            onTap: () => {
+              setState(() {
+                Navigator.of(context).pop();
+                _selectedTracker = tracker;
+                if (_selectedTracker != null) EventManager.selectedTracker = _selectedTracker;
+                ;
+              }),
+            },
+          );
+        }).toList(),
+      ),
+    );
+  }
+/*
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -73,16 +112,9 @@ class _TrackerButtonGridState extends State<TrackerButtonGrid> {
         },
       ),
 
-      /*child: FirebaseDatabaseListView(
-        query: DatabaseTools.getRef(Tracker().getEndpoint()),
-        itemBuilder: (context, snapshot) {
-          Tracker tracker = Tracker.fromJson(
-              snapshot.key, snapshot.value as Map<String, dynamic>);
-          return TrackerItem(tracker);
-        },
-      ),
 
-       */
     );
   }
+
+ */
 }

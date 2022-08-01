@@ -3,6 +3,8 @@ import 'package:symptom_tracker/model/abs_savable.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:collection/collection.dart';
+import 'package:symptom_tracker/model/diet_option.dart';
+import 'package:symptom_tracker/model/track_option.dart';
 
 // discribes the setup of the tracker and creates log entries
 class Tracker {
@@ -105,8 +107,14 @@ class Tracker {
     return values;
   }
 
-  // PERSISTANCE
+  Tracker.fromTrackOption(String owner, TrackOption option) : trackableID = owner {
+    title = option.title;
+    type = option.trackType;
+    readLog();
+  }
 
+  // PERSISTANCE
+/*
   Future<Tracker> save() async {
     CollectionReference collection = getCollection(trackableID);
     if (id != null) {
@@ -145,4 +153,6 @@ class Tracker {
         'title': title,
         'type': type,
       };
+      
+ */
 }

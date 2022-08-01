@@ -8,6 +8,7 @@ import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/user.dart';
+import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 
 import 'package:symptom_tracker/pages/trackable_setup_page.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
@@ -78,7 +79,8 @@ class AuthGate extends StatelessWidget {
               // Check if CurrTrackable set
               if (snapshot.data!.selectedID == null) {
                 // Open On-boarding
-                return TrackableSetupPage();
+                // TODO - CHECK IF ANY CURR DATA - open setup or selection list
+                return TrackableSelectionPage();
               } else {
                 // Open tracker summery page
                 return FutureBuilder<Trackable?>(

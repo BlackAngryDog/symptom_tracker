@@ -5,6 +5,7 @@ import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/pages/trackable_setup_page.dart';
 import 'package:symptom_tracker/widgets/data_log_item.dart';
 import 'package:symptom_tracker/widgets/trackable_item.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
@@ -37,12 +38,7 @@ class TrackableList extends StatelessWidget {
                       return TrackableItem(Trackable.fromJson(doc.id, doc.data() as Map<String, dynamic>));
                     }).toList() as List<TrackableItem>,
                   )
-                : Center(
-                    child: ElevatedButton(
-                      child: const Text("Create"),
-                      onPressed: () => {addTrackerPage!(context)},
-                    ),
-                  );
+                : TrackableSetupPage();
           }
         },
       ),

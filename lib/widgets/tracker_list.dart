@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/database.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/data_log_item.dart';
@@ -23,40 +24,38 @@ class _TrackerListState extends State<TrackerList> {
 
   final db = FirebaseFirestore.instance;
 
+  late final List<Tracker> _trackers;
+
+  @override
+  initState() {
+    super.initState();
+    _trackers = EventManager.selectedTarget.trackers
+        .map((e) => Tracker(EventManager.selectedTarget.id ?? '', type: e.trackType, title: e.title))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: StreamBuilder<QuerySnapshot>(
-        //stream: Tracker.getCollection(_trackable.id ?? "default").where('type', isEqualTo: "counter").snapshots(),
-        stream: Tracker.getCollection(widget._trackable.id ?? "default").snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return Column(
-              children: [
-                //_selectedTracker == null ? SizedBox() : LineChartWidget(_selectedTracker),
-                Expanded(
-                  child: ListView(
-                    children: snapshot.data?.docs.map((doc) {
-                      return GestureDetector(
-                        child: TrackerItem(Tracker.fromJson(doc.id, doc.data() as Map<String, dynamic>)),
-                        onTap: () => {
-                          setState(() {
-                            _selectedTracker = Tracker.fromJson(doc.id, doc.data() as Map<String, dynamic>);
-                            widget.onTrackerSelected(_selectedTracker);
-                          }),
-                        },
-                      );
-                    }).toList() as List<Widget>,
-                  ),
-                ),
-              ],
-            );
-          }
-        },
+      child: Column(
+        children: [
+          //_selectedTracker == null ? SizedBox() : LineChartWidget(_selectedTracker),
+          Expanded(
+            child: ListView(
+              children: _trackers.map((doc) {
+                return GestureDetector(
+                  child: TrackerItem(doc),
+                  onTap: () => {
+                    setState(() {
+                      _selectedTracker = doc;
+                      widget.onTrackerSelected(_selectedTracker);
+                    }),
+                  },
+                );
+              }).toList() as List<Widget>,
+            ),
+          ),
+        ],
       ),
 
       /*child: FirebaseDatabaseListView(

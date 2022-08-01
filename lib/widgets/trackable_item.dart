@@ -16,6 +16,8 @@ class TrackableItem extends StatelessWidget {
     DatabaseTools.getUser().then((value) {
       value.selectedID = item.id;
       value.save();
+      // TODO - MAY NEED TO OPEN TRACKER HOME PAGE
+      // Navigator
       Navigator.pop(ctx, item);
     });
   }
