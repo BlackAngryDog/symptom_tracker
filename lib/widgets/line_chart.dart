@@ -28,7 +28,7 @@ class LineChartWidget extends StatefulWidget {
 }
 
 class _LineChartWidgetState extends State<LineChartWidget> {
-  Tracker? _selectedTracker;
+  Tracker? get _selectedTracker => EventManager.selectedTracker;
   late StreamSubscription trackerSubscription;
 
   late LineChartData data;
@@ -38,7 +38,6 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     _getData();
     print("Line chart sub");
     trackerSubscription = EventManager.stream.listen((event) {
-      _selectedTracker = EventManager.selectedTracker;
       _getData();
       //data = mainData();
     });
@@ -145,7 +144,6 @@ class _LineChartWidgetState extends State<LineChartWidget> {
   Widget FLLineChart() {
     return LineChart(
       data,
-      swapAnimationDuration: Duration(),
     );
   }
 

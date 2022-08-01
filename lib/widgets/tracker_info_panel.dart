@@ -19,19 +19,17 @@ class TrackerInfoPanel extends StatefulWidget {
 }
 
 class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
-  Trackable? _selectedTarget;
-  Tracker? _selectedTracker;
+  Trackable? get _selectedTarget => EventManager.selectedTarget;
+  Tracker? get _selectedTracker => EventManager.selectedTracker;
 
   late StreamSubscription trackableSubscription;
 
   @override
   void initState() {
     super.initState();
+
     trackableSubscription = EventManager.stream.listen((event) {
-      setState(() {
-        _selectedTarget = EventManager.selectedTarget;
-        _selectedTracker = EventManager.selectedTracker;
-      });
+      setState(() {});
     });
   }
 

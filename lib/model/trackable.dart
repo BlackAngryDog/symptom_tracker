@@ -89,11 +89,7 @@ class Trackable {
     start = DateTime(start.year, start.month, start.day);
     end = DateTime(end.year, end.month, end.day, 11, 59, 59);
 
-    return await DataLog.getCollection(id ?? "Default")
-        .where('time', isGreaterThanOrEqualTo: start)
-        .where('time', isLessThanOrEqualTo: end)
-        .get(const GetOptions(source: Source.serverAndCache))
-        .then((data) {
+    return await DataLog.getCollection(id ?? "Default").where('time', isGreaterThanOrEqualTo: start).where('time', isLessThanOrEqualTo: end).get(const GetOptions(source: Source.serverAndCache)).then((data) {
       logs = data.docs.map((doc) {
         return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();
@@ -108,16 +104,10 @@ class Trackable {
   Future save() async {
     CollectionReference collection = getCollection();
     if (id != null) {
-      collection
-          .doc(id)
-          .set(toJson())
-          .then((value) => print("updated user"))
-          .catchError((error) => print("Failed to add user: $error"));
+      Map<dynamic, dynamic> map = toJson();
+      collection.doc(id).set(map).then((value) => print("updated user")).catchError((error) => print("Failed to add user: $error"));
     } else {
-      await collection
-          .add(toJson())
-          .then((value) => {id = value.id})
-          .catchError((error) => print("Failed to add user: $error"));
+      await collection.add(toJson()).then((value) => {id = value.id}).catchError((error) => print("Failed to add user: $error"));
     }
   }
 
@@ -128,27 +118,37 @@ class Trackable {
   static Future<Trackable> load(String key) async {
     final doc = getCollection().doc(key);
 
-    return doc
-        .get()
-        .then(
-          (snapshot) => Trackable.fromJson(doc.id, snapshot.data() as Map<String, dynamic>),
-        )
-        .catchError(
-          (error, stackTrace) => Trackable(),
-        );
+    return doc.get().then(
+      (snapshot) {
+        return Trackable.fromJson(doc.id, snapshot.data() as Map<String, dynamic>);
+      },
+    ).catchError(
+      (error, stackTrace) {
+        print('error $error');
+        return Trackable();
+      },
+    );
   }
 
   Trackable.fromJson(String? key, Map<String, dynamic> json) {
     id = key;
     title = json['title'];
-
-    trackers = json['trackers'].map((doc) {
-      return TrackOption.fromJson(doc.id, doc.data() as Map<String, dynamic>);
-    }).toList() as List<TrackOption>;
+/*
+    Map<String, dynamic> map = json['trackers'];
+    var test = map.entries.map<TrackOption>((e) {
+      return TrackOption.fromJson('', e.value as Map<String, dynamic>);
+    }).toList();
+    trackers = test as List<TrackOption>;
+*/
+    trackers = json['trackers'] is Map
+        ? json['trackers'].entries.map<TrackOption>((e) {
+            return TrackOption.fromJson('', e.value as Map<String, dynamic>);
+          }).toList()
+        : [];
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
         'title': title,
-        'trackers': Map.fromEntries(trackers.map((value) => MapEntry(value.id, value.toJson()))),
+        'trackers': Map<String, dynamic>.fromEntries(trackers.map((value) => MapEntry<String, dynamic>(value.title ?? '', value.toJson()))),
       };
 }

@@ -1,7 +1,8 @@
 import 'dart:async';
-
+import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:collection/collection.dart';
 
 class UpdateEvent {
   final String event;
@@ -17,6 +18,8 @@ class EventManager {
   static set selectedTarget(Trackable value) {
     instance._selectedTracker = null;
     instance._selectedTarget = value;
+    TrackOption? initialTrackerOption = instance._selectedTarget.trackers.firstOrNull;
+    if (initialTrackerOption != null) instance._selectedTracker = Tracker.fromTrackOption(value.id ?? '', initialTrackerOption);
     dispatchUpdate();
   }
 
@@ -34,6 +37,7 @@ class EventManager {
 
   EventManager(this._selectedTarget) {
     // TODO - MAKE SINGLETON
+
     instance = this;
   }
 
