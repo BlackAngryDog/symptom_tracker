@@ -13,17 +13,15 @@ class InfoHeader extends StatefulWidget {
 }
 
 class _InfoHeaderState extends State<InfoHeader> {
-  late Trackable _selectedTarget;
+  Trackable get _selectedTarget => EventManager.selectedTarget;
   late StreamSubscription trackerSubscription;
 
   @override
   void initState() {
     super.initState();
-    _selectedTarget = EventManager.selectedTarget;
+
     trackerSubscription = EventManager.stream.listen((event) {
-      setState(() {
-        _selectedTarget = EventManager.selectedTarget;
-      });
+      setState(() {});
     });
   }
 

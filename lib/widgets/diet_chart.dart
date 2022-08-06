@@ -55,8 +55,8 @@ class DietChart extends StatefulWidget {
 }
 
 class _DietChartState extends State<DietChart> {
-  Trackable? _selectedTarget;
-  Tracker? _selectedTracker;
+  Trackable get _selectedTarget => EventManager.selectedTarget;
+  Tracker? get _selectedTracker => EventManager.selectedTracker;
 
   late StreamSubscription trackableSubscription;
 
@@ -65,12 +65,8 @@ class _DietChartState extends State<DietChart> {
   @override
   void initState() {
     super.initState();
+    _getData();
     trackableSubscription = EventManager.stream.listen((event) {
-      //setState(() {
-
-      _selectedTarget = EventManager.selectedTarget;
-      _selectedTracker = EventManager.selectedTracker;
-      //});
       if (_selectedTracker != null) _getData();
     });
   }
@@ -115,7 +111,7 @@ class _DietChartState extends State<DietChart> {
     // TODO - GET ALL OTHER DATA LOGS TO COMPARE WITH EACH FOOD OPTION!?
     Map<String, List<PieChartSectionData>> _pieSections = <String, List<PieChartSectionData>>{};
     // Read data as a list of diet changes.
-    Tracker dietTracker = await _selectedTarget!.getDietTracker();
+    Tracker dietTracker = await _selectedTarget.getDietTracker();
     List<DataLog> dietLogs = await dietTracker.getLogs(DateTimeExt.lastMonth, DateTime.now());
 
     //Make sure data is sorted by time

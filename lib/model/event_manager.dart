@@ -39,6 +39,7 @@ class EventManager {
     // TODO - MAKE SINGLETON
 
     instance = this;
+    selectedTarget = _selectedTarget;
   }
 
   static void dispatchUpdate() {

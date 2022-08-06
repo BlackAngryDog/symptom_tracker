@@ -13,16 +13,15 @@ class AdvTrackerInfo extends StatefulWidget {
 }
 
 class _AdvTrackerInfoState extends State<AdvTrackerInfo> {
-  Tracker? _selectedTracker;
+  Tracker? get _selectedTracker => EventManager.selectedTracker;
   late StreamSubscription trackerSubscription;
   String _currValue = '';
 
   @override
   void initState() {
     super.initState();
-    _selectedTracker = EventManager.selectedTracker;
+    getCurrValue();
     trackerSubscription = EventManager.stream.listen((event) {
-      _selectedTracker = EventManager.selectedTracker;
       if (_selectedTracker != null) getCurrValue();
     });
   }

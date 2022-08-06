@@ -157,8 +157,6 @@ class TrackerPage extends StatelessWidget {
         });
   }
 
-  TrackerInfoPanel _trackerInfoPanel = TrackerInfoPanel();
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -200,9 +198,9 @@ class TrackerPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [
-            const InfoHeader(),
-            _trackerInfoPanel,
+          children: const [
+            InfoHeader(),
+            TrackerInfoPanel(),
           ],
           //TrackerList(widget.trackable),
         ),

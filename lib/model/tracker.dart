@@ -29,6 +29,7 @@ class Tracker {
 
   // set/update log for today for this tracker...
   Future updateLog(dynamic value) async {
+    if (trackableID == '') return;
     // GET ANY LOGS WITHIN THE TIMEFRAME AND UPDATE IT RATHER THAN CREATE A NEW LOG
     DateTime minTimeFrame = DateTime.now().add(const Duration(hours: -1));
     List<DataLog> logs = await getLogs(minTimeFrame, DateTime.now());
@@ -41,6 +42,7 @@ class Tracker {
 
   // get data from logs for day ?
   Future readLog() async {
+    if (trackableID == '') return;
     // Load data log for this tracker
     DateTime minTimeFrame = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     List<DataLog> log = await getLogs(minTimeFrame, minTimeFrame.add(const Duration(hours: 24)));
@@ -48,12 +50,8 @@ class Tracker {
   }
 
   Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
-    return DataLog.getCollection(trackableID)
-        .where('title', isEqualTo: title ?? 'Default')
-        .where('time', isGreaterThanOrEqualTo: start)
-        .where('time', isLessThanOrEqualTo: end)
-        .get(GetOptions(source: Source.cache))
-        .then((data) {
+    if (trackableID == '') return [];
+    return DataLog.getCollection(trackableID).where('title', isEqualTo: title ?? 'Default').where('time', isGreaterThanOrEqualTo: start).where('time', isLessThanOrEqualTo: end).get(GetOptions(source: Source.cache)).then((data) {
       List<DataLog> log = data.docs.map((doc) {
         return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();
@@ -62,15 +60,10 @@ class Tracker {
   }
 
   Future<DataLog?> getLastEntry(bool today, {DateTime? before}) async {
+    if (trackableID == '') return null;
     if (before != null) print(before.toString());
 
-    return await DataLog.getCollection(trackableID)
-        .where('time', isLessThanOrEqualTo: before ?? DateTime.now())
-        .where('title', isEqualTo: title ?? 'Default')
-        .limit(1)
-        .orderBy('time', descending: true)
-        .get()
-        .then((data) {
+    return await DataLog.getCollection(trackableID).where('time', isLessThanOrEqualTo: before ?? DateTime.now()).where('title', isEqualTo: title ?? 'Default').limit(1).orderBy('time', descending: true).get().then((data) {
       List<DataLog> log = data.docs.map((doc) {
         return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();
@@ -92,16 +85,19 @@ class Tracker {
   Type typeOf<T>() => T;
 
   Future<String> getLastValue(bool today) async {
+    if (trackableID == '') return '';
     DataLog? dataLog = await getLastEntry(today);
     return dataLog?.value.toString() ?? '';
   }
 
   Future<String> getLastValueFor(DateTime day) async {
+    if (trackableID == '') return '';
     DataLog? dataLog = await getLastEntry(false, before: DateTime(day.year, day.month, day.day, 23, 59));
     return dataLog?.value.toString() ?? '';
   }
 
   Future<List<dynamic>> getValuesFor(DateTime start, DateTime end) async {
+    if (trackableID == '') return [];
     List<DataLog> logs = await getLogs(start, end);
     List<dynamic> values = logs.map((log) => log.value).toList();
     return values;

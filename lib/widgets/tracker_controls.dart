@@ -19,7 +19,7 @@ class TrackerControls extends StatefulWidget {
 }
 
 class _TrackerControlsState extends State<TrackerControls> {
-  Tracker? _selectedTracker;
+  Tracker? get _selectedTracker => EventManager.selectedTracker;
   late StreamSubscription trackerSubscription;
 
   @override
@@ -27,9 +27,7 @@ class _TrackerControlsState extends State<TrackerControls> {
     super.initState();
 
     trackerSubscription = EventManager.stream.listen((event) {
-      setState(() {
-        _selectedTracker = EventManager.selectedTracker;
-      });
+      setState(() {});
     });
   }
 

@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/widgets/tracker_controls.dart';
+import 'package:symptom_tracker/widgets/trackers/count_tracker.dart';
+import 'package:symptom_tracker/widgets/trackers/diet_tracker.dart';
+import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
+import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
 class AddTracker extends StatefulWidget {
   //const AddTransaction({ Key? key }) : super(key: key);
@@ -15,6 +22,7 @@ class AddTracker extends StatefulWidget {
 
 class _AddTrackerState extends State<AddTracker> {
   final titleController = TextEditingController();
+  final valueController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
 
   String selectedValue = "counter";
@@ -23,7 +31,6 @@ class _AddTrackerState extends State<AddTracker> {
       DropdownMenuItem(child: Text("counter"), value: "counter"),
       DropdownMenuItem(child: Text("quality"), value: "quality"),
       DropdownMenuItem(child: Text("value"), value: "value"),
-      DropdownMenuItem(child: Text("diet"), value: "diet"),
     ];
     return menuItems;
   }
@@ -32,11 +39,15 @@ class _AddTrackerState extends State<AddTracker> {
     print("test");
     final String _title = titleController.text;
 
-    if (_title == "") return;
+    final String _value = valueController.text;
 
-    Tracker tracker = Tracker('default', title: _title, type: selectedValue);
+    if (_title == '' || _value == '') return;
+
+    Tracker tracker = Tracker(EventManager.selectedTarget.id ?? '', title: _title, type: selectedValue);
 
     widget.onAddTracker(tracker);
+    // ADD STARTING VALUE;
+    tracker.updateLog(_value);
 
     Navigator.of(context).pop();
   }
@@ -54,6 +65,36 @@ class _AddTrackerState extends State<AddTracker> {
         });
   }
 
+  Widget getControl(BuildContext context) {
+    Tracker temp = Tracker('', type: selectedValue);
+    switch (selectedValue) {
+      case "counter":
+      // ADD BASELINE VALUE (textfield)
+      case "quality":
+        return RatingBar.builder(
+          initialRating: 0,
+          minRating: 1,
+          direction: Axis.horizontal,
+          allowHalfRating: true,
+          itemCount: 5,
+          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+          itemBuilder: (context, _) => Icon(
+            Icons.star,
+            color: Colors.amber,
+          ),
+          onRatingUpdate: (rating) {
+            valueController.text = rating.toString();
+          },
+        ); // ADD BASELINE VALUE (as 1-X picker)
+      default:
+        return TextField(
+          decoration: InputDecoration(labelText: 'Current Value'),
+          controller: valueController,
+          textAlign: TextAlign.end,
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -66,6 +107,7 @@ class _AddTrackerState extends State<AddTracker> {
             TextField(
               decoration: InputDecoration(labelText: 'Title'),
               controller: titleController,
+              textAlign: TextAlign.end,
             ),
             DropdownButton(
                 value: selectedValue,
@@ -75,7 +117,8 @@ class _AddTrackerState extends State<AddTracker> {
                   });
                 },
                 items: dropdownItems),
-            Container(
+            getControl(context),
+            /*Container(
               height: 70,
               child: Row(
                 children: [
@@ -93,6 +136,8 @@ class _AddTrackerState extends State<AddTracker> {
                 ],
               ),
             ),
+
+             */
             TextButton(
               onPressed: OnSubmitTracker,
               child: Text(
