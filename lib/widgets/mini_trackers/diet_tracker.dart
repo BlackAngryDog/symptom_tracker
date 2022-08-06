@@ -60,7 +60,7 @@ class _MiniDietTrackerState extends State<MiniDietTracker> {
               ]),
             ),
           ),
-          Text(subtitle),
+          Text(widget._tracker.title ?? ''),
         ],
       ),
       onTap: () {

@@ -9,7 +9,6 @@ class TrackOption {
   String? id;
   String? title;
   String? trackType;
-  // TODO - ADD TYPE
 
   TrackOption({this.id, this.title, this.trackType});
 

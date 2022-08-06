@@ -10,39 +10,40 @@ class UpdateEvent {
 }
 
 class EventManager {
-  static late EventManager instance;
+  static final EventManager _instance = EventManager._internal();
 
-  Trackable _selectedTarget;
+  late Trackable _selectedTarget;
   Tracker? _selectedTracker;
 
   static set selectedTarget(Trackable value) {
-    instance._selectedTracker = null;
-    instance._selectedTarget = value;
-    TrackOption? initialTrackerOption = instance._selectedTarget.trackers.firstOrNull;
-    if (initialTrackerOption != null) instance._selectedTracker = Tracker.fromTrackOption(value.id ?? '', initialTrackerOption);
+    _instance._selectedTracker = null;
+    _instance._selectedTarget = value;
+    TrackOption? initialTrackerOption = _instance._selectedTarget.trackers.firstOrNull;
+    if (initialTrackerOption != null)
+      _instance._selectedTracker = Tracker.fromTrackOption(value.id ?? '', initialTrackerOption);
     dispatchUpdate();
   }
 
   static set selectedTracker(Tracker? value) {
-    instance._selectedTracker = value;
+    _instance._selectedTracker = value;
     dispatchUpdate();
   }
 
-  static Trackable get selectedTarget => instance._selectedTarget;
-  static Tracker? get selectedTracker => instance._selectedTracker;
+  static Trackable get selectedTarget => _instance._selectedTarget;
+  static Tracker? get selectedTracker => _instance._selectedTracker;
 
   StreamController<UpdateEvent> trackableController = StreamController<UpdateEvent>.broadcast();
 
-  static Stream<UpdateEvent> get stream => instance.trackableController.stream;
+  static Stream<UpdateEvent> get stream => _instance.trackableController.stream;
 
-  EventManager(this._selectedTarget) {
-    // TODO - MAKE SINGLETON
-
-    instance = this;
+  factory EventManager(Trackable _selectedTarget) {
+    //instance._selectedTarget = _selectedTarget;
     selectedTarget = _selectedTarget;
+    return _instance;
   }
+  EventManager._internal();
 
   static void dispatchUpdate() {
-    instance.trackableController.add(UpdateEvent("Update_Tracker"));
+    _instance.trackableController.add(UpdateEvent("Update_Tracker"));
   }
 }

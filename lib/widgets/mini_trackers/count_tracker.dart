@@ -65,7 +65,7 @@ class _MiniCountTrackerState extends State<MiniCountTracker> {
             ]),
           ),
         ),
-        Text(subtitle),
+        Text(widget._tracker.title ?? ''),
       ],
     );
   }
