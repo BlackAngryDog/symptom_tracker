@@ -38,7 +38,7 @@ class _ValueTrackerState extends State<ValueTracker> {
   }
 
   String currValue = ''; // TODO - GET TODYS COUNT FOR TRACKER
-  String subtitle = 'calue is today is 0';
+  String subtitle = 'value is today is 0';
   IconData icon = Icons.arrow_right;
 
   Future updateData(String value) async {

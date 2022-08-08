@@ -86,6 +86,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     if (logs.isEmpty) return list;
 
     DataLog? start = await _selectedTracker!.getLastEntry(false, before: startDate);
+    /*
     if (start != null) {
       double d = double.parse(start.value is String ? start.value : start.value.toStringAsFixed(2));
       _spots.add(FlSpot(0, getValueFromLog(start)));
@@ -93,9 +94,43 @@ class _LineChartWidgetState extends State<LineChartWidget> {
       start = logs[0];
       _spots.add(FlSpot(0, getValueFromLog(start)));
     }
-
+*/
+    bool _addEmpty = _selectedTracker!.type == 'counter';
     // logs.clear();
+    int numDays = endDate.difference(startDate).inDays;
+    for (int i = 0; i <= numDays; i++) {
+      double day = double.parse((i).toString());
+      List<DataLog> dayLogs = logs.where((element) => element.time.difference(startDate).inDays == day).toList(growable: false);
+      print("Day is ${_selectedTracker!.type}");
+      if (dayLogs.isEmpty) {
+        if (_addEmpty) {
+          _spots.add(FlSpot(day, 0));
+          continue;
+        } else if (day == 0) {
+          if (start != null) {
+            double d = double.parse(start.value is String ? start.value : start.value.toStringAsFixed(2));
+            _spots.add(FlSpot(0, getValueFromLog(start)));
+          } else {
+            start = logs[0];
+            _spots.add(FlSpot(0, getValueFromLog(start)));
+          }
+        }
+      }
 
+      for (DataLog log in dayLogs) {
+        // TODO - NEED TO JUST DO ONE ENTRY PER DAY/ flag to add/adv/min/max?
+        double d = double.parse(log.value is String ? log.value : log.value.toStringAsFixed(2));
+        list.add(LineChartWidgetData(log.time, d));
+
+        //double day = double.parse(log.time.difference(startDate).inDays.toString());
+        FlSpot? currSpot = _spots.where((element) => element.x == day).firstOrNull;
+        if (currSpot != null) _spots.remove(currSpot);
+
+        _spots.add(FlSpot(day, getValueFromLog(log)));
+      }
+    }
+
+/*
     print(' logs is ${logs.length}');
     for (DataLog log in logs) {
       // TODO - NEED TO JUST DO ONE ENTRY PER DAY
@@ -110,6 +145,8 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
       _spots.add(FlSpot(day, getValueFromLog(log)));
     }
+    *
+ */
     // ADD IN TODAY IF NOT AVAILABLE
 
     DataLog last = logs.last;

@@ -8,6 +8,7 @@ import 'package:symptom_tracker/pages/tracker_home.dart';
 import 'package:symptom_tracker/widgets/diet_chart.dart';
 import 'package:symptom_tracker/widgets/line_chart.dart';
 import 'package:symptom_tracker/widgets/tracker_controls.dart';
+import 'package:symptom_tracker/widgets/tracker_highlights.dart';
 import 'package:symptom_tracker/widgets/tracker_info_widgets/AdvTrackerInfo.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 
@@ -23,14 +24,23 @@ class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
   Tracker? get _selectedTracker => EventManager.selectedTracker;
 
   late StreamSubscription trackableSubscription;
+  late bool hasData = false;
 
   @override
   void initState() {
     super.initState();
-
-    trackableSubscription = EventManager.stream.listen((event) {
-      setState(() {});
+    checkDataAvailable();
+    trackableSubscription = EventManager.stream.listen((event) async {
+      checkDataAvailable();
     });
+  }
+
+  Future checkDataAvailable() async {
+    if (!mounted) {
+      return;
+    }
+    hasData = await _selectedTracker?.getLastValue(false) != '';
+    setState(() {});
   }
 
   @override
@@ -41,24 +51,40 @@ class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.blueGrey.withAlpha(10),
-      elevation: 1,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text(_selectedTracker == null ? '' : _selectedTracker!.title ?? ''),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              // const TrackerItem(),
-              AdvTrackerInfo(),
-              DietChart(),
-            ],
-          ),
-          LineChartWidget(),
-          TrackerControls(),
-        ],
+    return SizedBox(
+      height: MediaQuery.of(context).size.height - 220,
+      width: double.infinity,
+      child: Card(
+        color: Colors.blueGrey.withAlpha(10),
+        elevation: 1,
+        child: hasData == false
+            ? Center(
+                child: Column(
+                  children: [
+                    Text("No Data"),
+                    TrackerControls(),
+                  ],
+                ),
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(_selectedTracker == null ? '' : _selectedTracker!.title ?? ''),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // const TrackerItem(),
+                      AdvTrackerInfo(),
+                      DietChart(),
+                    ],
+                  ),
+                  LineChartWidget(),
+                  TrackerHighlights(),
+                  TrackerControls(),
+                ],
+              ),
       ),
     );
   }
