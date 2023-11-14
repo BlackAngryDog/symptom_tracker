@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutterfire_ui/auth.dart';
+
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
@@ -12,6 +12,8 @@ import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 
 import 'package:symptom_tracker/pages/trackable_setup_page.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
+
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 import 'firebase_config.dart';
 
@@ -66,9 +68,7 @@ class AuthGate extends StatelessWidget {
       builder: (context, snapshot) {
         // User is not signed in
         if (!snapshot.hasData) {
-          return const SignInScreen(providerConfigs: [
-            EmailProviderConfiguration(),
-          ]);
+          return const SignInScreen();
         }
 
         // Load UserData

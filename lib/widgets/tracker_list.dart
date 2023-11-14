@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/database.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
