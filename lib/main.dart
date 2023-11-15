@@ -13,7 +13,9 @@ import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 import 'package:symptom_tracker/pages/trackable_setup_page.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
 
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:firebase_ui_auth/firebase_ui_auth.dart' as auth ;
 
 import 'firebase_config.dart';
 
@@ -39,6 +41,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -53,13 +57,15 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const AuthGate(),
+      home: AuthGate(),
     );
   }
 }
 
 class AuthGate extends StatelessWidget {
-  const AuthGate({Key? key}) : super(key: key);
+   AuthGate({Key? key}) : super(key: key);
+
+  var providers = [auth.EmailAuthProvider()];
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +74,14 @@ class AuthGate extends StatelessWidget {
       builder: (context, snapshot) {
         // User is not signed in
         if (!snapshot.hasData) {
-          return const SignInScreen();
+          return auth.SignInScreen(
+            providers:providers,
+            actions: [
+              auth.AuthStateChangeAction<auth.SignedIn>((context, state) {
+                Navigator.pushReplacementNamed(context, '/profile');
+              }),
+            ],
+          );
         }
 
         // Load UserData
