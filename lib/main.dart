@@ -93,7 +93,7 @@ class AuthGate extends StatelessWidget {
               if (snapshot.data!.selectedID == null) {
                 // Open On-boarding
                 // TODO - CHECK IF ANY CURR DATA - open setup or selection list
-                return TrackableSelectionPage();
+                return const TrackableSelectionPage();
               } else {
                 // Open tracker summery page
                 return FutureBuilder<Trackable?>(

@@ -7,6 +7,7 @@ import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
 import 'package:symptom_tracker/widgets/diet_chart.dart';
 import 'package:symptom_tracker/widgets/line_chart.dart';
+import 'package:symptom_tracker/widgets/tracker_control_list.dart';
 import 'package:symptom_tracker/widgets/tracker_controls.dart';
 import 'package:symptom_tracker/widgets/tracker_highlights.dart';
 import 'package:symptom_tracker/widgets/tracker_info_widgets/AdvTrackerInfo.dart';
@@ -62,11 +63,12 @@ class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
                 child: Column(
                   children: [
                     Text("No Data"),
-                    TrackerControls(),
+                    TrackerControls(null),
                   ],
                 ),
               )
-            : Column(
+            : const TrackerControlList(),
+            /*Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -85,6 +87,7 @@ class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
                   TrackerControls(),
                 ],
               ),
+              */
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
+import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
 import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
@@ -12,14 +13,15 @@ import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
 class TrackerControls extends StatefulWidget {
-  TrackerControls({Key? key}) : super(key: key);
+  final Tracker? item;
+  const TrackerControls(this.item, {Key? key}) : super(key: key);
 
   @override
   State<TrackerControls> createState() => _TrackerControlsState();
 }
 
 class _TrackerControlsState extends State<TrackerControls> {
-  Tracker? get _selectedTracker => EventManager.selectedTracker;
+  Tracker? get _selectedTracker => widget.item??EventManager.selectedTracker;
   late StreamSubscription trackerSubscription;
 
   @override
