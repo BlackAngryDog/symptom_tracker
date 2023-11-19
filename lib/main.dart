@@ -16,6 +16,7 @@ import 'package:symptom_tracker/pages/tracker_home.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart' as auth ;
+import 'package:symptom_tracker/widgets/tracker_week.dart';
 
 import 'firebase_config.dart';
 
@@ -100,7 +101,7 @@ class AuthGate extends StatelessWidget {
                     future: Trackable.load(snapshot.data!.selectedID ?? 'default'),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return TrackerPage(snapshot.data ?? Trackable());
+                        return TrackerWeek(snapshot.data ?? Trackable());
                       } else {
                         return const Center(
                           child: CircularProgressIndicator(),
