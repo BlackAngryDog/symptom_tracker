@@ -6,18 +6,51 @@ import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/widgets/data_log_item.dart';
+import 'package:symptom_tracker/widgets/tracker_controls.dart';
 
-class TrackerWeek extends StatelessWidget {
-  final Trackable _trackable;
+import '../model/event_manager.dart';
+import '../model/tracker.dart';
 
-  const TrackerWeek(this._trackable, {Key? key}) : super(key: key);
+class TrackerWeek extends StatefulWidget {
+  final Trackable trackable;
+  const TrackerWeek(this.trackable, {Key? key}) : super(key: key);
+
+  @override
+  State<TrackerWeek> createState() => _TrackerWeekState();
+}
+
+class _TrackerWeekState extends State<TrackerWeek> {
+  late final List<Tracker> _trackers;
+
+  @override
+  initState() {
+    super.initState();
+
+    _trackers = EventManager.selectedTarget.trackers
+        .map((e) => Tracker(EventManager.selectedTarget.id ?? '', type: e.trackType, title: e.title))
+        .toList();
+
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    /*
+
+     */
+    var daysOfWeek = <String>[
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday'];
+
     return Container(
       height: MediaQuery.of(context).copyWith().size.height,
       child: StreamBuilder<QuerySnapshot>(
-        stream: DataLog.getCollection(_trackable.id ?? "Default")
+        stream: DataLog.getCollection(widget.trackable.id ?? "Default")
             .orderBy('time', descending: true)
             .startAt([DateTime.now().subtract(const Duration(days: 7))])
             .endAt([DateTime.now()])
@@ -29,48 +62,32 @@ class TrackerWeek extends StatelessWidget {
             );
           } else {
 
-            var list = snapshot.data?.docs.map((doc) {
-              return DataLogItem(DataLog.fromJson(
-                  doc.id, doc.data() as Map<String, dynamic>));
-            }).toList() as List<DataLogItem>;
-
+            // create a days of the week container
             return ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (_, index) {
-                  bool isSameDate = true;
 
-                  final DateTime date = list[index].log.time;
-                  final item = list[index];
-                  if (index == 0) {
-                    isSameDate = false;
-                  } else {
-                    final DateTime prevDate = list[index - 1].log.time;
-                    isSameDate = date.isSameDate(prevDate);
-                  }
-                  if (index == 0 || !(isSameDate)) {
-                    return Column(children: [
-                      // get day of week as a string
-                      Text(date.dayOfWeek()),
-                      list[index]
-                    ]);
-                  } else {
-                    return list[index];
-                  }
-                });
+              itemCount: daysOfWeek.length,
+              itemBuilder: (_, index) {
+                bool isSameDate = true;
+
+                final item = daysOfWeek[index];
+
+                return Column(
+
+                    children: [
+                    // get day of week as a string
+                    Text(item),
+                    ListView(
+                      shrinkWrap: true,
+                      children: _trackers.map((doc) {
+                        return TrackerControls(doc);
+                      }).toList(),
+                    ),
+
+                ]);
+              });
           }
         },
       ),
-
-      /*child: FirebaseDatabaseListView(
-        query: DatabaseTools.getRef(Tracker().getEndpoint()),
-        itemBuilder: (context, snapshot) {
-          Tracker tracker = Tracker.fromJson(
-              snapshot.key, snapshot.value as Map<String, dynamic>);
-          return TrackerItem(tracker);
-        },
-      ),
-
-       */
     );
   }
 }

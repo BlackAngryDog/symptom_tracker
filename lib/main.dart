@@ -19,6 +19,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart' as auth ;
 import 'package:symptom_tracker/widgets/tracker_week.dart';
 
 import 'firebase_config.dart';
+import 'model/event_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,6 +102,7 @@ class AuthGate extends StatelessWidget {
                     future: Trackable.load(snapshot.data!.selectedID ?? 'default'),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
+                        EventManager(snapshot.data ?? Trackable());
                         return TrackerWeek(snapshot.data ?? Trackable());
                       } else {
                         return const Center(
