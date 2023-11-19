@@ -14,14 +14,16 @@ import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
 class TrackerControls extends StatefulWidget {
   final Tracker? item;
-  const TrackerControls(this.item, {Key? key}) : super(key: key);
+  final DateTime? date;
+
+  const TrackerControls(this.item, this.date, {Key? key}) : super(key: key);
 
   @override
   State<TrackerControls> createState() => _TrackerControlsState();
 }
 
 class _TrackerControlsState extends State<TrackerControls> {
-  Tracker? get _selectedTracker => widget.item??EventManager.selectedTracker;
+  Tracker? get _selectedTracker => widget.item ?? EventManager.selectedTracker;
   late StreamSubscription trackerSubscription;
 
   @override
@@ -45,13 +47,13 @@ class _TrackerControlsState extends State<TrackerControls> {
 
     switch (_selectedTracker!.type) {
       case "counter":
-        return CountTracker(_selectedTracker!);
+        return CountTracker(_selectedTracker!, widget.date ?? DateTime.now());
       case "quality":
-        return QualityTracker(_selectedTracker!);
+        return QualityTracker(_selectedTracker!, widget.date ?? DateTime.now());
       case "diet":
-        return DietTracker(_selectedTracker!);
+        return DietTracker(_selectedTracker!, widget.date ?? DateTime.now());
       default:
-        return ValueTracker(_selectedTracker!);
+        return ValueTracker(_selectedTracker!, widget.date ?? DateTime.now());
     }
   }
 }

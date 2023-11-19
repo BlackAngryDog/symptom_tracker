@@ -63,12 +63,12 @@ class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
                 child: Column(
                   children: [
                     Text("No Data"),
-                    TrackerControls(null),
+                    TrackerControls(null, DateTime.now()),
                   ],
                 ),
               )
             : const TrackerControlList(),
-            /*Column(
+        /*Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

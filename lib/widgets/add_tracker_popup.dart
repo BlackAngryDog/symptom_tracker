@@ -43,11 +43,12 @@ class _AddTrackerState extends State<AddTracker> {
 
     if (_title == '' || _value == '') return;
 
-    Tracker tracker = Tracker(EventManager.selectedTarget.id ?? '', title: _title, type: selectedValue);
+    Tracker tracker = Tracker(EventManager.selectedTarget.id ?? '',
+        title: _title, type: selectedValue);
 
     widget.onAddTracker(tracker);
     // ADD STARTING VALUE;
-    tracker.updateLog(_value);
+    tracker.updateLog(_value, DateTime.now());
 
     Navigator.of(context).pop();
   }

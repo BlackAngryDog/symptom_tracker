@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
 
+import '../widgets/tracker_week.dart';
+
 class WeeklyOverviewPage extends StatelessWidget {
   final Trackable trackable;
   const WeeklyOverviewPage(this.trackable, {Key? key}) : super(key: key);
@@ -25,7 +27,7 @@ class WeeklyOverviewPage extends StatelessWidget {
       body: Center(
       // Center is a layout widget. It takes a single child and positions it
       // in the middle of the parent.
-        child: DataLogList(trackable),
+        child: TrackerWeek(trackable),
       ),
     );
   }

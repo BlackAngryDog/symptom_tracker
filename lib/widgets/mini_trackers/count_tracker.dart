@@ -22,7 +22,7 @@ class _MiniCountTrackerState extends State<MiniCountTracker> {
 
   Future updateData() async {
     currValue++;
-    await widget._tracker.updateLog(currValue);
+    await widget._tracker.updateLog(currValue, DateTime.now());
     print('val');
     getCurrValue();
   }

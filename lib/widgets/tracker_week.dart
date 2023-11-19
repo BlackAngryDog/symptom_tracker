@@ -13,7 +13,7 @@ import '../model/tracker.dart';
 
 class TrackerWeek extends StatefulWidget {
   final Trackable trackable;
-  const TrackerWeek(this.trackable, {Key? key}) : super(key: key);
+  TrackerWeek(this.trackable, {Key? key}) : super(key: key);
 
   @override
   State<TrackerWeek> createState() => _TrackerWeekState();
@@ -27,14 +27,13 @@ class _TrackerWeekState extends State<TrackerWeek> {
     super.initState();
 
     _trackers = EventManager.selectedTarget.trackers
-        .map((e) => Tracker(EventManager.selectedTarget.id ?? '', type: e.trackType, title: e.title))
+        .map((e) => Tracker(EventManager.selectedTarget.id ?? '',
+            type: e.trackType, title: e.title))
         .toList();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     /*
 
      */
@@ -45,48 +44,60 @@ class _TrackerWeekState extends State<TrackerWeek> {
       'Thursday',
       'Friday',
       'Saturday',
-      'Sunday'];
+      'Sunday'
+    ];
 
-    return Container(
-      height: MediaQuery.of(context).copyWith().size.height,
-      child: StreamBuilder<QuerySnapshot>(
-        stream: DataLog.getCollection(widget.trackable.id ?? "Default")
-            .orderBy('time', descending: true)
-            .startAt([DateTime.now().subtract(const Duration(days: 7))])
-            .endAt([DateTime.now()])
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
+    return GestureDetector(
+      onHorizontalDragEnd: (dragDetail) {
+        if (dragDetail.velocity.pixelsPerSecond.dx < 1) {
+          print("right");
+        } else {
+          print("left");
+        }
+      },
+      child: Container(
+        height: MediaQuery.of(context).copyWith().size.height,
+        child: StreamBuilder<QuerySnapshot>(
+          stream: DataLog.getCollection(widget.trackable.id ?? "Default")
+              .orderBy('time', descending: true)
+              .startAt([
+            DateTime.now().subtract(const Duration(days: 7))
+          ]).endAt([DateTime.now()]).snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              // create a days of the week container
+              return ListView.builder(
+                  itemCount: daysOfWeek.length,
+                  itemBuilder: (_, index) {
+                    bool isSameDate = true;
 
-            // create a days of the week container
-            return ListView.builder(
+                    final item = daysOfWeek[index];
+                    final currDay = DateTime.now().weekday;
 
-              itemCount: daysOfWeek.length,
-              itemBuilder: (_, index) {
-                bool isSameDate = true;
-
-                final item = daysOfWeek[index];
-
-                return Column(
-
-                    children: [
-                    // get day of week as a string
-                    Text(item),
-                    ListView(
-                      shrinkWrap: true,
-                      children: _trackers.map((doc) {
-                        return TrackerControls(doc);
-                      }).toList(),
-                    ),
-
-                ]);
-              });
-          }
-        },
+                    return Column(children: [
+                      // get day of week as a string
+                      Text(
+                        item,
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      Column(
+                        children: _trackers.map((doc) {
+                          return TrackerControls(
+                              doc,
+                              DateTime.now()
+                                  .add(Duration(days: index - currDay)));
+                        }).toList(),
+                      ),
+                    ]);
+                  });
+            }
+          },
+        ),
       ),
     );
   }

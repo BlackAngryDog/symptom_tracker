@@ -6,7 +6,9 @@ import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
 class CountTracker extends StatefulWidget {
   final Tracker _tracker;
-  const CountTracker(this._tracker, {Key? key}) : super(key: key);
+  final DateTime _trackerDate;
+  const CountTracker(this._tracker, this._trackerDate, {Key? key})
+      : super(key: key);
 
   @override
   State<CountTracker> createState() => _ValueTrackerState();
@@ -25,14 +27,17 @@ class _ValueTrackerState extends State<CountTracker> {
   Future updateData() async {
     currValue++;
 
-    await widget._tracker.updateLog(currValue);
+    await widget._tracker
+        .updateLog(currValue, widget._trackerDate ?? DateTime.now());
     print('val');
     EventManager.dispatchUpdate();
     getCurrValue();
   }
 
   Future getCurrValue() async {
-    currValue = int.tryParse(await widget._tracker.getLastValue(true)) ?? 0;
+    currValue = int.tryParse(
+            await widget._tracker.getLastValueFor(widget._trackerDate)) ??
+        0;
 
     setState(() {
       subtitle = 'today is $currValue';

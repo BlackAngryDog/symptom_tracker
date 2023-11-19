@@ -38,7 +38,8 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
   }
 
   Future<List<DietOptionItem>> _getData() async {
-    DataLog? log = await EventManager.selectedTarget.getDietTracker().getLastEntry(false);
+    DataLog? log =
+        await EventManager.selectedTarget.getDietTracker().getLastEntry(false);
 
     if (log == null) return options;
 
@@ -46,7 +47,9 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
     final test = log.value;
 
     for (var entry in test!.entries) {
-      DietOptionItem? option = options.where((element) => element.item.title == entry.key).firstOrNull;
+      DietOptionItem? option = options
+          .where((element) => element.item.title == entry.key)
+          .firstOrNull;
       option?.selected = entry.value;
     }
 
@@ -81,7 +84,10 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
                   );
                 } else {
                   options = snapshot.data?.docs.map((doc) {
-                    return DietOptionItem(false, DietOption.fromJson(doc.id, doc.data() as Map<String, dynamic>));
+                    return DietOptionItem(
+                        false,
+                        DietOption.fromJson(
+                            doc.id, doc.data() as Map<String, dynamic>));
                   }).toList() as List<DietOptionItem>;
 
                   return FutureBuilder<List<DietOptionItem>>(
@@ -107,8 +113,11 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
             child: Text('Save'),
             onPressed: () {
               // To do - save data
-              final result = Map.fromEntries(options.map((value) => MapEntry(value.item.title, value.selected)));
-              EventManager.selectedTarget.getDietTracker().updateLog(result);
+              final result = Map.fromEntries(options
+                  .map((value) => MapEntry(value.item.title, value.selected)));
+              EventManager.selectedTarget
+                  .getDietTracker()
+                  .updateLog(result, DateTime.now());
               Navigator.of(context).pop();
             },
           ),

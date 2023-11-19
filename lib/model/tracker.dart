@@ -20,7 +20,7 @@ class Tracker {
   List<DataLog> dataLog = [];
 
   Tracker(this.trackableID, {this.title, this.type}) {
-    readLog();
+    readLog(DateTime.now());
   }
 
   // TYPE - counter, quality, duration, value
@@ -28,30 +28,36 @@ class Tracker {
   // VALUE -THIS IS NOT SAVED HERE AS THAT IS FOR THE LOG!
 
   // set/update log for today for this tracker...
-  Future updateLog(dynamic value) async {
+  Future updateLog(dynamic value, DateTime date) async {
     if (trackableID == '') return;
     // GET ANY LOGS WITHIN THE TIMEFRAME AND UPDATE IT RATHER THAN CREATE A NEW LOG
-    DateTime minTimeFrame = DateTime.now().add(const Duration(hours: -1));
-    List<DataLog> logs = await getLogs(minTimeFrame, DateTime.now());
+    DateTime minTimeFrame = date.add(const Duration(hours: -1));
+    List<DataLog> logs = await getLogs(minTimeFrame, date);
     DataLog? log = logs.firstOrNull;
-    log ??= DataLog(trackableID, DateTime.now(), title: title, type: type, value: value);
-    log.time = DateTime.now();
+    log ??= DataLog(trackableID, date, title: title, type: type, value: value);
+    log.time = date;
     log.value = value;
     log.save();
   }
 
   // get data from logs for day ?
-  Future readLog() async {
+  Future readLog(DateTime date) async {
     if (trackableID == '') return;
     // Load data log for this tracker
-    DateTime minTimeFrame = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    List<DataLog> log = await getLogs(minTimeFrame, minTimeFrame.add(const Duration(hours: 24)));
+    DateTime minTimeFrame = DateTime(date.year, date.month, date.day);
+    List<DataLog> log = await getLogs(
+        minTimeFrame, minTimeFrame.add(const Duration(hours: 24)));
     dataLog.addAll(log);
   }
 
   Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
     if (trackableID == '') return [];
-    return DataLog.getCollection(trackableID).where('title', isEqualTo: title ?? 'Default').where('time', isGreaterThanOrEqualTo: start).where('time', isLessThanOrEqualTo: end).get(GetOptions(source: Source.cache)).then((data) {
+    return DataLog.getCollection(trackableID)
+        .where('title', isEqualTo: title ?? 'Default')
+        .where('time', isGreaterThanOrEqualTo: start)
+        .where('time', isLessThanOrEqualTo: end)
+        .get(GetOptions(source: Source.cache))
+        .then((data) {
       List<DataLog> log = data.docs.map((doc) {
         return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();
@@ -63,7 +69,13 @@ class Tracker {
     if (trackableID == '') return null;
     if (before != null) print(before.toString());
 
-    return await DataLog.getCollection(trackableID).where('time', isLessThanOrEqualTo: before ?? DateTime.now()).where('title', isEqualTo: title ?? 'Default').limit(1).orderBy('time', descending: true).get().then((data) {
+    return await DataLog.getCollection(trackableID)
+        .where('time', isLessThanOrEqualTo: before ?? DateTime.now())
+        .where('title', isEqualTo: title ?? 'Default')
+        .limit(1)
+        .orderBy('time', descending: true)
+        .get()
+        .then((data) {
       List<DataLog> log = data.docs.map((doc) {
         return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();
@@ -92,7 +104,8 @@ class Tracker {
 
   Future<String> getLastValueFor(DateTime day) async {
     if (trackableID == '') return '';
-    DataLog? dataLog = await getLastEntry(false, before: DateTime(day.year, day.month, day.day, 23, 59));
+    DataLog? dataLog = await getLastEntry(false,
+        before: DateTime(day.year, day.month, day.day, 23, 59));
     return dataLog?.value.toString() ?? '';
   }
 
@@ -103,10 +116,11 @@ class Tracker {
     return values;
   }
 
-  Tracker.fromTrackOption(String owner, TrackOption option) : trackableID = owner {
+  Tracker.fromTrackOption(String owner, TrackOption option)
+      : trackableID = owner {
     title = option.title;
     type = option.trackType;
-    readLog();
+    readLog(DateTime.now());
   }
 
   // PERSISTANCE

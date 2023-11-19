@@ -28,7 +28,8 @@ class _TrackerListState extends State<TrackerControlList> {
   initState() {
     super.initState();
     _trackers = EventManager.selectedTarget.trackers
-        .map((e) => Tracker(EventManager.selectedTarget.id ?? '', type: e.trackType, title: e.title))
+        .map((e) => Tracker(EventManager.selectedTarget.id ?? '',
+            type: e.trackType, title: e.title))
         .toList();
   }
 
@@ -42,7 +43,7 @@ class _TrackerListState extends State<TrackerControlList> {
             child: ListView(
               children: _trackers.map((doc) {
                 return GestureDetector(
-                  child: TrackerControls(doc),
+                  child: TrackerControls(doc, DateTime.now()),
                   onTap: () => {
                     setState(() {
                       _selectedTracker = doc;

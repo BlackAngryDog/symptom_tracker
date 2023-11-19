@@ -6,7 +6,9 @@ import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
 class DietTracker extends StatefulWidget {
   final Tracker _tracker;
-  const DietTracker(this._tracker, {Key? key}) : super(key: key);
+  final DateTime _trackerDate;
+  const DietTracker(this._tracker, this._trackerDate, {Key? key})
+      : super(key: key);
 
   @override
   State<DietTracker> createState() => _DietTrackerState();

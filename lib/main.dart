@@ -15,7 +15,8 @@ import 'package:symptom_tracker/pages/tracker_home.dart';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart' as auth ;
+import 'package:firebase_ui_auth/firebase_ui_auth.dart' as auth;
+import 'package:symptom_tracker/pages/weekly_overview_page.dart';
 import 'package:symptom_tracker/widgets/tracker_week.dart';
 
 import 'firebase_config.dart';
@@ -25,13 +26,15 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(name: 'att', options: DefaultFirebaseConfig.platformOptions);
+    await Firebase.initializeApp(
+        name: 'att', options: DefaultFirebaseConfig.platformOptions);
   } else {
     Firebase.app();
   }
 
   // FacebookSdk.sdkInitialize();
-  FirebaseDatabase.instance.databaseURL = DefaultFirebaseConfig.platformOptions.databaseURL;
+  FirebaseDatabase.instance.databaseURL =
+      DefaultFirebaseConfig.platformOptions.databaseURL;
   FirebaseDatabase.instance.goOnline();
 
   runApp(const MyApp());
@@ -43,8 +46,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
 }
 
 class AuthGate extends StatelessWidget {
-   AuthGate({Key? key}) : super(key: key);
+  AuthGate({Key? key}) : super(key: key);
 
   var providers = [auth.EmailAuthProvider()];
 
@@ -77,7 +78,7 @@ class AuthGate extends StatelessWidget {
         // User is not signed in
         if (!snapshot.hasData) {
           return auth.SignInScreen(
-            providers:providers,
+            providers: providers,
             actions: [
               auth.AuthStateChangeAction<auth.SignedIn>((context, state) {
                 Navigator.pushReplacementNamed(context, '/profile');
@@ -99,11 +100,12 @@ class AuthGate extends StatelessWidget {
               } else {
                 // Open tracker summery page
                 return FutureBuilder<Trackable?>(
-                    future: Trackable.load(snapshot.data!.selectedID ?? 'default'),
+                    future:
+                        Trackable.load(snapshot.data!.selectedID ?? 'default'),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         EventManager(snapshot.data ?? Trackable());
-                        return TrackerWeek(snapshot.data ?? Trackable());
+                        return TrackerPage(snapshot.data ?? Trackable());
                       } else {
                         return const Center(
                           child: CircularProgressIndicator(),

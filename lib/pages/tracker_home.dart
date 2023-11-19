@@ -24,6 +24,7 @@ import 'package:symptom_tracker/widgets/mini_trackers/diet_tracker.dart';
 import 'package:symptom_tracker/widgets/tracker_info_panel.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 import 'package:symptom_tracker/widgets/tracker_list.dart';
+import 'package:symptom_tracker/widgets/tracker_week.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 
@@ -198,9 +199,9 @@ class TrackerPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: const [
-            InfoHeader(),
-            TrackerInfoPanel(),
+          children: [
+            const InfoHeader(),
+            TrackerWeek(trackable),
           ],
           //TrackerList(widget.trackable),
         ),
@@ -213,7 +214,8 @@ class TrackerPage extends StatelessWidget {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniCenterDocked,
 
       bottomNavigationBar: BottomAppBar(
         color: Colors.blue,
