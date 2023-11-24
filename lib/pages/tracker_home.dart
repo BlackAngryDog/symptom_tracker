@@ -21,6 +21,7 @@ import 'package:symptom_tracker/widgets/info_header.dart';
 import 'package:symptom_tracker/widgets/line_chart.dart';
 import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
 import 'package:symptom_tracker/widgets/mini_trackers/diet_tracker.dart';
+import 'package:symptom_tracker/widgets/tracker_control_list.dart';
 import 'package:symptom_tracker/widgets/tracker_info_panel.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 import 'package:symptom_tracker/widgets/tracker_list.dart';
@@ -171,6 +172,7 @@ class TrackerPage extends StatelessWidget {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
+        backgroundColor: const Color.fromARGB(0,0,0,0),
         automaticallyImplyLeading: true,
         title: Text(trackable.title ?? "DOG"),
         actions: [
@@ -198,7 +200,9 @@ class TrackerPage extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
+
         child: Column(
+
           children: [
             const InfoHeader(),
             TrackerWeek(trackable),

@@ -59,7 +59,10 @@ class _ValueTrackerState extends State<CountTracker> {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Card(
+        color: const Color.fromARGB(0,0,0,0),
+        shadowColor: const Color.fromARGB(0,0,0,0),
         child: ListTile(
+
           title: Text(widget._tracker.title ?? ""),
           subtitle: Text(subtitle),
           trailing: SizedBox(
