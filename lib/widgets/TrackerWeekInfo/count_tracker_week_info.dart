@@ -15,7 +15,15 @@ class CountTrackerWeekInfo extends StatefulWidget {
 }
 
 class _ValueTrackerState extends State<CountTrackerWeekInfo> {
-  final List<String> currValues = ["0","0","0","0","0","0","0"]; // TODO - GET TODYS COUNT FOR TRACKER
+  final List<String> currValues = [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+  ]; // TODO - GET TODYS COUNT FOR TRACKER
   String subtitle = 'count today is 0';
 
   @override
@@ -28,12 +36,12 @@ class _ValueTrackerState extends State<CountTrackerWeekInfo> {
     int i = 0;
     final currDay = DateTime.now().weekday;
     List<String> v = [];
-    while (i++ < 7){
-      v.add(await widget._tracker.getLastValueFor( widget._trackerDate.add(Duration(days: i - currDay))));
+    while (i++ < 7) {
+      v.add(await widget._tracker.getLastValueFor(
+          widget._trackerDate.add(Duration(days: i - currDay))));
     }
     currValues.clear();
     setState(() {
-
       currValues.addAll(v);
     });
   }
@@ -51,34 +59,19 @@ class _ValueTrackerState extends State<CountTrackerWeekInfo> {
 
   @override
   Widget build(BuildContext context) {
-
-    var daysOfWeek = <String>[
-      'M',
-      'T',
-      'W',
-      'T',
-      'F',
-      'S',
-      'S'
-    ];
-
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 50,
-          crossAxisSpacing: 0,
-          mainAxisSpacing: 0),
-      itemCount: daysOfWeek.length,
+          maxCrossAxisExtent: 50, crossAxisSpacing: 0, mainAxisSpacing: 0),
+      itemCount: currValues.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext ctx, index) {
         // Add your card/widget/grid element here
         return Container(
+          width: MediaQuery.of(context).copyWith().size.width,
           color: Colors.transparent,
           alignment: Alignment.center,
           child: Column(
-            children: [
-              Text(daysOfWeek[index]),
-              Text(currValues[index])
-            ],
+            children: [Text(currValues[index])],
           ),
         );
       },

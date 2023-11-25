@@ -11,6 +11,7 @@ import 'package:symptom_tracker/widgets/tracker_week_info.dart';
 
 import '../model/event_manager.dart';
 import '../model/tracker.dart';
+import 'TrackerWeekInfo/week_info_grid.dart';
 
 class TrackerWeek extends StatefulWidget {
   final Trackable trackable;
@@ -22,6 +23,7 @@ class TrackerWeek extends StatefulWidget {
 
 class _TrackerWeekState extends State<TrackerWeek> {
   late final List<Tracker> _trackers;
+  var daysOfWeek = <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   @override
   initState() {
@@ -35,19 +37,23 @@ class _TrackerWeekState extends State<TrackerWeek> {
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
-      color: const Color.fromARGB(0,100,0,0),
+    return Container(
+      color: Colors.blueGrey,
       height: MediaQuery.of(context).copyWith().size.height,
-      child: ListView(
-              children: _trackers.map((doc) {
-                return TrackerWeekInfo(
-                    doc,
-                    DateTime.now());
-              }).toList(),
-            ),
-      );
+      child: Stack(
+        children: [
+          WeekInfoGrid(daysOfWeek),
+          ListView(
+            shrinkWrap: true,
+            children: _trackers.map((doc) {
+              return TrackerWeekInfo(doc, DateTime.now());
+            }).toList(),
+          ),
+        ],
+      ),
+    );
 
-      /*child: FirebaseDatabaseListView(
+    /*child: FirebaseDatabaseListView(
         query: DatabaseTools.getRef(Tracker().getEndpoint()),
         itemBuilder: (context, snapshot) {
           Tracker tracker = Tracker.fromJson(

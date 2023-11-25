@@ -51,12 +51,12 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
 
     return Card(
       color: Colors.transparent,
+      shadowColor: Colors.transparent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
           Text(
-            _selectedTracker?.title??"",
+            _selectedTracker?.title ?? "",
             textAlign: TextAlign.left,
             style: const TextStyle(fontSize: 24),
           ),
@@ -67,7 +67,8 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
 
     switch (_selectedTracker!.type) {
       case "counter":
-        return CountTrackerWeekInfo(_selectedTracker!, widget.date ?? DateTime.now());
+        return CountTrackerWeekInfo(
+            _selectedTracker!, widget.date ?? DateTime.now());
       case "quality":
         return QualityTracker(_selectedTracker!, widget.date ?? DateTime.now());
       case "diet":
@@ -80,13 +81,17 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
   StatefulWidget getDisplay() {
     switch (_selectedTracker!.type) {
       case "counter":
-        return CountTrackerWeekInfo(_selectedTracker!, widget.date ?? DateTime.now());
+        return CountTrackerWeekInfo(
+            _selectedTracker!, widget.date ?? DateTime.now());
       case "quality":
-        return QualityTrackerWeekInfo(_selectedTracker!, widget.date ?? DateTime.now());
+        return QualityTrackerWeekInfo(
+            _selectedTracker!, widget.date ?? DateTime.now());
       case "diet":
-        return  DietTrackerWeekInfo(_selectedTracker!, widget.date ?? DateTime.now());
+        return DietTrackerWeekInfo(
+            _selectedTracker!, widget.date ?? DateTime.now());
       default:
-        return ValueTrackerWeekInfo(_selectedTracker!, widget.date ?? DateTime.now());
+        return ValueTrackerWeekInfo(
+            _selectedTracker!, widget.date ?? DateTime.now());
     }
   }
 }
