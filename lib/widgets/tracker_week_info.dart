@@ -52,13 +52,18 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
     return Card(
       color: Colors.transparent,
       shadowColor: Colors.transparent,
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _selectedTracker?.title ?? "",
-            textAlign: TextAlign.left,
-            style: const TextStyle(fontSize: 24),
+          Container(
+            color: Colors.lightBlue,
+            width: MediaQuery.of(context).copyWith().size.width,
+            child: Text(
+              _selectedTracker?.title ?? "",
+              textAlign: TextAlign.left,
+              style: const TextStyle(fontSize: 24,),
+            ),
           ),
           getDisplay(),
         ],

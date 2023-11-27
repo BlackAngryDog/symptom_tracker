@@ -8,6 +8,7 @@ import 'package:symptom_tracker/pages/tracker_Summery.dart';
 class QualityTrackerWeekInfo extends StatefulWidget {
   final Tracker _tracker;
   final DateTime _trackerDate;
+
   const QualityTrackerWeekInfo(this._tracker, this._trackerDate, {Key? key})
       : super(key: key);
 
@@ -69,11 +70,34 @@ class _QualityTrackerWeekInfoState extends State<QualityTrackerWeekInfo> {
       shrinkWrap: true,
       itemBuilder: (BuildContext ctx, index) {
         // Add your card/widget/grid element here
+
         return Container(
-          color: Colors.transparent,
+          // add a box decoration with round corners
+          decoration: const BoxDecoration(
+            color: Colors.red,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+          ),
+          width: 50,
+          height: 50,
           alignment: Alignment.center,
-          child: Column(
-            children: [Text(currValues[index])],
+          child: Stack(
+            children: [
+              const Icon(
+                Icons.star,
+                color: Colors.amber,
+                size: 50,
+              ),
+              Center(
+                  widthFactor: 50,
+                  heightFactor: 50,
+                  child: Text(
+                    currValues[index],
+                    textAlign: TextAlign.center,
+                  )),
+            ],
           ),
         );
       },

@@ -31,11 +31,6 @@ class _WeekInfoGridState extends State<WeekInfoGrid> {
         // Add your card/widget/grid element here
 
         return Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 1,
-            ),
-          ),
           color: Colors.transparent,
           alignment: Alignment.topCenter,
           height: MediaQuery.of(context).copyWith().size.height,
@@ -43,11 +38,7 @@ class _WeekInfoGridState extends State<WeekInfoGrid> {
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
-              VerticalDivider(
-                width: 0,
-                color: Colors.red,
-                thickness: 2,
-              ),
+
               Text(
                 widget._data[index],
                 style: TextStyle(fontSize: 20, color: Colors.white,),

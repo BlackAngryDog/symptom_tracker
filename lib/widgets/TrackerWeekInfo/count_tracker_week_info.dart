@@ -7,6 +7,7 @@ import 'package:symptom_tracker/pages/tracker_Summery.dart';
 class CountTrackerWeekInfo extends StatefulWidget {
   final Tracker _tracker;
   final DateTime _trackerDate;
+
   const CountTrackerWeekInfo(this._tracker, this._trackerDate, {Key? key})
       : super(key: key);
 
@@ -61,19 +62,27 @@ class _ValueTrackerState extends State<CountTrackerWeekInfo> {
   Widget build(BuildContext context) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 50, crossAxisSpacing: 0, mainAxisSpacing: 0),
+        maxCrossAxisExtent: 50,
+        crossAxisSpacing: 0,
+        mainAxisSpacing: 0,
+      ),
       itemCount: currValues.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext ctx, index) {
         // Add your card/widget/grid element here
         return Container(
-          width: MediaQuery.of(context).copyWith().size.width,
-          color: Colors.transparent,
-          alignment: Alignment.center,
-          child: Column(
-            children: [Text(currValues[index])],
-          ),
-        );
+            // add a box decoration with round corners
+            decoration: const BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
+            width: 50,
+            height: 50,
+            alignment: Alignment.center,
+            child: Text(currValues[index]));
       },
     );
   }
