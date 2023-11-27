@@ -42,13 +42,23 @@ class _TrackerWeekState extends State<TrackerWeek> {
       height: MediaQuery.of(context).copyWith().size.height,
       child: Stack(
         children: [
+
           WeekInfoGrid(daysOfWeek),
-          ListView(
-            shrinkWrap: true,
-            children: _trackers.map((doc) {
-              return TrackerWeekInfo(doc, DateTime.now());
-            }).toList(),
+
+          Column(
+
+            children: [
+              SizedBox(height: 25),
+              ListView(
+                shrinkWrap: true,
+                children: _trackers.map((doc) {
+                  return TrackerWeekInfo(doc, DateTime.now());
+                }).toList(),
+
+              ),
+            ],
           ),
+
         ],
       ),
     );

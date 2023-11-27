@@ -21,25 +21,39 @@ class _WeekInfoGridState extends State<WeekInfoGrid> {
 
   @override
   Widget build(BuildContext context) {
+    double? height = MediaQuery.of(context).copyWith().size.height;
     return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 50, crossAxisSpacing: 0, mainAxisSpacing: 0),
-      itemCount: widget._data.length,
-      shrinkWrap: true,
+      gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 7, crossAxisSpacing: 0, mainAxisSpacing: 10, mainAxisExtent: height),
+      itemCount: 7,
+
       itemBuilder: (BuildContext ctx, index) {
         // Add your card/widget/grid element here
+
         return Container(
-          color: Colors.black,
-          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 1,
+            ),
+          ),
+          color: Colors.transparent,
+          alignment: Alignment.topCenter,
           height: MediaQuery.of(context).copyWith().size.height,
           width: MediaQuery.of(context).copyWith().size.width,
-          child: Row(
+          child: Stack(
+            alignment: Alignment.topCenter,
             children: [
-              Text(widget._data[index]),
               VerticalDivider(
+                width: 0,
                 color: Colors.red,
-                thickness: 20,
-              )
+                thickness: 2,
+              ),
+              Text(
+                widget._data[index],
+                style: TextStyle(fontSize: 20, color: Colors.white,),
+                textAlign: TextAlign.center,
+              ),
+
             ],
           ),
         );
