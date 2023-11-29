@@ -1,4 +1,6 @@
 // stateless widget that displays the tracker for the week
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
@@ -22,43 +24,50 @@ class TrackerWeek extends StatefulWidget {
 }
 
 class _TrackerWeekState extends State<TrackerWeek> {
-  late final List<Tracker> _trackers;
   var daysOfWeek = <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  late StreamSubscription trackerSubscription;
 
   @override
   initState() {
     super.initState();
 
-    _trackers = EventManager.selectedTarget.trackers
-        .map((e) => Tracker(EventManager.selectedTarget.id ?? '',
-            type: e.trackType, title: e.title))
-        .toList();
+    trackerSubscription = EventManager.stream.listen((event) {
+      if (event.event == EventType.trackerAdded) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    trackerSubscription.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
+    final trackers = EventManager.selectedTarget.trackers
+        .map((e) => Tracker(EventManager.selectedTarget.id ?? '',
+            type: e.trackType, title: e.title))
+        .toList();
+
     return Container(
       color: Colors.blueGrey,
       height: MediaQuery.of(context).copyWith().size.height,
       child: Stack(
         children: [
-
           WeekInfoGrid(daysOfWeek),
-
           Column(
-
             children: [
               SizedBox(height: 25),
               ListView(
                 shrinkWrap: true,
-                children: _trackers.map((doc) {
+                children: trackers.map((doc) {
                   return TrackerWeekInfo(doc, DateTime.now());
                 }).toList(),
-
               ),
             ],
           ),
-
         ],
       ),
     );

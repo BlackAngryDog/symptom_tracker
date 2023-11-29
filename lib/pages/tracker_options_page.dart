@@ -36,13 +36,12 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
         });
   }
 
-  void _addTracker(Tracker tracker) {
+  void _addTracker(TrackOption option) {
     // DatabaseTools.testFirestore();
 
     setState(() {
       // TODO - CREATE A NEW TRACKER IN THE TRACKABLE (NEEDS POPUP FOR PARAMS)
 
-      TrackOption option = TrackOption(title: tracker.title, trackType: tracker.type);
       option.save();
 
       //Tracker tracker = value;
@@ -103,7 +102,9 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
     // SELECT OPTIONS FROM DATA
 
     for (TrackOption entry in entries) {
-      DietOptionItem? option = options.where((element) => element.item.title == entry.title).firstOrNull;
+      DietOptionItem? option = options
+          .where((element) => element.item.title == entry.title)
+          .firstOrNull;
       option?.selected = true;
     }
 
@@ -138,7 +139,10 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
                   );
                 } else {
                   options = snapshot.data?.docs.map((doc) {
-                    return DietOptionItem<TrackOption>(false, TrackOption.fromJson(doc.id, doc.data() as Map<String, dynamic>));
+                    return DietOptionItem<TrackOption>(
+                        false,
+                        TrackOption.fromJson(
+                            doc.id, doc.data() as Map<String, dynamic>));
                   }).toList() as List<DietOptionItem>;
 
                   return FutureBuilder<List<DietOptionItem>>(
@@ -181,7 +185,11 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
   }
 
   Future initialiseTrackable(BuildContext context) async {
-    widget._trackable.trackers = options.where((element) => element.selected == true).map((value) => TrackOption(title: value.item.title, trackType: value.item.trackType)).toList();
+    widget._trackable.trackers = options
+        .where((element) => element.selected == true)
+        .map((value) => TrackOption(
+            title: value.item.title, trackType: value.item.trackType))
+        .toList();
     await widget._trackable.save();
     // Update tracking data for trackable (how to delete?)
     // TODO - MAKE THIS A FUNCTION

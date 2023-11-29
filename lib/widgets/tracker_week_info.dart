@@ -28,21 +28,21 @@ class TrackerWeekInfo extends StatefulWidget {
 
 class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
   Tracker? get _selectedTracker => widget.item ?? EventManager.selectedTracker;
-  late StreamSubscription trackerSubscription;
+  //late StreamSubscription trackerSubscription;
 
   @override
   void initState() {
     super.initState();
 
-    trackerSubscription = EventManager.stream.listen((event) {
-      setState(() {});
-    });
+    //trackerSubscription = EventManager.stream.listen((event) {
+    //  setState(() {});
+    //});
   }
 
   @override
   void dispose() {
     super.dispose();
-    trackerSubscription.cancel();
+    //trackerSubscription.cancel();
   }
 
   @override
@@ -52,7 +52,6 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
     return Card(
       color: Colors.transparent,
       shadowColor: Colors.transparent,
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -62,7 +61,9 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
             child: Text(
               _selectedTracker?.title ?? "",
               textAlign: TextAlign.left,
-              style: const TextStyle(fontSize: 24,),
+              style: const TextStyle(
+                fontSize: 24,
+              ),
             ),
           ),
           getDisplay(),

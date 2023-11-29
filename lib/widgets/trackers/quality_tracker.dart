@@ -28,7 +28,7 @@ class _QualityTrackerState extends State<QualityTracker> {
   Future updateData(double value) async {
     await widget._tracker
         .updateLog(value, widget._trackerDate ?? DateTime.now());
-    EventManager.dispatchUpdate();
+    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerChanged));
     getCurrValue();
   }
 

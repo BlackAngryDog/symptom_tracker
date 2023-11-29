@@ -46,7 +46,7 @@ class _ValueTrackerState extends State<ValueTracker> {
   Future updateData(String value) async {
     await widget._tracker
         .updateLog(value, widget._trackerDate ?? DateTime.now());
-    EventManager.dispatchUpdate();
+    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerChanged));
     getCurrValue();
   }
 

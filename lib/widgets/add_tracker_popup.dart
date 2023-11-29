@@ -9,10 +9,12 @@ import 'package:symptom_tracker/widgets/trackers/diet_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
+import '../model/track_option.dart';
+
 class AddTracker extends StatefulWidget {
   //const AddTransaction({ Key? key }) : super(key: key);
 
-  final Function(Tracker tracker) onAddTracker;
+  final Function(TrackOption option) onAddTracker;
 
   AddTracker(this.onAddTracker);
 
@@ -43,12 +45,12 @@ class _AddTrackerState extends State<AddTracker> {
 
     if (_title == '' || _value == '') return;
 
-    Tracker tracker = Tracker(EventManager.selectedTarget.id ?? '',
-        title: _title, type: selectedValue);
-
-    widget.onAddTracker(tracker);
+    TrackOption option = TrackOption(title: _title, trackType: selectedValue);
+    option.save();
+    widget.onAddTracker(option);
     // ADD STARTING VALUE;
-    tracker.updateLog(_value, DateTime.now());
+    Tracker.fromTrackOption(EventManager.selectedTarget.id ?? '', option)
+        .updateLog(_value, DateTime.now());
 
     Navigator.of(context).pop();
   }

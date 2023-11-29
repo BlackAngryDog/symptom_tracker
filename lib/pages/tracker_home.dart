@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
+import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/model/user.dart';
@@ -51,14 +52,16 @@ class TrackerPage extends StatelessWidget {
         });
   }
 
-  void _addTracker(Tracker value) {
+  void _addTracker(TrackOption value) {
     // DatabaseTools.testFirestore();
 
     // setState(() {
     // TODO - CREATE A NEW TRACKER IN THE TRACKABLE (NEEDS POPUP FOR PARAMS)
 
-    Tracker tracker = value;
-    tracker.trackableID = trackable.id ?? 'default';
+    // Tracker tracker = value;
+    //tracker.trackableID = trackable.id ?? 'default';
+    EventManager.selectedTarget.trackers.add(value);
+    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerAdded));
     // TODO - Switch to tracker options list update
     //tracker.save();
     //});
@@ -172,7 +175,7 @@ class TrackerPage extends StatelessWidget {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        backgroundColor: const Color.fromARGB(0,0,0,0),
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
         automaticallyImplyLeading: true,
         title: Text(trackable.title ?? "DOG"),
         actions: [
@@ -200,9 +203,7 @@ class TrackerPage extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-
         child: Column(
-
           children: [
             const InfoHeader(),
             TrackerWeek(trackable),
