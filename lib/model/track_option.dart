@@ -40,7 +40,10 @@ class TrackOption {
   }
 
   static CollectionReference getCollection() {
-    return FirebaseFirestore.instance.collection('users').doc(DatabaseTools.getUserID()).collection('trackOptions');
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(DatabaseTools.getUserID())
+        .collection('trackOptions');
   }
 
   static Future<TrackOption> load(String key) async {
@@ -49,7 +52,8 @@ class TrackOption {
     return doc
         .get()
         .then(
-          (snapshot) => TrackOption.fromJson(doc.id, snapshot.data() as Map<String, dynamic>),
+          (snapshot) => TrackOption.fromJson(
+              doc.id, snapshot.data() as Map<String, dynamic>),
         )
         .catchError(
           (error, stackTrace) => TrackOption(),
