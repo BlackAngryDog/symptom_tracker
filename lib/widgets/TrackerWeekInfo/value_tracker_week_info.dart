@@ -40,7 +40,9 @@ class _ValueTrackerWeekInfoState extends State<ValueTrackerWeekInfo> {
   void initState() {
     super.initState();
     trackerSubscription = EventManager.stream.listen((event) {
-      getCurrValue();
+      if (event.event == EventType.trackerChanged && event.tracker == widget._tracker) {
+        getCurrValue();
+      }
     });
     getCurrValue();
 
@@ -51,8 +53,12 @@ class _ValueTrackerWeekInfoState extends State<ValueTrackerWeekInfo> {
     final currDay = DateTime.now().weekday;
     List<String> v = [];
     while (i++ < 7) {
-      v.add(await widget._tracker.getLastValueFor(
-          widget._trackerDate.add(Duration(days: i - currDay))));
+      var date = widget._trackerDate.add(Duration(days: i - currDay));
+      if (date.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch) {
+        v.add(await widget._tracker.getLastValueFor(date, includePrevious:false)??"-");
+      }else{
+        v.add("-");
+      }
     }
     currValues.clear();
     setState(() {
@@ -93,12 +99,13 @@ class _ValueTrackerWeekInfoState extends State<ValueTrackerWeekInfo> {
 
   @override
   Widget build(BuildContext context) {
-    var daysOfWeek = <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 50, crossAxisSpacing: 0, mainAxisSpacing: 0),
-      itemCount: daysOfWeek.length,
+        maxCrossAxisExtent: 50,
+        crossAxisSpacing: 0,
+        mainAxisSpacing: 0,
+      ),
+      itemCount: currValues.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext ctx, index) {
         // Add your card/widget/grid element here
@@ -107,12 +114,18 @@ class _ValueTrackerWeekInfoState extends State<ValueTrackerWeekInfo> {
             _showControlPanel(context, index);
           },
           child: Container(
-            color: Colors.transparent,
-            alignment: Alignment.center,
-            child: Column(
-              children: [Text(currValues[index])],
-            ),
-          ),
+            // add a box decoration with round corners
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              width: 50,
+              height: 50,
+              alignment: Alignment.center,
+              child: Text(currValues[index])),
         );
       },
     );

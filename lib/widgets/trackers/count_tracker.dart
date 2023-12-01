@@ -30,13 +30,13 @@ class _ValueTrackerState extends State<CountTracker> {
     await widget._tracker
         .updateLog(currValue, widget._trackerDate ?? DateTime.now());
     print('val');
-    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerChanged));
+    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
     getCurrValue();
   }
 
   Future getCurrValue() async {
     currValue = int.tryParse(
-            await widget._tracker.getLastValueFor(widget._trackerDate)) ??
+            await widget._tracker.getLastValueFor(widget._trackerDate, includePrevious: false)) ??
         0;
 
     setState(() {

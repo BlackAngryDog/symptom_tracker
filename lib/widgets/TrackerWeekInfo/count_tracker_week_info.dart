@@ -41,7 +41,9 @@ class _ValueTrackerState extends State<CountTrackerWeekInfo> {
   void initState() {
     super.initState();
     trackerSubscription = EventManager.stream.listen((event) {
-      getCurrValue();
+      if (event.event == EventType.trackerChanged && event.tracker == widget._tracker) {
+        getCurrValue();
+      }
     });
     getCurrValue();
 
@@ -52,8 +54,12 @@ class _ValueTrackerState extends State<CountTrackerWeekInfo> {
     final currDay = DateTime.now().weekday;
     List<String> v = [];
     while (i++ < 7) {
-      v.add(await widget._tracker.getLastValueFor(
-          widget._trackerDate.add(Duration(days: i - currDay))));
+      var date = widget._trackerDate.add(Duration(days: i - currDay));
+      if (date.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch) {
+        v.add(await widget._tracker.getLastValueFor(date, includePrevious:false)??"-");
+      }else{
+        v.add("-");
+      }
     }
     currValues.clear();
     setState(() {

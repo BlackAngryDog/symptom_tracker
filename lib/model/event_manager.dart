@@ -6,7 +6,8 @@ import 'package:collection/collection.dart';
 
 class UpdateEvent {
   final EventType event;
-  UpdateEvent(this.event);
+  Tracker? tracker;
+  UpdateEvent(this.event, {this.tracker});
 }
 
 enum EventType {

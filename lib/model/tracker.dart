@@ -67,10 +67,11 @@ class Tracker {
 
   Future<DataLog?> getLastEntry(bool today, {DateTime? before}) async {
     if (trackableID == '') return null;
-    if (before != null) print(before.toString());
+
+    DateTime date = before ?? DateTime.now();
 
     return await DataLog.getCollection(trackableID)
-        .where('time', isLessThanOrEqualTo: before ?? DateTime.now())
+        .where('time', isLessThanOrEqualTo: date )
         .where('title', isEqualTo: title ?? 'Default')
         .limit(1)
         .orderBy('time', descending: true)
@@ -80,13 +81,12 @@ class Tracker {
         return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();
 
-      if (before != null) print(before.toString());
 
       if (log.lastOrNull == null) return null;
 
       DataLog? lastEntry = log.lastOrNull;
       DateTime time = lastEntry!.time;
-      Duration diff = DateTime.now().difference(time);
+      Duration diff = date.difference(time);
       print('days diff is ${diff.inDays}');
       if (today == true && diff.inDays >= 1) return null;
 
@@ -102,9 +102,9 @@ class Tracker {
     return dataLog?.value.toString() ?? '';
   }
 
-  Future<String> getLastValueFor(DateTime day) async {
+  Future<String> getLastValueFor(DateTime day, {bool includePrevious = true}) async {
     if (trackableID == '') return '';
-    DataLog? dataLog = await getLastEntry(false,
+    DataLog? dataLog = await getLastEntry(!includePrevious,
         before: DateTime(day.year, day.month, day.day, 23, 59));
     return dataLog?.value.toString() ?? '';
   }
