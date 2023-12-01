@@ -10,7 +10,9 @@ import 'package:symptom_tracker/widgets/TrackerWeekInfo/count_tracker_week_info.
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/diet_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/quality_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/value_tracker_week_info.dart';
+import 'package:symptom_tracker/widgets/bottom_tracker_panel.dart';
 import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
+import 'package:symptom_tracker/widgets/tracker_controls.dart';
 import 'package:symptom_tracker/widgets/trackers/count_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/diet_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
@@ -28,21 +30,21 @@ class TrackerWeekInfo extends StatefulWidget {
 
 class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
   Tracker? get _selectedTracker => widget.item ?? EventManager.selectedTracker;
-  //late StreamSubscription trackerSubscription;
+  late StreamSubscription trackerSubscription;
 
   @override
   void initState() {
     super.initState();
 
-    //trackerSubscription = EventManager.stream.listen((event) {
-    //  setState(() {});
-    //});
+    trackerSubscription = EventManager.stream.listen((event) {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    //trackerSubscription.cancel();
+    trackerSubscription.cancel();
   }
 
   @override
@@ -52,22 +54,26 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
     return Card(
       color: Colors.transparent,
       shadowColor: Colors.transparent,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            color: Colors.lightBlue,
-            width: MediaQuery.of(context).copyWith().size.width,
-            child: Text(
-              _selectedTracker?.title ?? "",
-              textAlign: TextAlign.left,
-              style: const TextStyle(
-                fontSize: 24,
+
+      child: GestureDetector(
+        onTap: () {
+          _showControlPanel(context);
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              color: Colors.lightBlue,
+              width: MediaQuery.of(context).copyWith().size.width,
+              child: Text(
+                _selectedTracker?.title ?? "",
+                textAlign: TextAlign.left,
+                style: const TextStyle(fontSize: 24,),
               ),
             ),
-          ),
-          getDisplay(),
-        ],
+            getDisplay(),
+          ],
+        ),
       ),
     );
 
@@ -82,6 +88,20 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
       default:
         return ValueTracker(_selectedTracker!, widget.date ?? DateTime.now());
     }
+  }
+
+
+  void _showControlPanel(BuildContext ctx) {
+    showModalBottomSheet(
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+            onTap: () {},
+            behavior: HitTestBehavior.opaque,
+            child: TrackerControls(_selectedTracker, DateTime.now()),
+          );
+        });
   }
 
   StatefulWidget getDisplay() {
