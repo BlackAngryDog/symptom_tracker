@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
+import 'package:symptom_tracker/widgets/tracker_controls.dart';
 
 class CountTrackerWeekInfo extends StatefulWidget {
   final Tracker _tracker;
@@ -26,11 +29,22 @@ class _ValueTrackerState extends State<CountTrackerWeekInfo> {
     "0"
   ]; // TODO - GET TODYS COUNT FOR TRACKER
   String subtitle = 'count today is 0';
+  late StreamSubscription trackerSubscription;
+
+  @override
+  void dispose() {
+    super.dispose();
+    trackerSubscription.cancel();
+  }
 
   @override
   void initState() {
     super.initState();
+    trackerSubscription = EventManager.stream.listen((event) {
+      getCurrValue();
+    });
     getCurrValue();
+
   }
 
   Future getCurrValue() async {
@@ -58,6 +72,26 @@ class _ValueTrackerState extends State<CountTrackerWeekInfo> {
     );
   }
 
+  void _showControlPanel(BuildContext ctx, int index) {
+    final currDay = DateTime.now().weekday-1;
+
+    showModalBottomSheet(
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+            onTap: () {},
+            behavior: HitTestBehavior.opaque,
+            child: TrackerControls(
+              widget._tracker,
+              widget._trackerDate.add(
+                Duration(days: index+ - currDay),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -70,19 +104,24 @@ class _ValueTrackerState extends State<CountTrackerWeekInfo> {
       shrinkWrap: true,
       itemBuilder: (BuildContext ctx, index) {
         // Add your card/widget/grid element here
-        return Container(
-            // add a box decoration with round corners
-            decoration: const BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
+        return GestureDetector(
+          onTap: () {
+            _showControlPanel(context, index);
+          },
+          child: Container(
+              // add a box decoration with round corners
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
               ),
-            ),
-            width: 50,
-            height: 50,
-            alignment: Alignment.center,
-            child: Text(currValues[index]));
+              width: 50,
+              height: 50,
+              alignment: Alignment.center,
+              child: Text(currValues[index])),
+        );
       },
     );
   }

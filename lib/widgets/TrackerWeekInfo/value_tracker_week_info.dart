@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
+import 'package:symptom_tracker/widgets/tracker_controls.dart';
 
 class ValueTrackerWeekInfo extends StatefulWidget {
   final Tracker _tracker;
@@ -25,11 +28,22 @@ class _ValueTrackerWeekInfoState extends State<ValueTrackerWeekInfo> {
     "0"
   ]; // TODO - GET TODYS COUNT FOR TRACKER
   String subtitle = 'count today is 0';
+  late StreamSubscription trackerSubscription;
+
+  @override
+  void dispose() {
+    super.dispose();
+    trackerSubscription.cancel();
+  }
 
   @override
   void initState() {
     super.initState();
+    trackerSubscription = EventManager.stream.listen((event) {
+      getCurrValue();
+    });
     getCurrValue();
+
   }
 
   Future getCurrValue() async {
@@ -57,6 +71,26 @@ class _ValueTrackerWeekInfoState extends State<ValueTrackerWeekInfo> {
     );
   }
 
+  void _showControlPanel(BuildContext ctx, int index) {
+    final currDay = DateTime.now().weekday-1;
+
+    showModalBottomSheet(
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+            onTap: () {},
+            behavior: HitTestBehavior.opaque,
+            child: TrackerControls(
+              widget._tracker,
+              widget._trackerDate.add(
+                Duration(days: index+ - currDay),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     var daysOfWeek = <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -68,11 +102,16 @@ class _ValueTrackerWeekInfoState extends State<ValueTrackerWeekInfo> {
       shrinkWrap: true,
       itemBuilder: (BuildContext ctx, index) {
         // Add your card/widget/grid element here
-        return Container(
-          color: Colors.transparent,
-          alignment: Alignment.center,
-          child: Column(
-            children: [Text(currValues[index])],
+        return GestureDetector(
+          onTap: () {
+            _showControlPanel(context, index);
+          },
+          child: Container(
+            color: Colors.transparent,
+            alignment: Alignment.center,
+            child: Column(
+              children: [Text(currValues[index])],
+            ),
           ),
         );
       },

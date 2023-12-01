@@ -30,21 +30,16 @@ class TrackerWeekInfo extends StatefulWidget {
 
 class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
   Tracker? get _selectedTracker => widget.item ?? EventManager.selectedTracker;
-  late StreamSubscription trackerSubscription;
 
   @override
   void initState() {
     super.initState();
-
-    trackerSubscription = EventManager.stream.listen((event) {
-      setState(() {});
-    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    trackerSubscription.cancel();
+
   }
 
   @override
@@ -55,25 +50,20 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
       color: Colors.transparent,
       shadowColor: Colors.transparent,
 
-      child: GestureDetector(
-        onTap: () {
-          _showControlPanel(context);
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              color: Colors.lightBlue,
-              width: MediaQuery.of(context).copyWith().size.width,
-              child: Text(
-                _selectedTracker?.title ?? "",
-                textAlign: TextAlign.left,
-                style: const TextStyle(fontSize: 24,),
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            color: Colors.lightBlue,
+            width: MediaQuery.of(context).copyWith().size.width,
+            child: Text(
+              _selectedTracker?.title ?? "",
+              textAlign: TextAlign.left,
+              style: const TextStyle(fontSize: 24,),
             ),
-            getDisplay(),
-          ],
-        ),
+          ),
+          getDisplay(),
+        ],
       ),
     );
 
@@ -91,18 +81,7 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
   }
 
 
-  void _showControlPanel(BuildContext ctx) {
-    showModalBottomSheet(
-        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-        context: ctx,
-        builder: (_) {
-          return GestureDetector(
-            onTap: () {},
-            behavior: HitTestBehavior.opaque,
-            child: TrackerControls(_selectedTracker, DateTime.now()),
-          );
-        });
-  }
+
 
   StatefulWidget getDisplay() {
     switch (_selectedTracker!.type) {
