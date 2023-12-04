@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/abs_savable.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
@@ -16,10 +17,11 @@ class Tracker {
   String? userID;
   String trackableID;
   String? type;
+  String? icon;
 
   List<DataLog> dataLog = [];
 
-  Tracker(this.trackableID, {this.title, this.type}) {
+  Tracker(this.trackableID, {this.title, this.type, this.icon}) {
     readLog(DateTime.now());
   }
 

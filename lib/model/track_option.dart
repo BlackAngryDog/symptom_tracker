@@ -9,8 +9,9 @@ class TrackOption {
   String? id;
   String? title;
   String? trackType;
+  String? icon;
 
-  TrackOption({this.id, this.title, this.trackType});
+  TrackOption({this.id, this.title, this.trackType, this.icon});
 
   static Future<List<TrackOption>> getOptions() async {
     return TrackOption.getCollection().get().then((data) {
@@ -64,10 +65,12 @@ class TrackOption {
     id = key;
     title = json['title'];
     trackType = json['trackType'];
+    icon = json['icon'];
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
         'title': title,
         'trackType': trackType,
+        'icon': icon,
       };
 }

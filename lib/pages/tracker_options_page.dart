@@ -188,7 +188,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
     widget._trackable.trackers = options
         .where((element) => element.selected == true)
         .map((value) => TrackOption(
-            title: value.item.title, trackType: value.item.trackType))
+            title: value.item.title, trackType: value.item.trackType, icon: value.item.icon))
         .toList();
     await widget._trackable.save();
     // Update tracking data for trackable (how to delete?)

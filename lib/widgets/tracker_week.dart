@@ -48,7 +48,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
   Widget build(BuildContext context) {
     final trackers = EventManager.selectedTarget.trackers
         .map((e) => Tracker(EventManager.selectedTarget.id ?? '',
-            type: e.trackType, title: e.title))
+            type: e.trackType, title: e.title, icon: e.icon))
         .toList();
 
     return Container(

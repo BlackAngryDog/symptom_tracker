@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
@@ -39,12 +40,19 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
   @override
   void dispose() {
     super.dispose();
-
   }
 
   @override
   Widget build(BuildContext context) {
     if (_selectedTracker == null) return Container();
+
+    IconData? icon;
+    if (_selectedTracker?.icon != null) {
+      var iconDataJson = jsonDecode(_selectedTracker?.icon??"");
+      icon = IconData(
+          iconDataJson['codePoint'],
+          fontFamily: iconDataJson['fontFamily']);
+    }
 
     return Card(
       color: Colors.transparent,
@@ -53,13 +61,20 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
           Container(
             color: Colors.lightBlue,
             width: MediaQuery.of(context).copyWith().size.width,
-            child: Text(
-              _selectedTracker?.title ?? "",
-              textAlign: TextAlign.left,
-              style: const TextStyle(fontSize: 24,),
+            child: Row(
+              children: [
+                if (icon != null) Icon(icon),
+                Text(
+                  _selectedTracker?.title ?? "",
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(fontSize: 24,),
+                ),
+
+              ],
             ),
           ),
           getDisplay(),

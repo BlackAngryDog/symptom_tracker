@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:icon_picker/icon_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
@@ -25,9 +26,12 @@ class AddTracker extends StatefulWidget {
 class _AddTrackerState extends State<AddTracker> {
   final titleController = TextEditingController();
   final valueController = TextEditingController();
+
   DateTime _selectedDate = DateTime.now();
 
   String selectedValue = "counter";
+  String? selectedIcon = "favorite";
+
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
       DropdownMenuItem(child: Text("counter"), value: "counter"),
@@ -45,7 +49,8 @@ class _AddTrackerState extends State<AddTracker> {
 
     if (_title == '' || _value == '') return;
 
-    TrackOption option = TrackOption(title: _title, trackType: selectedValue);
+    TrackOption option = TrackOption(
+        title: _title, trackType: selectedValue, icon: selectedIcon);
     option.save();
     widget.onAddTracker(option);
     // ADD STARTING VALUE;
@@ -100,6 +105,14 @@ class _AddTrackerState extends State<AddTracker> {
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, IconData> myIconCollection = {
+      'favorite': Icons.favorite,
+      'home': Icons.home,
+      'android': Icons.android,
+      'album': Icons.album,
+      'ac_unit': Icons.ac_unit,
+    };
+
     return Card(
       elevation: 5,
       child: Container(
@@ -121,6 +134,19 @@ class _AddTrackerState extends State<AddTracker> {
                 },
                 items: dropdownItems),
             getControl(context),
+            IconPicker(
+              initialValue: 'favorite',
+              icon: Icon(Icons.apps),
+              labelText: "Icon",
+              title: "Select an icon",
+              cancelBtn: "CANCEL",
+              enableSearch: true,
+              searchHint: 'Search icon',
+              iconCollection: myIconCollection,
+              onChanged: (val) => {selectedIcon = val},
+              onSaved: (val) => {selectedIcon = val},
+            ),
+
             /*Container(
               height: 70,
               child: Row(
