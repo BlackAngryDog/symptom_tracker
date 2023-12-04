@@ -38,6 +38,7 @@ class EventManager {
     dispatchUpdate(UpdateEvent(EventType.targetChanged));
   }
 
+
   static Trackable get selectedTarget => _instance._selectedTarget;
   static Tracker? get selectedTracker => _instance._selectedTracker;
 

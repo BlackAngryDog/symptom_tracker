@@ -113,6 +113,8 @@ class _AddTrackerState extends State<AddTracker> {
       'ac_unit': Icons.ac_unit,
     };
 
+    // TODO - This flow needs a better screen + need to get default or ask for initial value
+
     return Card(
       elevation: 5,
       child: Container(
@@ -134,6 +136,9 @@ class _AddTrackerState extends State<AddTracker> {
                 },
                 items: dropdownItems),
             getControl(context),
+
+            // TODO - need an icon for quality and ratings - do we need one for tracker ?
+
             IconPicker(
               initialValue: 'favorite',
               icon: Icon(Icons.apps),
