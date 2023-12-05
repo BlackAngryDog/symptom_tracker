@@ -62,11 +62,12 @@ class _TrackerWeekState extends State<TrackerWeek> {
           Column(
             children: [
               SizedBox(height: 25),
-              ListView(
-                shrinkWrap: true,
-                children: trackers.map((doc) {
-                  return TrackerWeekInfo(doc, DateTime.now());
-                }).toList(),
+              Flexible(
+                child: ListView(
+                  children: trackers.map((doc) {
+                    return TrackerWeekInfo(doc, DateTime.now());
+                  }).toList(),
+                ),
               ),
             ],
           ),

@@ -41,14 +41,13 @@ class _ValueTrackerWeekInfoState extends AbsWeekInfoState<ValueTrackerWeekInfo> 
     return Container(
               // add a box decoration with round corners
               decoration: const BoxDecoration(
-                color: Colors.red,
+                color: Colors.white54,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ),
               ),
-              width: 50,
-              height: 50,
+
               alignment: Alignment.center,
               child: Text(widget.currValues[index]));
   }

@@ -9,18 +9,18 @@ import 'package:symptom_tracker/pages/tracker_Summery.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/abstract_week_info.dart';
 import 'package:symptom_tracker/widgets/tracker_controls.dart';
 
-class QualityTrackerWeekInfo extends AbsWeekInfo {
+class RatingTrackerWeekInfo extends AbsWeekInfo {
   final Tracker _tracker;
   final DateTime _trackerDate;
 
-  QualityTrackerWeekInfo(this._tracker, this._trackerDate, {Key? key})
+  RatingTrackerWeekInfo(this._tracker, this._trackerDate, {Key? key})
       : super(_tracker, _trackerDate,key: key);
 
   @override
-  State<QualityTrackerWeekInfo> createState() => _QualityTrackerWeekInfoState();
+  State<RatingTrackerWeekInfo> createState() => _RatingTrackerWeekInfoState();
 }
 
-class _QualityTrackerWeekInfoState extends AbsWeekInfoState<QualityTrackerWeekInfo> {
+class _RatingTrackerWeekInfoState extends AbsWeekInfoState<RatingTrackerWeekInfo> {
 
   String subtitle = 'count today is 0';
 
@@ -37,6 +37,8 @@ class _QualityTrackerWeekInfoState extends AbsWeekInfoState<QualityTrackerWeekIn
 
   @override
   Widget? getDay(int index){
+    int value =   double.tryParse(widget.currValues[index])?.toInt()??0;
+
     return Container(
       // add a box decoration with round corners
       decoration: const BoxDecoration(
@@ -49,24 +51,37 @@ class _QualityTrackerWeekInfoState extends AbsWeekInfoState<QualityTrackerWeekIn
       width: 50,
       height: 50,
       alignment: Alignment.center,
-      child: Stack(
-        fit: StackFit.expand,
-        alignment: Alignment.center,
-        children: [
-          const Icon(
-            Icons.star,
-            color: Colors.amber,
-            size: 45,
-          ),
-          Center(
-            child: Text(
-              widget.currValues[index],
-              textAlign: TextAlign.center,
-              style: TextStyle(backgroundColor: Colors.transparent),
-            ),
-          ),
-        ],
-      ),
+      child: getIcon(value),
     );
+  }
+
+  Widget getIcon(int index) {
+    switch (index) {
+      case 0:
+        return Icon(
+          Icons.sentiment_very_dissatisfied,
+          color: Colors.red,
+        );
+      case 1:
+        return Icon(
+          Icons.sentiment_dissatisfied,
+          color: Colors.redAccent,
+        );
+      case 2:
+        return Icon(
+          Icons.sentiment_neutral,
+          color: Colors.amber,
+        );
+      case 3:
+        return Icon(
+          Icons.sentiment_satisfied,
+          color: Colors.lightGreen,
+        );
+      default:
+        return Icon(
+          Icons.sentiment_very_satisfied,
+          color: Colors.green,
+        );
+    }
   }
 }

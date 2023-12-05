@@ -10,6 +10,7 @@ import 'package:symptom_tracker/pages/tracker_home.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/count_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/diet_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/quality_tracker_week_info.dart';
+import 'package:symptom_tracker/widgets/TrackerWeekInfo/rating_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/value_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/bottom_tracker_panel.dart';
 import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
@@ -58,28 +59,7 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
       color: Colors.transparent,
       shadowColor: Colors.transparent,
 
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-
-          Container(
-            color: Colors.lightBlue,
-            width: MediaQuery.of(context).copyWith().size.width,
-            child: Row(
-              children: [
-                if (icon != null) Icon(icon),
-                Text(
-                  _selectedTracker?.title ?? "",
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(fontSize: 24,),
-                ),
-
-              ],
-            ),
-          ),
-          getDisplay(),
-        ],
-      ),
+      child:getDisplay(),
     );
 
     switch (_selectedTracker!.type) {
@@ -105,6 +85,9 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
             _selectedTracker!, widget.date ?? DateTime.now());
       case "quality":
         return QualityTrackerWeekInfo(
+            _selectedTracker!, widget.date ?? DateTime.now());
+      case "rating":
+        return RatingTrackerWeekInfo(
             _selectedTracker!, widget.date ?? DateTime.now());
       case "diet":
         return DietTrackerWeekInfo(

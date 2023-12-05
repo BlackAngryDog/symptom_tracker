@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/widgets/TrackerWeekInfo/rating_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/diet_chart.dart';
 import 'package:symptom_tracker/widgets/line_chart.dart';
 

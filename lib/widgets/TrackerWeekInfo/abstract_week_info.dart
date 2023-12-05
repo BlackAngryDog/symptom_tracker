@@ -104,23 +104,95 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
   @override
   Widget build(BuildContext context) {
     var count = widget.currValues.length - 1;
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 50,
-        crossAxisSpacing: 0,
-        mainAxisSpacing: 0,
+
+    // Create a list of widgets
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: IntrinsicHeight(
+        child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Expanded(
+              flex: 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+              FittedBox(fit: BoxFit.fill,child: Text(widget._tracker.title??"", style: TextStyle(fontSize: 24), textAlign: TextAlign.start),),
+              Container(height: 50.0, child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(count, (index) {
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        widget.showControlPanel(context, count - index);
+                      },
+                      child: getDay(count - index),
+                    ),
+                  );
+                }),
+              ),),
+            ]),
+          ),
+          Expanded(flex: 1, child: GestureDetector(
+            onTap: () {
+              widget.showControlPanel(context, 6);
+            },
+            child: getDay(6),
+          ),),
+        ]),
       ),
-      itemCount: widget.currValues.length,
-      shrinkWrap: true,
-      itemBuilder: (BuildContext ctx, index) {
-        // Add your card/widget/grid element here
-        return GestureDetector(
-          onTap: () {
-            widget.showControlPanel(context, count - index);
-          },
-          child: getDay(count - index),
-        );
-      },
+    );
+
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("title"),
+              Container(
+                height: 100,
+                color: Colors.lime,
+                child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(count, (index) {
+                      return Expanded(
+                        flex: 1,
+                        child: GestureDetector(
+                          onTap: () {
+                            widget.showControlPanel(context, count - index);
+                          },
+                          child: getDay(count - index),
+                        ),
+                      );
+                          }),
+                ),
+              ),
+            ],
+
+
+          ),
+        ),
+
+        Expanded(
+          flex:1 ,
+          child: GestureDetector(
+            onTap: () {
+              widget.showControlPanel(context, 6);
+            },
+            child: getDay(6),
+          ),
+        ),
+
+
+      ],
     );
   }
 
@@ -128,14 +200,12 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     return Container(
         // add a box decoration with round corners
         decoration: const BoxDecoration(
-          color: Colors.red,
+          color: Colors.white54,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.all(
             Radius.circular(10),
           ),
         ),
-        width: 50,
-        height: 50,
         alignment: Alignment.center,
         child: Text(widget.currValues[index]));
   }

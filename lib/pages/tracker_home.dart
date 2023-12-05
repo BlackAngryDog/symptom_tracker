@@ -202,13 +202,17 @@ class TrackerPage extends StatelessWidget {
           })
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const InfoHeader(),
-            TrackerWeek(trackable),
-          ],
-          //TrackerList(widget.trackable),
+
+      body: SafeArea(
+        child: Container(
+          height: MediaQuery.of(context).copyWith().size.height,
+          child: ListView(
+            children: [
+              const InfoHeader(),
+              TrackerWeek(trackable),
+            ],
+            //TrackerList(widget.trackable),
+          ),
         ),
       ),
 

@@ -11,6 +11,7 @@ import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/count_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/diet_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
+import 'package:symptom_tracker/widgets/trackers/rating_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
 class TrackerControls extends StatefulWidget {
@@ -51,6 +52,8 @@ class _TrackerControlsState extends State<TrackerControls> {
         return CountTracker(_selectedTracker!, widget.date ?? DateTime.now());
       case "quality":
         return QualityTracker(_selectedTracker!, widget.date ?? DateTime.now());
+      case "rating":
+        return RatingTracker(_selectedTracker!, widget.date ?? DateTime.now());
       case "diet":
         return DietTracker(_selectedTracker!, widget.date ?? DateTime.now());
       default:

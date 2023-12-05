@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/abs_savable.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
@@ -32,6 +33,13 @@ class Tracker {
   // set/update log for today for this tracker...
   Future updateLog(dynamic value, DateTime date) async {
     if (trackableID == '') return;
+
+    Duration diff = date.difference(DateTime.now());
+    if (diff.inDays < 0 ) {
+      // if date is not today, we need to add this as last entry
+      date = date.endOfDay;
+    }
+
     // GET ANY LOGS WITHIN THE TIMEFRAME AND UPDATE IT RATHER THAN CREATE A NEW LOG
     DateTime minTimeFrame = date.add(const Duration(hours: -1));
     List<DataLog> logs = await getLogs(minTimeFrame, date);
@@ -107,7 +115,7 @@ class Tracker {
   Future<String> getLastValueFor(DateTime day, {bool includePrevious = true}) async {
     if (trackableID == '') return '';
     DataLog? dataLog = await getLastEntry(!includePrevious,
-        before: DateTime(day.year, day.month, day.day, 23, 59));
+        before: day.endOfDay);
     return dataLog?.value.toString() ?? '';
   }
 

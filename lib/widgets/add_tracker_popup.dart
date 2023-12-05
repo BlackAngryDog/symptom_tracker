@@ -36,6 +36,7 @@ class _AddTrackerState extends State<AddTracker> {
     List<DropdownMenuItem<String>> menuItems = [
       DropdownMenuItem(child: Text("counter"), value: "counter"),
       DropdownMenuItem(child: Text("quality"), value: "quality"),
+      DropdownMenuItem(child: Text("satisfaction"), value: "rating"),
       DropdownMenuItem(child: Text("value"), value: "value"),
     ];
     return menuItems;
