@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
@@ -29,16 +30,18 @@ class _ValueTrackerState extends State<CountTracker> {
 
     await widget._tracker
         .updateLog(currValue, widget._trackerDate ?? DateTime.now());
-    print('val');
-    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
+    print('val $currValue');
+    EventManager.dispatchUpdate(
+        UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
     getCurrValue();
   }
 
   Future getCurrValue() async {
-    currValue = int.tryParse(
-            await widget._tracker.getLastValueFor(widget._trackerDate, includePrevious: false)) ??
+    currValue = int.tryParse(await widget._tracker.getLastValueFor(
+            widget._trackerDate.dateOnly,
+            includePrevious: false)) ??
         0;
-
+    print('val2 $currValue');
     setState(() {
       subtitle = 'today is $currValue';
     });

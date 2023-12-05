@@ -6,8 +6,9 @@ import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
 class WeekInfoGrid extends StatefulWidget {
   final List<String> _data;
+  final DateTime date;
 
-  const WeekInfoGrid(this._data, {Key? key}) : super(key: key);
+  const WeekInfoGrid(this._data, this.date, {Key? key}) : super(key: key);
 
   @override
   State<WeekInfoGrid> createState() => _WeekInfoGridState();
@@ -22,11 +23,15 @@ class _WeekInfoGridState extends State<WeekInfoGrid> {
   @override
   Widget build(BuildContext context) {
     double? height = MediaQuery.of(context).copyWith().size.height;
-    return GridView.builder(
-      gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7, crossAxisSpacing: 0, mainAxisSpacing: 10, mainAxisExtent: height),
-      itemCount: 7,
+    final count = widget._data.length - 1;
 
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 7,
+          crossAxisSpacing: 0,
+          mainAxisSpacing: 10,
+          mainAxisExtent: height),
+      itemCount: 7,
       itemBuilder: (BuildContext ctx, index) {
         // Add your card/widget/grid element here
 
@@ -38,13 +43,17 @@ class _WeekInfoGridState extends State<WeekInfoGrid> {
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
-
               Text(
-                widget._data[index],
-                style: TextStyle(fontSize: 20, color: Colors.white,),
+                widget._data[widget.date
+                        .subtract(Duration(days: count - index))
+                        .weekday -
+                    1],
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
                 textAlign: TextAlign.center,
               ),
-
             ],
           ),
         );

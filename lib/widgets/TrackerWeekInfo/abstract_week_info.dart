@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/tracker_controls.dart';
@@ -8,13 +9,21 @@ import 'package:symptom_tracker/widgets/tracker_controls.dart';
 class AbsWeekInfo extends StatefulWidget {
   final Tracker _tracker;
   final DateTime _trackerDate;
-  final List<String> currValues = ["0", "0", "0", "0", "0", "0", "0"]; // TODO - GET TODYS COUNT FOR TRACKER
+  final List<String> currValues = [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+  ]; // TODO - GET TODYS COUNT FOR TRACKER
 
-  AbsWeekInfo(this._tracker, this._trackerDate, {Key? key})
-      : super(key: key);
+  AbsWeekInfo(this._tracker, this._trackerDate, {Key? key}) : super(key: key);
 
   void showControlPanel(BuildContext ctx, int index) {
     final currDay = DateTime.now().weekday - 1;
+    final trackDay = _trackerDate.subtract(Duration(days: index));
     // TODO - Expand this display to look and feel better with more info (Date/adv etc)
     showModalBottomSheet(
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
@@ -23,10 +32,15 @@ class AbsWeekInfo extends StatefulWidget {
           return GestureDetector(
             onTap: () {},
             behavior: HitTestBehavior.opaque,
-            child: TrackerControls(
-              _tracker,
-              _trackerDate.add(
-                Duration(days: index + -currDay),
+            child: Card(
+              child: Column(
+                children: [
+                  Text(trackDay.dateOnly.toString()),
+                  TrackerControls(
+                    _tracker,
+                    trackDay,
+                  ),
+                ],
               ),
             ),
           );
@@ -67,13 +81,17 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     int i = 0;
     final currDay = DateTime.now().weekday;
     List<String> v = [];
-    while (i++ < 7) {
-      var date = widget._trackerDate.add(Duration(days: i - currDay));
+    while (i < 7) {
+      var date = widget._trackerDate.add(Duration(days: -i));
       if (date.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch) {
-        v.add(await widget._tracker.getLastValueFor(date, includePrevious:false)??"-");
-      }else{
+        //v.add(i.toString());
+        v.add(await widget._tracker
+                .getLastValueFor(date, includePrevious: false) ??
+            "-");
+      } else {
         v.add("-");
       }
+      i++;
     }
     widget.currValues.clear();
     setState(() {
@@ -85,6 +103,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
 
   @override
   Widget build(BuildContext context) {
+    var count = widget.currValues.length - 1;
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 50,
@@ -97,17 +116,17 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
         // Add your card/widget/grid element here
         return GestureDetector(
           onTap: () {
-            widget.showControlPanel(context, index);
+            widget.showControlPanel(context, count - index);
           },
-          child: getDay(index),
+          child: getDay(count - index),
         );
       },
     );
   }
 
-  Widget? getDay(int index){
+  Widget? getDay(int index) {
     return Container(
-      // add a box decoration with round corners
+        // add a box decoration with round corners
         decoration: const BoxDecoration(
           color: Colors.red,
           shape: BoxShape.rectangle,

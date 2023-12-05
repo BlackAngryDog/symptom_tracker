@@ -58,7 +58,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
       height: MediaQuery.of(context).copyWith().size.height,
       child: Stack(
         children: [
-          WeekInfoGrid(daysOfWeek),
+          WeekInfoGrid(daysOfWeek, DateTime.now()),
           Column(
             children: [
               SizedBox(height: 25),
