@@ -25,39 +25,24 @@ class _WeekInfoGridState extends State<WeekInfoGrid> {
     double? height = MediaQuery.of(context).copyWith().size.height;
     final count = widget._data.length - 1;
 
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
-          crossAxisSpacing: 0,
-          mainAxisSpacing: 10,
-          mainAxisExtent: height),
-      itemCount: 7,
-      itemBuilder: (BuildContext ctx, index) {
-        // Add your card/widget/grid element here
-
-        return Container(
-          color: Colors.transparent,
-          alignment: Alignment.topCenter,
-          height: MediaQuery.of(context).copyWith().size.height,
-          width: MediaQuery.of(context).copyWith().size.width,
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Text(
-                widget._data[widget.date
-                        .subtract(Duration(days: count - index))
-                        .weekday -
-                    1],
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
+    return Container(
+      height: 50.0,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(count, (index) {
+          return Expanded(
+            child: Text(
+              widget._data[count - index],
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
               ),
-            ],
-          ),
-        );
-      },
+            ),
+          );
+        }),
+      ),
     );
   }
 }

@@ -47,19 +47,10 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
   Widget build(BuildContext context) {
     if (_selectedTracker == null) return Container();
 
-    IconData? icon;
-    if (_selectedTracker?.icon != null) {
-      var iconDataJson = jsonDecode(_selectedTracker?.icon??"");
-      icon = IconData(
-          iconDataJson['codePoint'],
-          fontFamily: iconDataJson['fontFamily']);
-    }
-
     return Card(
       color: Colors.transparent,
       shadowColor: Colors.transparent,
-
-      child:getDisplay(),
+      child: getDisplay(),
     );
 
     switch (_selectedTracker!.type) {
@@ -74,9 +65,6 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
         return ValueTracker(_selectedTracker!, widget.date ?? DateTime.now());
     }
   }
-
-
-
 
   StatefulWidget getDisplay() {
     switch (_selectedTracker!.type) {

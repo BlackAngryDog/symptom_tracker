@@ -206,10 +206,10 @@ class TrackerPage extends StatelessWidget {
       body: SafeArea(
         child: Container(
           height: MediaQuery.of(context).copyWith().size.height,
-          child: ListView(
+          child: Column(
             children: [
               const InfoHeader(),
-              TrackerWeek(trackable),
+              Expanded(child: TrackerWeek(trackable)),
             ],
             //TrackerList(widget.trackable),
           ),

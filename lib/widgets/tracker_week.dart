@@ -56,20 +56,19 @@ class _TrackerWeekState extends State<TrackerWeek> {
     return Container(
       color: Colors.blueGrey,
       height: MediaQuery.of(context).copyWith().size.height,
-      child: Stack(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          WeekInfoGrid(daysOfWeek, DateTime.now()),
-          Column(
-            children: [
-              SizedBox(height: 25),
-              Flexible(
-                child: ListView(
-                  children: trackers.map((doc) {
-                    return TrackerWeekInfo(doc, DateTime.now());
-                  }).toList(),
-                ),
-              ),
-            ],
+          Flexible(child: WeekInfoGrid(daysOfWeek, DateTime.now())),
+          Expanded(
+            flex: 9,
+            child: ListView(
+              shrinkWrap: true,
+              children: trackers.map((doc) {
+                return TrackerWeekInfo(doc, DateTime.now());
+              }).toList(),
+            ),
           ),
         ],
       ),

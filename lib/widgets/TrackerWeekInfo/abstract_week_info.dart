@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
@@ -33,14 +34,19 @@ class AbsWeekInfo extends StatefulWidget {
             onTap: () {},
             behavior: HitTestBehavior.opaque,
             child: Card(
-              child: Column(
-                children: [
-                  Text(trackDay.dateOnly.toString()),
-                  TrackerControls(
-                    _tracker,
-                    trackDay,
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(child: Text(trackDay.dateOnly.toString())),
+                    TrackerControls(
+                      _tracker,
+                      trackDay,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -104,6 +110,12 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
   @override
   Widget build(BuildContext context) {
     var count = widget.currValues.length - 1;
+    IconData? icon;
+    if (widget._tracker?.icon != null) {
+      var iconDataJson = jsonDecode(widget._tracker?.icon ?? "");
+      icon = IconData(iconDataJson['codePoint'],
+          fontFamily: iconDataJson['fontFamily']);
+    }
 
     // Create a list of widgets
     return Padding(
@@ -111,35 +123,55 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
       child: IntrinsicHeight(
         child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Expanded(
-              flex: 3,
+            flex: 3,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-
-              FittedBox(fit: BoxFit.fill,child: Text(widget._tracker.title??"", style: TextStyle(fontSize: 24), textAlign: TextAlign.start),),
-              Container(height: 50.0, child: Row(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(count, (index) {
-                  return Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        widget.showControlPanel(context, count - index);
-                      },
-                      child: getDay(count - index),
+                children: [
+                  FittedBox(
+                    fit: BoxFit.fill,
+                    child: Row(
+                      children: [
+                        if (icon != null)
+                          Icon(
+                            icon,
+                            size: 24,
+                            color: Colors.white,
+                          ),
+                        Text(widget._tracker.title ?? "",
+                            style: TextStyle(fontSize: 24),
+                            textAlign: TextAlign.start),
+                      ],
                     ),
-                  );
-                }),
-              ),),
-            ]),
+                  ),
+                  Container(
+                    height: 50.0,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List.generate(count, (index) {
+                        return Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              widget.showControlPanel(context, count - index);
+                            },
+                            child: getDay(count - index),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ]),
           ),
-          Expanded(flex: 1, child: GestureDetector(
-            onTap: () {
-              widget.showControlPanel(context, 6);
-            },
-            child: getDay(6),
-          ),),
+          Expanded(
+            flex: 1,
+            child: GestureDetector(
+              onTap: () {
+                widget.showControlPanel(context, 0);
+              },
+              child: getDay(0),
+            ),
+          ),
         ]),
       ),
     );
@@ -160,29 +192,26 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                 height: 100,
                 color: Colors.lime,
                 child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: List.generate(count, (index) {
-                      return Expanded(
-                        flex: 1,
-                        child: GestureDetector(
-                          onTap: () {
-                            widget.showControlPanel(context, count - index);
-                          },
-                          child: getDay(count - index),
-                        ),
-                      );
-                          }),
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(count, (index) {
+                    return Expanded(
+                      flex: 1,
+                      child: GestureDetector(
+                        onTap: () {
+                          widget.showControlPanel(context, count - index);
+                        },
+                        child: getDay(count - index),
+                      ),
+                    );
+                  }),
                 ),
               ),
             ],
-
-
           ),
         ),
-
         Expanded(
-          flex:1 ,
+          flex: 1,
           child: GestureDetector(
             onTap: () {
               widget.showControlPanel(context, 6);
@@ -190,8 +219,6 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
             child: getDay(6),
           ),
         ),
-
-
       ],
     );
   }
