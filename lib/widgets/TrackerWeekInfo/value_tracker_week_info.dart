@@ -38,17 +38,20 @@ class _ValueTrackerWeekInfoState extends AbsWeekInfoState<ValueTrackerWeekInfo> 
 
   @override
   Widget? getDay(int index){
-    return Container(
-              // add a box decoration with round corners
-              decoration: const BoxDecoration(
-                color: Colors.white54,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-              ),
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Container(
+                // add a box decoration with round corners
+                decoration: const BoxDecoration(
+                  color: Colors.white54,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
 
-              alignment: Alignment.center,
-              child: Text(widget.currValues[index]));
+                ),
+
+                alignment: Alignment.center,
+
+                child: Text(widget.currValues[index])),
+    );
   }
 }

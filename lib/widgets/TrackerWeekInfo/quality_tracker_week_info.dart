@@ -41,7 +41,7 @@ class _QualityTrackerWeekInfoState extends AbsWeekInfoState<QualityTrackerWeekIn
       // add a box decoration with round corners
       decoration: const BoxDecoration(
         color: Colors.white54,
-        shape: BoxShape.rectangle,
+        shape: BoxShape.circle,
         borderRadius: BorderRadius.all(
           Radius.circular(10),
         ),
