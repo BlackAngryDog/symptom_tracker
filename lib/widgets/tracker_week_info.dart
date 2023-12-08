@@ -37,6 +37,7 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
 
     return Card(
       color: Colors.white54,
+      elevation: 3,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: getDisplay(),

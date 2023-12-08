@@ -29,19 +29,13 @@ class _QualityTrackerWeekInfoState extends AbsWeekInfoState<QualityTrackerWeekIn
   }
 
   @override
-  Widget? getDay(int index){
+  Widget getDay(int index){
     return AspectRatio(
       aspectRatio: 1,
       
       child: Container(
         // add a box decoration with round corners
-        decoration: const BoxDecoration(
-          color: Colors.white54,
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
-          ),
-        ),
+        decoration: getContainerDecoration(index),
         alignment: Alignment.center,
 
         child: Stack(
@@ -49,20 +43,23 @@ class _QualityTrackerWeekInfoState extends AbsWeekInfoState<QualityTrackerWeekIn
           alignment: Alignment.center,
           children: [
             const FittedBox(
-              child: const Icon(
-                Icons.star,
-                color: Colors.amber,
-                fill: 1,
+              child: Padding(
+                padding: EdgeInsets.all(1.0),
+                child: Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                  fill: 1,
+                ),
               ),
             ),
             FittedBox(
               fit: BoxFit.contain,
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Text(
                   widget.currValues[index],
                   textAlign: TextAlign.center,
-                  style: TextStyle(backgroundColor: Colors.transparent),
+                  style: TextStyle(backgroundColor: Colors.transparent, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

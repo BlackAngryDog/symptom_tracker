@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
 
 class WeekInfoGrid extends StatefulWidget {
   final List<String> _data;
@@ -11,8 +12,18 @@ class WeekInfoGrid extends StatefulWidget {
 }
 
 class _WeekInfoGridState extends State<WeekInfoGrid> {
+  final List<String> _sortedDates = [];
+
   @override
   void initState() {
+    int i = widget._data.length;
+    while(--i >= 0) {
+      var dayIndex = widget.date
+          .subtract(Duration(days: i)).weekday;
+
+      _sortedDates.add(widget._data[dayIndex-1]);
+    }
+
     super.initState();
   }
 
@@ -21,23 +32,45 @@ class _WeekInfoGridState extends State<WeekInfoGrid> {
 
     final count = widget._data.length - 1;
 
-    return Container(
-      height: 50.0,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: List.generate(count, (index) {
-          return Expanded(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: List.generate(count, (index) {
+
+              return Expanded(
+                child: Text(
+                  _sortedDates[index],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              );
+            }),
+            ),
+
+
+          ),
+          Expanded(
             child: Text(
-              widget._data[count - index],
+              _sortedDates[6],
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.white,
               ),
             ),
-          );
-        }),
+          )
+
+      ]
       ),
     );
   }

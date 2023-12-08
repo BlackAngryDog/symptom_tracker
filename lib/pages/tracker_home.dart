@@ -194,7 +194,6 @@ class TrackerPage extends StatelessWidget {
           height: MediaQuery.of(context).copyWith().size.height,
           child: Column(
             children: [
-              const InfoHeader(),
               Expanded(child: TrackerWeek(trackable)),
             ],
             //TrackerList(widget.trackable),
@@ -208,12 +207,17 @@ class TrackerPage extends StatelessWidget {
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
+        mini: true,
       ),
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniCenterDocked,
 
       bottomNavigationBar: BottomAppBar(
         color: Colors.blue,
+        notchMargin: 3,
+        height: 40,
+        elevation: 10,
+        padding: EdgeInsets.all(0),
         child: IconTheme(
           data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
           child: Row(

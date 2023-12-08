@@ -28,27 +28,19 @@ class _RatingTrackerWeekInfoState extends AbsWeekInfoState<RatingTrackerWeekInfo
   }
 
   @override
-  Widget? getDay(int index){
+  Widget getDay(int index){
     int value =   double.tryParse(widget.currValues[index])?.toInt()??0;
 
     return Container(
       // add a box decoration with round corners
-      decoration: const BoxDecoration(
-        color: Colors.white54,
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.all(
-          Radius.circular(10),
-        ),
-      ),
-      width: 50,
-      height: 50,
+      decoration: getContainerDecoration(index),
       alignment: Alignment.center,
 
       child: Stack(
         fit: StackFit.expand,
         children: [
           FittedBox(
-            fit: BoxFit.contain,
+            fit: BoxFit.fitWidth,
             child: Padding(
               padding: const EdgeInsets.all(4.0),
               child: getIcon(value),
