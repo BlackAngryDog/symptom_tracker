@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:symptom_tracker/model/abs_savable.dart';
-import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/model/user.dart';
 
 class DatabaseTools {
@@ -45,8 +43,6 @@ class DatabaseTools {
   }
 
   static void testFirestore() {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     users
         .add({
@@ -60,8 +56,6 @@ class DatabaseTools {
 
   static void SaveItem(String? id, String endpoint, Map<String, dynamic> json) {
     CollectionReference collection = FirebaseFirestore.instance.collection(endpoint);
-
-    dynamic snap = collection.doc(id).get();
 
     if (id != null) {
       collection
@@ -77,21 +71,6 @@ class DatabaseTools {
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
     return;
-    final messageRef = FirebaseFirestore.instance.collection("rooms").doc("roomA").collection("messages");
-    // ADDING SUBCOLLECTIONS
-    messageRef.add({
-      'full_name': 'test', // John Doe
-      'company': 'company', // Stokes and Sons
-      'age': 'age' // 42
-    });
-
-    /*FirebaseFirestore.instance
-        .collection("$endpoint/${getUserID()}")
-        //.where(FieldPath.documentId, whereIn: documentIds)
-        .get()
-        .then((value) => print("User Added"));
-
-     */
   }
 
 /*

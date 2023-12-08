@@ -1,14 +1,8 @@
 // stateless widget that displays the tracker for the week
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/extentions/extention_methods.dart';
-import 'package:symptom_tracker/model/data_log.dart';
-import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/widgets/data_log_item.dart';
-import 'package:symptom_tracker/widgets/tracker_controls.dart';
 import 'package:symptom_tracker/widgets/tracker_week_info.dart';
 
 import '../model/event_manager.dart';
@@ -56,21 +50,24 @@ class _TrackerWeekState extends State<TrackerWeek> {
     return Container(
       color: Colors.blueGrey,
       height: MediaQuery.of(context).copyWith().size.height,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Flexible(child: WeekInfoGrid(daysOfWeek, DateTime.now())),
-          Expanded(
-            flex: 9,
-            child: ListView(
-              shrinkWrap: true,
-              children: trackers.map((doc) {
-                return TrackerWeekInfo(doc, DateTime.now());
-              }).toList(),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Flexible(child: WeekInfoGrid(daysOfWeek, DateTime.now())),
+            Expanded(
+              flex: 9,
+              child: ListView(
+                shrinkWrap: true,
+                children: trackers.map((doc) {
+                  return TrackerWeekInfo(doc, DateTime.now());
+                }).toList(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
 

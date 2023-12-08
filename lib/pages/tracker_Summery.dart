@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/widgets/TrackerWeekInfo/rating_tracker_week_info.dart';
-import 'package:symptom_tracker/widgets/diet_chart.dart';
-import 'package:symptom_tracker/widgets/line_chart.dart';
 
 class TrackerSummeryPage extends StatelessWidget {
   final Tracker _tracker;
@@ -74,6 +70,7 @@ class ValueTrackerInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Text('Summery of ${_tracker.title}'),
         // LineChartWidget(_tracker),
       ],
     );
@@ -86,6 +83,11 @@ class DietTrackerInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(); //;DietChart(_tracker, Tracker('weight'));
+    return Column(
+      children: [
+        Text('Summery of ${_tracker.title}'),
+        // LineChartWidget(_tracker),
+      ],
+    );
   }
 }

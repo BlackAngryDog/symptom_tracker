@@ -4,14 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/pages/tracker_home.dart';
-import 'package:symptom_tracker/widgets/diet_chart.dart';
-import 'package:symptom_tracker/widgets/line_chart.dart';
 import 'package:symptom_tracker/widgets/tracker_control_list.dart';
 import 'package:symptom_tracker/widgets/tracker_controls.dart';
-import 'package:symptom_tracker/widgets/tracker_highlights.dart';
-import 'package:symptom_tracker/widgets/tracker_info_widgets/AdvTrackerInfo.dart';
-import 'package:symptom_tracker/widgets/tracker_item.dart';
 
 class TrackerInfoPanel extends StatefulWidget {
   const TrackerInfoPanel({Key? key}) : super(key: key);

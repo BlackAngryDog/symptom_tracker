@@ -1,23 +1,14 @@
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
-
-import 'package:symptom_tracker/model/data_log.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart' as auth;
+import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/user.dart';
 import 'package:symptom_tracker/pages/trackable_selection_page.dart';
-
-import 'package:symptom_tracker/pages/trackable_setup_page.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
-
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart' as auth;
-import 'package:symptom_tracker/pages/weekly_overview_page.dart';
-import 'package:symptom_tracker/widgets/tracker_week.dart';
 
 import 'firebase_config.dart';
 import 'model/event_manager.dart';
@@ -68,7 +59,7 @@ class MyApp extends StatelessWidget {
 class AuthGate extends StatelessWidget {
   AuthGate({Key? key}) : super(key: key);
 
-  var providers = [auth.EmailAuthProvider()];
+  final providers = [auth.EmailAuthProvider()];
 
   @override
   Widget build(BuildContext context) {

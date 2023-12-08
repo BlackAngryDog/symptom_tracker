@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
@@ -45,7 +44,7 @@ class _ValueTrackerState extends State<ValueTracker> {
 
   Future updateData(String value) async {
     await widget._tracker
-        .updateLog(value, widget._trackerDate ?? DateTime.now());
+        .updateLog(value, widget._trackerDate);
     EventManager.dispatchUpdate(UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
     getCurrValue();
   }

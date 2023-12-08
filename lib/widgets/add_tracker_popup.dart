@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:icon_picker/icon_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/widgets/tracker_controls.dart';
-import 'package:symptom_tracker/widgets/trackers/count_tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/diet_tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
 import '../model/track_option.dart';
 
@@ -27,17 +21,15 @@ class _AddTrackerState extends State<AddTracker> {
   final titleController = TextEditingController();
   final valueController = TextEditingController();
 
-  DateTime _selectedDate = DateTime.now();
-
   String selectedValue = "counter";
   String? selectedIcon = "favorite";
 
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
-      DropdownMenuItem(child: Text("counter"), value: "counter"),
-      DropdownMenuItem(child: Text("quality"), value: "quality"),
-      DropdownMenuItem(child: Text("satisfaction"), value: "rating"),
-      DropdownMenuItem(child: Text("value"), value: "value"),
+      const DropdownMenuItem(value: "counter", child: Text("counter"), ),
+      const DropdownMenuItem(value: "quality", child: Text("quality"), ),
+      const DropdownMenuItem(value: "rating", child: Text("satisfaction"), ),
+      const DropdownMenuItem(value: "value", child: Text("value"), ),
     ];
     return menuItems;
   }
@@ -61,21 +53,8 @@ class _AddTrackerState extends State<AddTracker> {
     Navigator.of(context).pop();
   }
 
-  void _presentDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2022),
-      lastDate: DateTime.now(),
-    ).then((value) => {
-          setState(() {
-            _selectedDate = value ?? DateTime.now();
-          })
-        });
-  }
-
   Widget getControl(BuildContext context) {
-    Tracker temp = Tracker('', type: selectedValue);
+
     switch (selectedValue) {
       case "counter":
       // ADD BASELINE VALUE (textfield)

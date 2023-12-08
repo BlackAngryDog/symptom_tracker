@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/tracker_button_grid.dart';
-import 'package:symptom_tracker/widgets/tracker_list.dart';
-import 'dart:math';
 
 class BottomTrackerSelectionPanel extends StatefulWidget {
   const BottomTrackerSelectionPanel({Key? key}) : super(key: key);

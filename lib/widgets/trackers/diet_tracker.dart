@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/diet_options_page.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
 class DietTracker extends StatefulWidget {
   final Tracker _tracker;
-  final DateTime _trackerDate;
-  const DietTracker(this._tracker, this._trackerDate, {Key? key})
+
+  const DietTracker(this._tracker, {Key? key})
       : super(key: key);
 
   @override

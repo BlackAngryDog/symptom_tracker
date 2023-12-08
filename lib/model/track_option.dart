@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:symptom_tracker/model/abs_savable.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
-import 'package:symptom_tracker/model/tracker.dart';
+
 
 // Used to store daily log information to be retrieved by date for user id
 class TrackOption {

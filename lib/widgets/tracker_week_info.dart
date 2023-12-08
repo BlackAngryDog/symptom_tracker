@@ -1,24 +1,12 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
-import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/pages/tracker_home.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/count_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/diet_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/quality_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/rating_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/value_tracker_week_info.dart';
-import 'package:symptom_tracker/widgets/bottom_tracker_panel.dart';
-import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
-import 'package:symptom_tracker/widgets/tracker_controls.dart';
-import 'package:symptom_tracker/widgets/trackers/count_tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/diet_tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
+
 
 class TrackerWeekInfo extends StatefulWidget {
   final Tracker? item;
@@ -48,22 +36,13 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
     if (_selectedTracker == null) return Container();
 
     return Card(
-      color: Colors.transparent,
-      shadowColor: Colors.transparent,
-      child: getDisplay(),
+      color: Colors.white54,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: getDisplay(),
+      ),
     );
 
-    switch (_selectedTracker!.type) {
-      case "counter":
-        return CountTrackerWeekInfo(
-            _selectedTracker!, widget.date ?? DateTime.now());
-      case "quality":
-        return QualityTracker(_selectedTracker!, widget.date ?? DateTime.now());
-      case "diet":
-        return DietTracker(_selectedTracker!, widget.date ?? DateTime.now());
-      default:
-        return ValueTracker(_selectedTracker!, widget.date ?? DateTime.now());
-    }
   }
 
   StatefulWidget getDisplay() {

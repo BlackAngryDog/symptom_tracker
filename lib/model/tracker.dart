@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:symptom_tracker/extentions/extention_methods.dart';
-import 'package:symptom_tracker/model/abs_savable.dart';
-import 'package:symptom_tracker/model/data_log.dart';
-import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:collection/collection.dart';
-import 'package:symptom_tracker/model/diet_option.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
+import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/track_option.dart';
 
 // discribes the setup of the tracker and creates log entries
@@ -132,47 +128,4 @@ class Tracker {
     type = option.trackType;
     readLog(DateTime.now());
   }
-
-  // PERSISTANCE
-/*
-  Future<Tracker> save() async {
-    CollectionReference collection = getCollection(trackableID);
-    if (id != null) {
-      await collection
-          .doc(id)
-          .set(toJson())
-          .then((value) => print("Tracker Saved"))
-          .catchError((error) => print("Failed to save tracker: $error"));
-    } else {
-      await collection
-          .add(toJson())
-          .then((value) => {id = value.id})
-          .catchError((error) => print("Failed to create tracker: $error"));
-    }
-    return this;
-  }
-
-  static CollectionReference getCollection(String owner) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(DatabaseTools.getUserID())
-        .collection('trackable')
-        .doc(owner)
-        .collection('trackers');
-  }
-
-  Tracker.fromJson(String? key, Map<String, dynamic> json) : trackableID = json['trackableID'] {
-    id = key;
-    title = json['title'];
-    type = json['type'];
-    readLog();
-  }
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'trackableID': trackableID,
-        'title': title,
-        'type': type,
-      };
-      
- */
 }

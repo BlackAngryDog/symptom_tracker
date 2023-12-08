@@ -1,8 +1,9 @@
 import 'dart:async';
+
+import 'package:collection/collection.dart';
 import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:collection/collection.dart';
 
 class UpdateEvent {
   final EventType event;

@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/diet_option.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
-import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/add_diet_option_popup.dart';
 import 'package:symptom_tracker/widgets/diet_option_item.dart';
-import 'package:collection/collection.dart';
 
 class DietOptionsPage extends StatefulWidget {
   const DietOptionsPage({Key? key}) : super(key: key);

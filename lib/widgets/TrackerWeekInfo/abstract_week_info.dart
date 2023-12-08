@@ -23,7 +23,7 @@ class AbsWeekInfo extends StatefulWidget {
   AbsWeekInfo(this._tracker, this._trackerDate, {Key? key}) : super(key: key);
 
   void showControlPanel(BuildContext ctx, int index) {
-    final currDay = DateTime.now().weekday - 1;
+
     final trackDay = _trackerDate.subtract(Duration(days: index));
     // TODO - Expand this display to look and feel better with more info (Date/adv etc)
     showModalBottomSheet(
@@ -85,15 +85,12 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     // TODO - Can we change this to have a range - over day, week, month so that the format can easily change depending on data ?
 
     int i = 0;
-    final currDay = DateTime.now().weekday;
     List<String> v = [];
     while (i < 7) {
       var date = widget._trackerDate.add(Duration(days: -i));
       if (date.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch) {
         //v.add(i.toString());
-        v.add(await widget._tracker
-                .getLastValueFor(date, includePrevious: false) ??
-            "-");
+        v.add(await widget._tracker.getLastValueFor(date, includePrevious: false));
       } else {
         v.add("-");
       }
@@ -111,129 +108,109 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
   Widget build(BuildContext context) {
     var count = widget.currValues.length - 1;
     IconData? icon;
-    if (widget._tracker?.icon != null) {
-      var iconDataJson = jsonDecode(widget._tracker?.icon ?? "");
+    if (widget._tracker.icon != null) {
+      var iconDataJson = jsonDecode(widget._tracker.icon ?? "");
       icon = IconData(iconDataJson['codePoint'],
           fontFamily: iconDataJson['fontFamily']);
     }
 
     // Create a list of widgets
     return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: const EdgeInsets.only(top: 0.0),
       child: IntrinsicHeight(
-        child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Expanded(
-            flex: 3,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FittedBox(
-                    fit: BoxFit.fill,
-                    child: Row(
-                      children: [
-                        if (icon != null)
-                          Icon(
-                            icon,
-                            size: 24,
-                            color: Colors.white,
-                          ),
-                        Text(widget._tracker.title ?? "",
-                            style: TextStyle(fontSize: 24),
-                            textAlign: TextAlign.start),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 50.0,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(count, (index) {
-                        return Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              widget.showControlPanel(context, count - index);
-                            },
-                            child: getDay(count - index),
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-                ]),
-          ),
-          Expanded(
-            flex: 1,
-            child: GestureDetector(
-              onTap: () {
-                widget.showControlPanel(context, 0);
-              },
-              child: getDay(0),
-            ),
-          ),
-        ]),
-      ),
-    );
-
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 2,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("title"),
-              Container(
-                height: 100,
-                color: Colors.lime,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(count, (index) {
-                    return Expanded(
-                      flex: 1,
-                      child: GestureDetector(
-                        onTap: () {
-                          widget.showControlPanel(context, count - index);
-                        },
-                        child: getDay(count - index),
+              Expanded(
+                flex: 3,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.fill,
+                        child: Row(
+                          children: [
+                            if (icon != null)
+                              Icon(
+                                icon,
+                                size: 24,
+                                color: Colors.white,
+                              ),
+                            Text(widget._tracker.title ?? "",
+                                style: TextStyle(fontSize: 24),
+                                textAlign: TextAlign.start),
+                          ],
+                        ),
                       ),
-                    );
-                  }),
+                      Container(
+
+                        height: 50.0,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: List.generate(count, (index) {
+                            return Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  widget.showControlPanel(context, count - index);
+                                },
+                                child: getDay(count - index),
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                    ]),
+              ),
+              Expanded(
+                flex: 1,
+                child: GestureDetector(
+                  onTap: () {
+                    widget.showControlPanel(context, 0);
+                  },
+                  child: getDay(0),
                 ),
               ),
-            ],
-          ),
+            ]),
         ),
-        Expanded(
-          flex: 1,
-          child: GestureDetector(
-            onTap: () {
-              widget.showControlPanel(context, 6);
-            },
-            child: getDay(6),
-          ),
-        ),
-      ],
     );
+
   }
 
+  @override
   Widget? getDay(int index) {
-    return Container(
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Container(
         // add a box decoration with round corners
         decoration: const BoxDecoration(
           color: Colors.white54,
-          shape: BoxShape.circle,
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
-          ),
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.all(Radius.circular(50)),
         ),
+
         alignment: Alignment.center,
-        child: Text(widget.currValues[index]));
+
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            FittedBox(
+              fit: BoxFit.contain,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  widget.currValues[index],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(backgroundColor: Colors.transparent),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

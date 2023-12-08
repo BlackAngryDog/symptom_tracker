@@ -1,34 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:symptom_tracker/model/data_log.dart';
-import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/model/user.dart';
 import 'package:symptom_tracker/pages/calender_page.dart';
 import 'package:symptom_tracker/pages/chart_page.dart';
 import 'package:symptom_tracker/pages/diet_options_page.dart';
+import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 import 'package:symptom_tracker/pages/tracker_history.dart';
 import 'package:symptom_tracker/pages/tracker_options_page.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
 import 'package:symptom_tracker/widgets/bottom_tracker_panel.dart';
-import 'package:symptom_tracker/widgets/data_log_list.dart';
 import 'package:symptom_tracker/widgets/info_header.dart';
-import 'package:symptom_tracker/widgets/line_chart.dart';
-import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
-import 'package:symptom_tracker/widgets/mini_trackers/diet_tracker.dart';
-import 'package:symptom_tracker/widgets/tracker_control_list.dart';
-import 'package:symptom_tracker/widgets/tracker_info_panel.dart';
-import 'package:symptom_tracker/widgets/tracker_item.dart';
-import 'package:symptom_tracker/widgets/tracker_list.dart';
 import 'package:symptom_tracker/widgets/tracker_week.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 
 class TrackerPage extends StatelessWidget {
   Trackable trackable;
@@ -100,7 +87,6 @@ class TrackerPage extends StatelessWidget {
 
   Future showDietOptions(BuildContext ctx) async {
     // SHOW FOOD LIST
-    Tracker dietTracker = await trackable.getDietTracker();
     Navigator.push(
       ctx,
       MaterialPageRoute(

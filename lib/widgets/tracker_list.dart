@@ -1,18 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/data_log.dart';
-import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
-import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/widgets/data_log_item.dart';
-import 'package:symptom_tracker/widgets/line_chart.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 
 class TrackerList extends StatefulWidget {
   final Function(Tracker? tracker) onTrackerSelected;
-  final Trackable _trackable;
-  TrackerList(this._trackable, this.onTrackerSelected, {Key? key}) : super(key: key);
+
+  const TrackerList(this.onTrackerSelected, {Key? key}) : super(key: key);
 
   @override
   State<TrackerList> createState() => _TrackerListState();

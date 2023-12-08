@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/pages/tracker_options_page.dart';
-import 'package:symptom_tracker/widgets/diet_option_item.dart';
 
 class TrackableSetupPage extends StatefulWidget {
   Trackable? trackable;

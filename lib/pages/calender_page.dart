@@ -80,8 +80,6 @@ class _CalenderPageState extends State<CalenderPage> {
     );
   }
 
-  List<DataLog> _dataLogs = [];
-
   Future<List<DataLog>> _getDataEvents(DateTime start, DateTime end) async {
     List<DataLog> logs = [];
 

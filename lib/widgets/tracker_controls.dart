@@ -1,13 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
-import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/pages/tracker_home.dart';
-import 'package:symptom_tracker/widgets/TrackerWeekInfo/count_tracker_week_info.dart';
-import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/count_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/diet_tracker.dart';
 import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
@@ -55,7 +50,7 @@ class _TrackerControlsState extends State<TrackerControls> {
       case "rating":
         return RatingTracker(_selectedTracker!, widget.date ?? DateTime.now());
       case "diet":
-        return DietTracker(_selectedTracker!, widget.date ?? DateTime.now());
+        return DietTracker(_selectedTracker!);
       default:
         return ValueTracker(_selectedTracker!, widget.date ?? DateTime.now());
     }

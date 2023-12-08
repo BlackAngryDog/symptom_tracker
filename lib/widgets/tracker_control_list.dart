@@ -1,14 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/data_log.dart';
-import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
-import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/widgets/data_log_item.dart';
-import 'package:symptom_tracker/widgets/line_chart.dart';
 import 'package:symptom_tracker/widgets/tracker_controls.dart';
-import 'package:symptom_tracker/widgets/tracker_item.dart';
 
 class TrackerControlList extends StatefulWidget {
   const TrackerControlList({Key? key}) : super(key: key);

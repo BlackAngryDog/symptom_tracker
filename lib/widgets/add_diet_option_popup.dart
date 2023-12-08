@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:symptom_tracker/model/diet_option.dart';
-import 'package:symptom_tracker/model/tracker.dart';
 
 class AddDietOption extends StatefulWidget {
   //const AddTransaction({ Key? key }) : super(key: key);

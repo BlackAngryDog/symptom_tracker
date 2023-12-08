@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/pages/diet_options_page.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
 
 class DietTrackerWeekInfo extends StatefulWidget {

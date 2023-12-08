@@ -1,10 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/data_log.dart';
-import 'package:symptom_tracker/model/diet_option.dart';
-import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/count_tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
 class DietOptionItem<T> extends StatefulWidget {
   final T item;

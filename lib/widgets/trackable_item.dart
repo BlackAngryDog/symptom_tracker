@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/pages/tracker_home.dart';
-import 'package:symptom_tracker/widgets/trackers/count_tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/quality_tracker.dart';
-import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
 class TrackableItem extends StatelessWidget {
   final Trackable item;

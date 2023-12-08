@@ -1,15 +1,13 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
-import 'package:intl/intl.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:collection/collection.dart';
-import 'package:symptom_tracker/pages/tracker_home.dart';
 
 class LineChartWidgetData {
   final DateTime time;
@@ -63,9 +61,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
   double scaleYMax = 1;
 
-  final _monthDayFormat = DateFormat('MM-dd');
-
-  final _chartData = [LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1), LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2), LineChartWidgetData(DateTime.now(), 1)];
+  //final _chartData = [LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 1), LineChartWidgetData(DateTime.now().add(const Duration(days: -1)), 2), LineChartWidgetData(DateTime.now(), 1)];
 
   List<FlSpot> _spots = [];
 
@@ -108,7 +104,6 @@ class _LineChartWidgetState extends State<LineChartWidget> {
           continue;
         } else if (day == 0) {
           if (start != null) {
-            double d = double.parse(start.value is String ? start.value : start.value.toStringAsFixed(2));
             _spots.add(FlSpot(0, getValueFromLog(start)));
           } else {
             start = logs[0];
@@ -153,11 +148,8 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     print('checking last ${last.time}');
     if (last.time.isBefore(endDate.endOfDay)) {
       print('adding today');
-
       double d = double.parse(last.value is String ? last.value : last.value.toStringAsFixed(2));
       list.add(LineChartWidgetData(endDate, d));
-      double day = double.parse(endDate.dateOnly.difference(startDate).inDays.toString());
-      //_spots.add(FlSpot(day, getValueFromLog(last)));
     }
 
     print(' list is ${list.length}');
@@ -175,7 +167,6 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     if (d < scaleYMin) scaleYMin = (d).floorToDouble();
 
     return d;
-    _spots.add(FlSpot(0, d));
   }
 
   Widget FLLineChart() {

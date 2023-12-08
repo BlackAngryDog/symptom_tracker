@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:symptom_tracker/model/abs_savable.dart';
+
 
 // discribes the setup of the tracker and creates log entries
 class UserVo {
