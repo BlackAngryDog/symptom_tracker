@@ -6,8 +6,7 @@ import 'package:symptom_tracker/pages/tracker_Summery.dart';
 class DietTracker extends StatefulWidget {
   final Tracker _tracker;
 
-  const DietTracker(this._tracker, {Key? key})
-      : super(key: key);
+  const DietTracker(this._tracker, {Key? key}) : super(key: key);
 
   @override
   State<DietTracker> createState() => _DietTrackerState();
@@ -57,7 +56,7 @@ class _DietTrackerState extends State<DietTracker> {
     return GestureDetector(
       child: Card(
         child: ListTile(
-          title: Text(widget._tracker.title ?? ""),
+          title: Text(widget._tracker.option.title ?? ""),
           subtitle: Text(subtitle),
           trailing: SizedBox(
             width: 100,

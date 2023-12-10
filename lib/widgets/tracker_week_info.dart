@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
+import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/count_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/diet_tracker_week_info.dart';
@@ -7,6 +8,7 @@ import 'package:symptom_tracker/widgets/TrackerWeekInfo/quality_tracker_week_inf
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/rating_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/value_tracker_week_info.dart';
 
+import 'add_tracker_popup.dart';
 
 class TrackerWeekInfo extends StatefulWidget {
   final Tracker? item;
@@ -35,19 +37,38 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
   Widget build(BuildContext context) {
     if (_selectedTracker == null) return Container();
 
-    return Card(
-      color: Colors.white54,
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: getDisplay(),
+    return GestureDetector(
+      onTap: () {
+        _editTrackerPopup(context);
+      },
+      child: Card(
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: getDisplay(),
+        ),
       ),
     );
+  }
 
+  void _editTrackerPopup(BuildContext ctx) {
+    if (_selectedTracker == null) return;
+
+    showModalBottomSheet(
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+            onTap: () {},
+            behavior: HitTestBehavior.opaque,
+            child: AddTracker((option) {},
+                option: _selectedTracker?.option as TrackOption),
+          );
+        });
   }
 
   StatefulWidget getDisplay() {
-    switch (_selectedTracker!.type) {
+    switch (_selectedTracker!.option.trackType) {
       case "counter":
         return CountTrackerWeekInfo(
             _selectedTracker!, widget.date ?? DateTime.now());

@@ -22,8 +22,7 @@ class _TrackerListState extends State<TrackerControlList> {
   initState() {
     super.initState();
     _trackers = EventManager.selectedTarget.trackers
-        .map((e) => Tracker(EventManager.selectedTarget.id ?? '',
-            type: e.trackType, title: e.title))
+        .map((e) => Tracker(EventManager.selectedTarget.id ?? '', e))
         .toList();
   }
 

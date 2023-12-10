@@ -81,7 +81,8 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
     if (logs.isEmpty) return list;
 
-    DataLog? start = await _selectedTracker!.getLastEntry(false, before: startDate);
+    DataLog? start =
+        await _selectedTracker!.getLastEntry(false, before: startDate);
     /*
     if (start != null) {
       double d = double.parse(start.value is String ? start.value : start.value.toStringAsFixed(2));
@@ -91,13 +92,15 @@ class _LineChartWidgetState extends State<LineChartWidget> {
       _spots.add(FlSpot(0, getValueFromLog(start)));
     }
 */
-    bool _addEmpty = _selectedTracker!.type == 'counter';
+    bool _addEmpty = _selectedTracker!.option.trackType == 'counter';
     // logs.clear();
     int numDays = endDate.difference(startDate).inDays;
     for (int i = 0; i <= numDays; i++) {
       double day = double.parse((i).toString());
-      List<DataLog> dayLogs = logs.where((element) => element.time.difference(startDate).inDays == day).toList(growable: false);
-      print("Day is ${_selectedTracker!.type}");
+      List<DataLog> dayLogs = logs
+          .where((element) => element.time.difference(startDate).inDays == day)
+          .toList(growable: false);
+      print("Day is ${_selectedTracker!.option.trackType}");
       if (dayLogs.isEmpty) {
         if (_addEmpty) {
           _spots.add(FlSpot(day, 0));
@@ -114,11 +117,13 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
       for (DataLog log in dayLogs) {
         // TODO - NEED TO JUST DO ONE ENTRY PER DAY/ flag to add/adv/min/max?
-        double d = double.parse(log.value is String ? log.value : log.value.toStringAsFixed(2));
+        double d = double.parse(
+            log.value is String ? log.value : log.value.toStringAsFixed(2));
         list.add(LineChartWidgetData(log.time, d));
 
         //double day = double.parse(log.time.difference(startDate).inDays.toString());
-        FlSpot? currSpot = _spots.where((element) => element.x == day).firstOrNull;
+        FlSpot? currSpot =
+            _spots.where((element) => element.x == day).firstOrNull;
         if (currSpot != null) _spots.remove(currSpot);
 
         _spots.add(FlSpot(day, getValueFromLog(log)));
@@ -148,7 +153,8 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     print('checking last ${last.time}');
     if (last.time.isBefore(endDate.endOfDay)) {
       print('adding today');
-      double d = double.parse(last.value is String ? last.value : last.value.toStringAsFixed(2));
+      double d = double.parse(
+          last.value is String ? last.value : last.value.toStringAsFixed(2));
       list.add(LineChartWidgetData(endDate, d));
     }
 
@@ -161,7 +167,8 @@ class _LineChartWidgetState extends State<LineChartWidget> {
   }
 
   double getValueFromLog(DataLog log) {
-    double d = double.parse(log.value is String ? log.value : log.value.toStringAsFixed(2));
+    double d = double.parse(
+        log.value is String ? log.value : log.value.toStringAsFixed(2));
 
     if (d > scaleYMax) scaleYMax = (d).ceilToDouble() + 1;
     if (d < scaleYMin) scaleYMin = (d).floorToDouble();
@@ -219,7 +226,9 @@ class _LineChartWidgetState extends State<LineChartWidget> {
           ),
         ),
       ),
-      borderData: FlBorderData(show: true, border: Border.all(color: const Color(0xff37434d), width: 1)),
+      borderData: FlBorderData(
+          show: true,
+          border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: scaleXMin,
       maxX: scaleXMax,
       minY: scaleYMin,

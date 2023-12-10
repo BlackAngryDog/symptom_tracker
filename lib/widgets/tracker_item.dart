@@ -9,7 +9,7 @@ class TrackerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (item.type) {
+    switch (item.option.trackType) {
       case "counter":
         return MiniCountTracker(item);
       case "quality":

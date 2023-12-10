@@ -213,39 +213,35 @@ class TrackerPage extends StatelessWidget {
           FloatingActionButtonLocation.miniCenterDocked,
 
       bottomNavigationBar: BottomAppBar(
-        color: Colors.blue,
         notchMargin: 3,
-        height: 40,
+        height: 60,
         elevation: 10,
-        padding: EdgeInsets.all(0),
-        child: IconTheme(
-          data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-          child: Row(
-            children: <Widget>[
-              IconButton(
-                tooltip: 'Open navigation menu',
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  _showTrackerPanel(context);
-                },
-              ),
-              const Spacer(),
-              IconButton(
-                tooltip: 'Search',
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  showTrackingOptions(context);
-                },
-              ),
-              IconButton(
-                tooltip: 'Favorite',
-                icon: const Icon(Icons.rice_bowl_rounded),
-                onPressed: () {
-                  showDietOptions(context);
-                },
-              ),
-            ],
-          ),
+        padding: EdgeInsets.all(4),
+        child: Row(
+          children: <Widget>[
+            IconButton(
+              tooltip: 'Open navigation menu',
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                _showTrackerPanel(context);
+              },
+            ),
+            const Spacer(),
+            IconButton(
+              tooltip: 'Search',
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                showTrackingOptions(context);
+              },
+            ),
+            IconButton(
+              tooltip: 'Favorite',
+              icon: const Icon(Icons.rice_bowl_rounded),
+              onPressed: () {
+                showDietOptions(context);
+              },
+            ),
+          ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

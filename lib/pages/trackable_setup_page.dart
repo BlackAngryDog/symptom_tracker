@@ -14,7 +14,7 @@ class TrackableSetupPage extends StatefulWidget {
 const OutlineInputBorder _enabledBoader = OutlineInputBorder(
   gapPadding: 10,
   borderRadius: BorderRadius.all(Radius.circular(10.0)),
-  borderSide: BorderSide(color: Colors.black, width: 1.0),
+  borderSide: BorderSide(width: 1.0),
 );
 
 const OutlineInputBorder _focusedBorder = OutlineInputBorder(
@@ -32,11 +32,15 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
 
   _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
-        context: context, initialDate: selectedDate, firstDate: DateTime(2000), lastDate: DateTime.now());
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2000),
+        lastDate: DateTime.now());
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        var date = "${picked.toLocal().day}/${picked.toLocal().month}/${picked.toLocal().year}";
+        var date =
+            "${picked.toLocal().day}/${picked.toLocal().month}/${picked.toLocal().year}";
         _dateController.text = date;
       });
   }
@@ -67,7 +71,8 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
-                      controller: TextEditingController(text: newTrackable.title),
+                      controller:
+                          TextEditingController(text: newTrackable.title),
                       decoration: const InputDecoration(
                         labelText: 'Name',
                         //labelStyle: Theme.of(context)
@@ -104,7 +109,8 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
                           onSaved: (val) {
                             //task.date = selectedDate;
                           },
-                          controller: TextEditingController(text: DateTime.now().toString()),
+                          controller: TextEditingController(
+                              text: DateTime.now().toString()),
                           decoration: InputDecoration(
                             labelText: "Date",
                             icon: Icon(Icons.calendar_today),
@@ -112,7 +118,8 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
                             focusedBorder: _focusedBorder,
                           ),
                           validator: (value) {
-                            if (value!.isEmpty) return "Please enter a date for your task";
+                            if (value!.isEmpty)
+                              return "Please enter a date for your task";
                             return null;
                           },
                         ),
@@ -165,7 +172,8 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => TrackerOptionsPage(newTrackable),
+                            builder: (context) =>
+                                TrackerOptionsPage(newTrackable),
                           ),
                         );
                       }

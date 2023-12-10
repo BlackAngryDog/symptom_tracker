@@ -9,9 +9,10 @@ import '../model/track_option.dart';
 class AddTracker extends StatefulWidget {
   //const AddTransaction({ Key? key }) : super(key: key);
 
+  final TrackOption? option;
   final Function(TrackOption option) onAddTracker;
 
-  AddTracker(this.onAddTracker);
+  AddTracker(this.onAddTracker, {this.option});
 
   @override
   State<AddTracker> createState() => _AddTrackerState();
@@ -24,12 +25,26 @@ class _AddTrackerState extends State<AddTracker> {
   String selectedValue = "counter";
   String? selectedIcon = "favorite";
 
+  late TrackOption option;
+
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
-      const DropdownMenuItem(value: "counter", child: Text("counter"), ),
-      const DropdownMenuItem(value: "quality", child: Text("quality"), ),
-      const DropdownMenuItem(value: "rating", child: Text("satisfaction"), ),
-      const DropdownMenuItem(value: "value", child: Text("value"), ),
+      const DropdownMenuItem(
+        value: "counter",
+        child: Text("counter"),
+      ),
+      const DropdownMenuItem(
+        value: "quality",
+        child: Text("quality"),
+      ),
+      const DropdownMenuItem(
+        value: "rating",
+        child: Text("satisfaction"),
+      ),
+      const DropdownMenuItem(
+        value: "value",
+        child: Text("value"),
+      ),
     ];
     return menuItems;
   }
@@ -42,8 +57,6 @@ class _AddTrackerState extends State<AddTracker> {
 
     if (_title == '' || _value == '') return;
 
-    TrackOption option = TrackOption(
-        title: _title, trackType: selectedValue, icon: selectedIcon);
     option.save();
     widget.onAddTracker(option);
     // ADD STARTING VALUE;
@@ -54,7 +67,6 @@ class _AddTrackerState extends State<AddTracker> {
   }
 
   Widget getControl(BuildContext context) {
-
     switch (selectedValue) {
       case "counter":
       // ADD BASELINE VALUE (textfield)
@@ -85,6 +97,12 @@ class _AddTrackerState extends State<AddTracker> {
 
   @override
   Widget build(BuildContext context) {
+    option = widget.option ??
+        TrackOption(
+            title: titleController.text,
+            trackType: selectedValue,
+            icon: selectedIcon);
+
     final Map<String, IconData> myIconCollection = {
       'favorite': Icons.favorite,
       'home': Icons.home,
@@ -106,12 +124,15 @@ class _AddTrackerState extends State<AddTracker> {
               decoration: InputDecoration(labelText: 'Title'),
               controller: titleController,
               textAlign: TextAlign.end,
+              onChanged: (value) {
+                option.title = value;
+              },
             ),
             DropdownButton(
-                value: selectedValue,
+                value: option.trackType,
                 onChanged: (String? newValue) {
                   setState(() {
-                    selectedValue = newValue!;
+                    option.trackType = newValue!;
                   });
                 },
                 items: dropdownItems),

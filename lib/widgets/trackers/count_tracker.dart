@@ -27,8 +27,7 @@ class _ValueTrackerState extends State<CountTracker> {
   Future updateData() async {
     currValue++;
 
-    await widget._tracker
-        .updateLog(currValue, widget._trackerDate);
+    await widget._tracker.updateLog(currValue, widget._trackerDate);
     print('val $currValue');
     EventManager.dispatchUpdate(
         UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
@@ -62,7 +61,7 @@ class _ValueTrackerState extends State<CountTracker> {
     return GestureDetector(
       child: Card(
         child: ListTile(
-          title: Text(widget._tracker.title ?? ""),
+          title: Text(widget._tracker.option.title ?? ""),
           subtitle: Text(subtitle),
           trailing: SizedBox(
             width: 100,

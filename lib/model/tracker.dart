@@ -10,15 +10,12 @@ class Tracker {
   String? id;
 
   // tracker title (does this need to be unique in data?)
-  String? title;
-  String? userID;
+  TrackOption option;
   String trackableID;
-  String? type;
-  String? icon;
 
   List<DataLog> dataLog = [];
 
-  Tracker(this.trackableID, {this.title, this.type, this.icon}) {
+  Tracker(this.trackableID, this.option) {
     readLog(DateTime.now());
   }
 
@@ -31,7 +28,7 @@ class Tracker {
     if (trackableID == '') return;
 
     Duration diff = date.difference(DateTime.now());
-    if (diff.inDays < 0 ) {
+    if (diff.inDays < 0) {
       // if date is not today, we need to add this as last entry
       date = date.endOfDay;
     }
@@ -40,7 +37,8 @@ class Tracker {
     DateTime minTimeFrame = date.add(const Duration(hours: -1));
     List<DataLog> logs = await getLogs(minTimeFrame, date);
     DataLog? log = logs.firstOrNull;
-    log ??= DataLog(trackableID, date, title: title, type: type, value: value);
+    log ??= DataLog(trackableID, date,
+        title: option.title, type: option.trackType, value: value);
     log.time = date;
     log.value = value;
     log.save();
@@ -59,7 +57,7 @@ class Tracker {
   Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
     if (trackableID == '') return [];
     return DataLog.getCollection(trackableID)
-        .where('title', isEqualTo: title ?? 'Default')
+        .where('title', isEqualTo: option.title ?? 'Default')
         .where('time', isGreaterThanOrEqualTo: start)
         .where('time', isLessThanOrEqualTo: end)
         .get(GetOptions(source: Source.cache))
@@ -77,8 +75,8 @@ class Tracker {
     DateTime date = before ?? DateTime.now();
 
     return await DataLog.getCollection(trackableID)
-        .where('time', isLessThanOrEqualTo: date )
-        .where('title', isEqualTo: title ?? 'Default')
+        .where('time', isLessThanOrEqualTo: date)
+        .where('title', isEqualTo: option.title ?? 'Default')
         .limit(1)
         .orderBy('time', descending: true)
         .get()
@@ -86,7 +84,6 @@ class Tracker {
       List<DataLog> log = data.docs.map((doc) {
         return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();
-
 
       if (log.lastOrNull == null) return null;
 
@@ -108,10 +105,11 @@ class Tracker {
     return dataLog?.value.toString() ?? '';
   }
 
-  Future<String> getLastValueFor(DateTime day, {bool includePrevious = true}) async {
+  Future<String> getLastValueFor(DateTime day,
+      {bool includePrevious = true}) async {
     if (trackableID == '') return '';
-    DataLog? dataLog = await getLastEntry(!includePrevious,
-        before: day.endOfDay);
+    DataLog? dataLog =
+        await getLastEntry(!includePrevious, before: day.endOfDay);
     return dataLog?.value.toString() ?? '';
   }
 
@@ -122,10 +120,7 @@ class Tracker {
     return values;
   }
 
-  Tracker.fromTrackOption(String owner, TrackOption option)
-      : trackableID = owner {
-    title = option.title;
-    type = option.trackType;
+  Tracker.fromTrackOption(String owner, this.option) : trackableID = owner {
     readLog(DateTime.now());
   }
 }

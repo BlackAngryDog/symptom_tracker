@@ -43,9 +43,9 @@ class _ValueTrackerState extends State<ValueTracker> {
   IconData icon = Icons.arrow_right;
 
   Future updateData(String value) async {
-    await widget._tracker
-        .updateLog(value, widget._trackerDate);
-    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
+    await widget._tracker.updateLog(value, widget._trackerDate);
+    EventManager.dispatchUpdate(
+        UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
     getCurrValue();
   }
 
@@ -87,7 +87,7 @@ class _ValueTrackerState extends State<ValueTracker> {
     return GestureDetector(
       child: Card(
         child: ListTile(
-          title: Text(widget._tracker.title ?? ""),
+          title: Text(widget._tracker.option.title ?? ""),
           subtitle: Row(
             children: [
               Icon(icon),

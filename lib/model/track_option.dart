@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
-
+import 'package:symptom_tracker/model/tracker.dart';
 
 // Used to store daily log information to be retrieved by date for user id
 class TrackOption {
@@ -64,6 +64,13 @@ class TrackOption {
     title = json['title'];
     trackType = json['trackType'];
     icon = json['icon'];
+  }
+
+  TrackOption.fromTracker(Tracker tracker) {
+    id = tracker.option.id;
+    title = tracker.option.title;
+    trackType = tracker.option.trackType;
+    icon = tracker.option.icon;
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
