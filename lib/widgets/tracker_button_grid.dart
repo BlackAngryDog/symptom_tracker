@@ -23,7 +23,7 @@ class _TrackerButtonGridState extends State<TrackerButtonGrid> {
   initState() {
     super.initState();
     _trackers = EventManager.selectedTarget.trackers
-        .map((e) => Tracker(EventManager.selectedTarget.id ?? '', type: e.trackType, title: e.title))
+        .map((e) => Tracker(EventManager.selectedTarget.id ?? '', e))
         .toList();
   }
 
@@ -56,7 +56,8 @@ class _TrackerButtonGridState extends State<TrackerButtonGrid> {
               setState(() {
                 Navigator.of(context).pop();
                 _selectedTracker = tracker;
-                if (_selectedTracker != null) EventManager.selectedTracker = _selectedTracker;
+                if (_selectedTracker != null)
+                  EventManager.selectedTracker = _selectedTracker;
                 ;
               }),
             },

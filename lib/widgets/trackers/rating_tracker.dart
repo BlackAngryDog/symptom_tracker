@@ -25,9 +25,9 @@ class _RatingTrackerState extends State<RatingTracker> {
   }
 
   Future updateData(double value) async {
-    await widget._tracker
-        .updateLog(value, widget._trackerDate);
-    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
+    await widget._tracker.updateLog(value, widget._trackerDate);
+    EventManager.dispatchUpdate(
+        UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
     getCurrValue();
   }
 
@@ -57,11 +57,12 @@ class _RatingTrackerState extends State<RatingTracker> {
     return GestureDetector(
       child: Card(
         child: ListTile(
-          title: Text(widget._tracker.title ?? ""),
+          title: Text(widget._tracker.option.title ?? ""),
           subtitle: Text(subtitle),
           trailing: RatingBar.builder(
-            initialRating: 3,
+            initialRating: currValue,
             itemCount: 5,
+            minRating: 1,
             itemBuilder: (context, index) {
               switch (index) {
                 case 0:
@@ -89,7 +90,6 @@ class _RatingTrackerState extends State<RatingTracker> {
                     Icons.sentiment_very_satisfied,
                     color: Colors.green,
                   );
-
               }
             },
             onRatingUpdate: (rating) {

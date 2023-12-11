@@ -10,7 +10,15 @@ import 'package:symptom_tracker/widgets/tracker_controls.dart';
 class AbsWeekInfo extends StatefulWidget {
   final Tracker _tracker;
   final DateTime _trackerDate;
-  final List<String> currValues = ["M", "T", "W", "T", "F", "S", "S"]; // TODO - GET TODYS COUNT FOR TRACKER
+  final List<String> currValues = [
+    "M",
+    "T",
+    "W",
+    "T",
+    "F",
+    "S",
+    "S"
+  ]; // TODO - GET TODYS COUNT FOR TRACKER
   int _selectedIndex = -1;
 
   AbsWeekInfo(this._tracker, this._trackerDate, {Key? key}) : super(key: key);
@@ -112,8 +120,8 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
   Widget build(BuildContext context) {
     var count = widget.currValues.length - 1;
     IconData? icon;
-    if (widget._tracker.icon != null) {
-      var iconDataJson = jsonDecode(widget._tracker.icon ?? "");
+    if (widget._tracker.option.icon != null) {
+      var iconDataJson = jsonDecode(widget._tracker.option.icon ?? "");
       icon = IconData(iconDataJson['codePoint'],
           fontFamily: iconDataJson['fontFamily']);
     }
@@ -138,15 +146,15 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                           children: [
                             if (icon != null)
                               Padding(
-                                padding: const EdgeInsets.only(right:8.0),
+                                padding: const EdgeInsets.only(right: 8.0),
                                 child: Icon(
                                   icon,
                                   size: 24,
-                                  color: Colors.white,
                                 ),
                               ),
-                            Text(widget._tracker.title ?? "",
-                                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold) ,
+                            Text(widget._tracker.option.title ?? "",
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.start),
                           ],
                         ),
@@ -228,7 +236,9 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                 child: Text(
                   widget.currValues[index],
                   textAlign: TextAlign.center,
-                  style: TextStyle(backgroundColor: Colors.transparent,fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      backgroundColor: Colors.transparent,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -240,7 +250,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
 
   Decoration getContainerDecoration(int index, {double elevation = .5}) {
     return BoxDecoration(
-        color: Colors.white54,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         shape: BoxShape.rectangle,
         border: index == widget._selectedIndex
             ? Border.all(color: Colors.blueAccent, width: 2)
@@ -249,9 +259,10 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
           BoxShadow(
             color: Colors.black45,
             blurStyle: BlurStyle.normal,
-            blurRadius: 4.0*elevation,
+            blurRadius: 4.0 * elevation,
             spreadRadius: 0.0,
-            offset: Offset(3.0*elevation, 3.0*elevation), // shadow direction: bottom right
+            offset: Offset(3.0 * elevation,
+                3.0 * elevation), // shadow direction: bottom right
           )
         ],
         borderRadius: BorderRadius.all(Radius.circular(50)));

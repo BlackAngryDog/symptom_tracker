@@ -25,9 +25,9 @@ class _QualityTrackerState extends State<QualityTracker> {
   }
 
   Future updateData(double value) async {
-    await widget._tracker
-        .updateLog(value, widget._trackerDate);
-    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
+    await widget._tracker.updateLog(value, widget._trackerDate);
+    EventManager.dispatchUpdate(
+        UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
     getCurrValue();
   }
 
@@ -57,7 +57,7 @@ class _QualityTrackerState extends State<QualityTracker> {
     return GestureDetector(
       child: Card(
         child: ListTile(
-          title: Text(widget._tracker.title ?? ""),
+          title: Text(widget._tracker.option.title ?? ""),
           subtitle: Text(subtitle),
           trailing: RatingBar.builder(
             initialRating: currValue,

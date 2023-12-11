@@ -42,7 +42,7 @@ class _TrackerControlsState extends State<TrackerControls> {
   Widget build(BuildContext context) {
     if (_selectedTracker == null) return Container();
 
-    switch (_selectedTracker!.type) {
+    switch (_selectedTracker!.option.trackType) {
       case "counter":
         return CountTracker(_selectedTracker!, widget.date ?? DateTime.now());
       case "quality":

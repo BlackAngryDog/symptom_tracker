@@ -6,8 +6,8 @@ class TrackerSummeryPage extends StatelessWidget {
   const TrackerSummeryPage(this._tracker, {Key? key}) : super(key: key);
 
   Widget getState() {
-    print('tracker type is ${_tracker.type}');
-    switch (_tracker.type) {
+    print('tracker type is ${_tracker.option.trackType}');
+    switch (_tracker.option.trackType) {
       case "counter":
         return CountTrackerInfo(_tracker);
       case "quality":
@@ -40,7 +40,7 @@ class CountTrackerInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Summery of ${_tracker.title}'),
+        Text('Summery of ${_tracker.option.title}'),
         //LineChartWidget(_tracker),
       ],
     );
@@ -55,7 +55,7 @@ class QualityTrackerInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Summery of ${_tracker.title}'),
+        Text('Summery of ${_tracker.option.title}'),
         //LineChartWidget(_tracker),
       ],
     );
@@ -70,7 +70,7 @@ class ValueTrackerInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Summery of ${_tracker.title}'),
+        Text('Summery of ${_tracker.option.title}'),
         // LineChartWidget(_tracker),
       ],
     );
@@ -85,7 +85,7 @@ class DietTrackerInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Summery of ${_tracker.title}'),
+        Text('Summery of ${_tracker.option.title}'),
         // LineChartWidget(_tracker),
       ],
     );

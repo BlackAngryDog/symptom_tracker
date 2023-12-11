@@ -18,7 +18,7 @@ class TrackerWeek extends StatefulWidget {
 }
 
 class _TrackerWeekState extends State<TrackerWeek> {
-  var daysOfWeek = <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  var daysOfWeek = <String>['Mo', 'Tu', 'We', 'Tu', 'Fr', 'Sa', 'Su'];
   late StreamSubscription trackerSubscription;
 
   @override
@@ -41,14 +41,12 @@ class _TrackerWeekState extends State<TrackerWeek> {
   @override
   Widget build(BuildContext context) {
     final trackers = EventManager.selectedTarget.trackers
-        .map((e) => Tracker(EventManager.selectedTarget.id ?? '',
-            type: e.trackType, title: e.title, icon: e.icon))
+        .map((e) => Tracker(EventManager.selectedTarget.id ?? '', e))
         .toList();
 
     // TODO - Work out why the scroll view is not working
 
     return Container(
-      color: Colors.blueGrey,
       height: MediaQuery.of(context).copyWith().size.height,
       child: Padding(
         padding: const EdgeInsets.only(left: 8, right: 8),

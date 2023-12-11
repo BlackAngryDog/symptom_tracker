@@ -75,7 +75,8 @@ class _DietChartState extends State<DietChart> {
   double scaleMin = 0;
   double scaleMax = 1;
 
-  final Map<String, List<DietChartData>> _chartMap = <String, List<DietChartData>>{};
+  final Map<String, List<DietChartData>> _chartMap =
+      <String, List<DietChartData>>{};
 
   var _chartData = [
     DietChartData("test 1", 10, 1),
@@ -101,10 +102,12 @@ class _DietChartState extends State<DietChart> {
 
   Future<List<PieChartSectionData>> _getData() async {
     // TODO - GET ALL OTHER DATA LOGS TO COMPARE WITH EACH FOOD OPTION!?
-    Map<String, List<PieChartSectionData>> _pieSections = <String, List<PieChartSectionData>>{};
+    Map<String, List<PieChartSectionData>> _pieSections =
+        <String, List<PieChartSectionData>>{};
     // Read data as a list of diet changes.
     Tracker dietTracker = _selectedTarget.getDietTracker();
-    List<DataLog> dietLogs = await dietTracker.getLogs(DateTimeExt.lastMonth, DateTime.now());
+    List<DataLog> dietLogs =
+        await dietTracker.getLogs(DateTimeExt.lastMonth, DateTime.now());
 
     //Make sure data is sorted by time
     dietLogs.sort((a, b) => a.time.compareTo(b.time));
@@ -117,15 +120,20 @@ class _DietChartState extends State<DietChart> {
     // extract date data to then read other trackers to compare.
     for (DataLog data in dietLogs) {
       // for (Tracker t in trackers) {
-      List<DataLog> trackerLogs = await _selectedTracker!.getLogs(start, data.time);
+      List<DataLog> trackerLogs =
+          await _selectedTracker!.getLogs(start, data.time);
 
       Map<String, bool> options = Map<String, bool>.from(data.value);
       for (DataLog trackerLog in trackerLogs) {
         for (String option in options.keys) {
           if (options[option] == true) {
-            DietData? data = dietDataList.where((element) => element.symptom == _selectedTracker!.title).firstOrNull;
+            DietData? data = dietDataList
+                .where((element) =>
+                    element.symptom == _selectedTracker!.option.title)
+                .firstOrNull;
             if (data == null) {
-              dietDataList.add(data = DietData(_selectedTracker!.title ?? ""));
+              dietDataList
+                  .add(data = DietData(_selectedTracker!.option.title ?? ""));
             }
             data.addLog(option, trackerLog);
           }
@@ -143,7 +151,8 @@ class _DietChartState extends State<DietChart> {
         if (_chartMap[data.symptom] == null) _chartMap[data.symptom] = [];
 
         for (DataLog log in entry.value) {
-          num v = num.parse(log.value is String ? log.value : log.value.toString());
+          num v =
+              num.parse(log.value is String ? log.value : log.value.toString());
           total += v;
           // int index =
           //     _chartMap[data.symptom]!.where((element) => element.name == entry.key).toList(growable: false).length;
@@ -151,14 +160,18 @@ class _DietChartState extends State<DietChart> {
         }
 
         // Get adverage value.
-        _chartMap[data.symptom]!.add(DietChartData(entry.key, total / data.history.entries.length, 0));
+        _chartMap[data.symptom]!.add(
+            DietChartData(entry.key, total / data.history.entries.length, 0));
         if (_pieSections[data.symptom] == null) _pieSections[data.symptom] = [];
         _pieSections[data.symptom]!.add(PieChartSectionData(
           title: entry.key,
           value: total / data.history.entries.length,
           color: Colors.redAccent,
           radius: 40,
-          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
+          titleStyle: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xffffffff)),
         ));
         setState(() {
           _pieData = _pieSections[data.symptom] ?? [];
