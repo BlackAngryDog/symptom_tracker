@@ -9,10 +9,10 @@ import '../model/track_option.dart';
 class AddTracker extends StatefulWidget {
   //const AddTransaction({ Key? key }) : super(key: key);
 
-  final TrackOption? option;
+  final Tracker? tracker;
   final Function(TrackOption option) onAddTracker;
 
-  AddTracker(this.onAddTracker, {this.option});
+  AddTracker(this.onAddTracker, {this.tracker});
 
   @override
   State<AddTracker> createState() => _AddTrackerState();
@@ -97,7 +97,12 @@ class _AddTrackerState extends State<AddTracker> {
 
   @override
   Widget build(BuildContext context) {
-    option = widget.option ??
+    titleController.text = widget.tracker?.option.title ?? '';
+    valueController.text = widget.tracker?.getLastValue(true).toString() ?? '';
+    selectedValue = widget.tracker?.option.trackType ?? 'counter';
+    selectedIcon = widget.tracker?.option.icon ?? 'favorite';
+
+    option = widget.tracker?.option ??
         TrackOption(
             title: titleController.text,
             trackType: selectedValue,

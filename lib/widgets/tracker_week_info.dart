@@ -61,8 +61,8 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
           return GestureDetector(
             onTap: () {},
             behavior: HitTestBehavior.opaque,
-            child: AddTracker((option) {},
-                option: _selectedTracker?.option as TrackOption),
+            child:
+                AddTracker((option) {}, tracker: _selectedTracker as Tracker),
           );
         });
   }
