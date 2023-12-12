@@ -14,6 +14,7 @@ class Trackable {
 
   Tracker? _dietTracker;
 
+  List<String> trackerIDs = [];
   List<TrackOption> trackers = [];
 
   List<DataLog> _log = [];
@@ -28,6 +29,17 @@ class Trackable {
     _dietTracker = Tracker(
         id ?? '', new TrackOption(title: 'Diet Tracker', trackType: 'diet'));
     return _dietTracker as Tracker;
+  }
+  
+  Future<List<TrackOption>> getTrackOptions() async {
+   
+    for(var id in trackerIDs){
+      var option = await TrackOption.load(id);
+      trackers.add(option);
+    }
+      
+    return trackers;
+    //return trackerIDs.map((e) => await TrackOption.getOption(e)).toList();
   }
 
   Future<List<DataLog>> getDataLogs(DateTime start, DateTime end) async {
@@ -80,9 +92,11 @@ class Trackable {
     final doc = getCollection().doc(key);
 
     return doc.get().then(
-      (snapshot) {
-        return Trackable.fromJson(
+      (snapshot) async {
+        var item = Trackable.fromJson(
             doc.id, snapshot.data() as Map<String, dynamic>);
+        await item.getTrackOptions();
+        return item;
       },
     ).catchError(
       (error, stackTrace) {
@@ -92,20 +106,16 @@ class Trackable {
     );
   }
 
-  Trackable.fromJson(String? key, Map<String, dynamic> json) {
+  Trackable.fromJson(String? key, Map<String, dynamic> json)  {
     id = key;
     title = json['title'];
 
-    trackers = json['trackers'] is Map
-        ? json['trackers'].entries.map<TrackOption>((e) {
-            return TrackOption.fromJson("", e.value as Map<String, dynamic>);
-          }).toList()
-        : [];
+    // set trackerIDs to json
+    trackerIDs = json['trackerIDs'] != null ? List.from(json['trackerIDs']) : [];
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
         'title': title,
-        'trackers': Map<String, dynamic>.fromEntries(trackers.map((value) =>
-            MapEntry<String, dynamic>(value.title ?? '', value.toJson()))),
-      };
+        'trackerIDs': trackers.where((element) => element.id?.isNotEmpty == true).map((e) => e.id).toList(),
+  };
 }
