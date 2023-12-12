@@ -28,9 +28,10 @@ class EventManager {
     _instance._selectedTarget = value;
     TrackOption? initialTrackerOption =
         _instance._selectedTarget.trackers.firstOrNull;
-    if (initialTrackerOption != null)
+    if (initialTrackerOption != null) {
       _instance._selectedTracker =
           Tracker.fromTrackOption(value.id ?? '', initialTrackerOption);
+    }
     dispatchUpdate(UpdateEvent(EventType.trackerChanged));
   }
 
@@ -48,9 +49,9 @@ class EventManager {
 
   static Stream<UpdateEvent> get stream => _instance.trackableController.stream;
 
-  factory EventManager(Trackable _selectedTarget) {
+  factory EventManager(Trackable selectedTarget) {
     //instance._selectedTarget = _selectedTarget;
-    selectedTarget = _selectedTarget;
+    selectedTarget = selectedTarget;
     return _instance;
   }
   EventManager._internal();

@@ -73,7 +73,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     List<LineChartWidgetData> list = [];
     if (_selectedTracker == null) return list;
 
-    DateTime startDate = DateTimeExt.lastWeek.add(Duration(days: 0));
+    DateTime startDate = DateTimeExt.lastWeek.add(const Duration(days: 0));
     DateTime endDate = startDate.add(const Duration(days: 7)).endOfDay;
     scaleXMax = 7;
 
@@ -92,7 +92,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
       _spots.add(FlSpot(0, getValueFromLog(start)));
     }
 */
-    bool _addEmpty = _selectedTracker!.option.trackType == 'counter';
+    bool addEmpty = _selectedTracker!.option.trackType == 'counter';
     // logs.clear();
     int numDays = endDate.difference(startDate).inDays;
     for (int i = 0; i <= numDays; i++) {
@@ -102,7 +102,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
           .toList(growable: false);
       print("Day is ${_selectedTracker!.option.trackType}");
       if (dayLogs.isEmpty) {
-        if (_addEmpty) {
+        if (addEmpty) {
           _spots.add(FlSpot(day, 0));
           continue;
         } else if (day == 0) {

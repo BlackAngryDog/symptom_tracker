@@ -153,13 +153,13 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                                 ),
                               ),
                             Text(widget._tracker.option.title ?? "",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 24, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.start),
                           ],
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: 40.0,
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
@@ -201,13 +201,13 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
         decoration: getContainerDecoration(index),
         alignment: Alignment.center,
 
-        child: Stack(
+        child: const Stack(
           fit: StackFit.expand,
           children: [
             FittedBox(
               fit: BoxFit.contain,
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: EdgeInsets.all(12.0),
                 child: Icon(Icons.add),
               ),
             ),
@@ -236,7 +236,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                 child: Text(
                   widget.currValues[index],
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       backgroundColor: Colors.transparent,
                       fontWeight: FontWeight.bold),
                 ),
@@ -265,6 +265,6 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                 3.0 * elevation), // shadow direction: bottom right
           )
         ],
-        borderRadius: BorderRadius.all(Radius.circular(50)));
+        borderRadius: const BorderRadius.all(Radius.circular(50)));
   }
 }

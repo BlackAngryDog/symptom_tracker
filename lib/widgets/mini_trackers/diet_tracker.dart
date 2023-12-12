@@ -24,7 +24,7 @@ class _MiniDietTrackerState extends State<MiniDietTracker> {
     Navigator.push(
       ctx,
       MaterialPageRoute(
-        builder: (context) => DietOptionsPage(),
+        builder: (context) => const DietOptionsPage(),
       ),
     );
   }
@@ -34,10 +34,10 @@ class _MiniDietTrackerState extends State<MiniDietTracker> {
     return GestureDetector(
       child: Column(
         children: [
-          Card(
+          const Card(
             color: Colors.blueGrey,
             elevation: 5,
-            shape: const RoundedRectangleBorder(
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(25)),
               side: BorderSide(width: 4, color: Colors.white38),
             ),

@@ -14,6 +14,7 @@ class RatingTrackerWeekInfo extends AbsWeekInfo {
 
 class _RatingTrackerWeekInfoState
     extends AbsWeekInfoState<RatingTrackerWeekInfo> {
+  @override
   String subtitle = 'count today is 0';
 
   void showHistory(BuildContext ctx) {
@@ -57,27 +58,27 @@ class _RatingTrackerWeekInfoState
   Widget getIcon(int index) {
     switch (index) {
       case 1:
-        return Icon(
+        return const Icon(
           Icons.sentiment_very_dissatisfied,
           color: Colors.red,
         );
       case 2:
-        return Icon(
+        return const Icon(
           Icons.sentiment_dissatisfied,
           color: Colors.redAccent,
         );
       case 3:
-        return Icon(
+        return const Icon(
           Icons.sentiment_neutral,
           color: Colors.amber,
         );
       case 4:
-        return Icon(
+        return const Icon(
           Icons.sentiment_satisfied,
           color: Colors.lightGreen,
         );
       default:
-        return Icon(
+        return const Icon(
           Icons.sentiment_very_satisfied,
           color: Colors.green,
         );

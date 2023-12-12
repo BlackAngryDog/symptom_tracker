@@ -6,7 +6,7 @@ class AddDietOption extends StatefulWidget {
 
   final Function(DietOption tracker) onAddItem;
 
-  const AddDietOption(this.onAddItem);
+  const AddDietOption(this.onAddItem, {Key? key}) : super(key: key);
 
   @override
   State<AddDietOption> createState() => _AddDietOptionState();
@@ -17,13 +17,13 @@ class _AddDietOptionState extends State<AddDietOption> {
 
   void OnSubmitDate() {
     print("test");
-    final String _title = titleController.text;
+    final String title = titleController.text;
 
-    if (_title == "") return;
+    if (title == "") return;
 
     //Tracker tracker = Tracker('default', title: _title, type: "diet_option");
 
-    widget.onAddItem(DietOption(title: _title));
+    widget.onAddItem(DietOption(title: title));
 
     Navigator.of(context).pop();
   }
@@ -46,21 +46,21 @@ class _AddDietOptionState extends State<AddDietOption> {
     return Card(
       elevation: 5,
       child: Container(
-        margin: EdgeInsets.all(10),
+        margin: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             TextField(
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Title'),
               controller: titleController,
             ),
             TextButton(
               onPressed: OnSubmitDate,
-              child: Text(
+              style: TextButton.styleFrom(foregroundColor: Colors.purple),
+              child: const Text(
                 "Add Option",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              style: TextButton.styleFrom(primary: Colors.purple),
             )
           ],
         ),

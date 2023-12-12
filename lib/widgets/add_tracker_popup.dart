@@ -12,7 +12,7 @@ class AddTracker extends StatefulWidget {
   final Tracker? tracker;
   final Function(TrackOption option) onAddTracker;
 
-  AddTracker(this.onAddTracker, {this.tracker});
+  const AddTracker(this.onAddTracker, {Key? key, this.tracker}) : super(key: key);
 
   @override
   State<AddTracker> createState() => _AddTrackerState();
@@ -51,17 +51,17 @@ class _AddTrackerState extends State<AddTracker> {
 
   void OnSubmitTracker() {
     print("test");
-    final String _title = titleController.text;
+    final String title = titleController.text;
 
-    final String _value = valueController.text;
+    final String value = valueController.text;
 
-    if (_title == '' || _value == '') return;
+    if (title == '' || value == '') return;
 
     option.save();
     widget.onAddTracker(option);
     // ADD STARTING VALUE;
     Tracker.fromTrackOption(EventManager.selectedTarget.id ?? '', option)
-        .updateLog(_value, DateTime.now());
+        .updateLog(value, DateTime.now());
 
     Navigator.of(context).pop();
   }
@@ -77,8 +77,8 @@ class _AddTrackerState extends State<AddTracker> {
           direction: Axis.horizontal,
           allowHalfRating: true,
           itemCount: 5,
-          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-          itemBuilder: (context, _) => Icon(
+          itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+          itemBuilder: (context, _) => const Icon(
             Icons.star,
             color: Colors.amber,
           ),
@@ -88,7 +88,7 @@ class _AddTrackerState extends State<AddTracker> {
         ); // ADD BASELINE VALUE (as 1-X picker)
       default:
         return TextField(
-          decoration: InputDecoration(labelText: 'Current Value'),
+          decoration: const InputDecoration(labelText: 'Current Value'),
           controller: valueController,
           textAlign: TextAlign.end,
         );
@@ -121,12 +121,12 @@ class _AddTrackerState extends State<AddTracker> {
     return Card(
       elevation: 5,
       child: Container(
-        margin: EdgeInsets.all(10),
+        margin: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             TextField(
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Title'),
               controller: titleController,
               textAlign: TextAlign.end,
               onChanged: (value) {
@@ -147,7 +147,7 @@ class _AddTrackerState extends State<AddTracker> {
 
             IconPicker(
               initialValue: 'favorite',
-              icon: Icon(Icons.apps),
+              icon: const Icon(Icons.apps),
               labelText: "Icon",
               title: "Select an icon",
               cancelBtn: "CANCEL",
@@ -180,11 +180,11 @@ class _AddTrackerState extends State<AddTracker> {
              */
             TextButton(
               onPressed: OnSubmitTracker,
-              child: Text(
+              style: TextButton.styleFrom(foregroundColor: Colors.purple),
+              child: const Text(
                 "Add Transaction",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              style: TextButton.styleFrom(primary: Colors.purple),
             )
           ],
         ),

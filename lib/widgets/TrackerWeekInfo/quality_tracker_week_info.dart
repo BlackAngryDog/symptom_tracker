@@ -15,6 +15,7 @@ class QualityTrackerWeekInfo extends AbsWeekInfo {
 
 class _QualityTrackerWeekInfoState extends AbsWeekInfoState<QualityTrackerWeekInfo> {
 
+  @override
   String subtitle = 'count today is 0';
 
   void showHistory(BuildContext ctx) {
@@ -59,7 +60,7 @@ class _QualityTrackerWeekInfoState extends AbsWeekInfoState<QualityTrackerWeekIn
                 child: Text(
                   widget.currValues[index],
                   textAlign: TextAlign.center,
-                  style: TextStyle(backgroundColor: Colors.transparent, fontWeight: FontWeight.bold),
+                  style: const TextStyle(backgroundColor: Colors.transparent, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

@@ -27,7 +27,7 @@ class _DietTrackerState extends State<DietTracker> {
     Navigator.push(
       ctx,
       MaterialPageRoute(
-        builder: (context) => DietOptionsPage(),
+        builder: (context) => const DietOptionsPage(),
       ),
     );
   }

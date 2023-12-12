@@ -25,9 +25,9 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
         context: ctx,
         builder: (_) {
           return GestureDetector(
-            child: AddTracker(_addTracker),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
+            child: AddTracker(_addTracker),
           );
         });
   }
@@ -67,7 +67,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
     showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
+          return const AlertDialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(
@@ -113,7 +113,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
       appBar: AppBar(
 // Here we take the value from the MyHomePage object that was created by
 // the App.build method, and use it to set our appbar title.
-        title: Text('Select Symptoms to track'),
+        title: const Text('Select Symptoms to track'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -124,13 +124,13 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
         ],
       ),
       body: SafeArea(
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).copyWith().size.height,
           child: StreamBuilder<QuerySnapshot>(
               stream: TrackOption.getCollection().orderBy('title').snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 } else {
@@ -149,7 +149,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
                             children: options,
                           );
                         } else {
-                          return Center(
+                          return const Center(
                             child: CircularProgressIndicator(),
                           );
                         }
@@ -161,7 +161,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
       floatingActionButton: ButtonBar(
         children: <Widget>[
           ElevatedButton(
-            child: Text('Next'),
+            child: const Text('Next'),
             onPressed: () {
               // GOTO INITIAL SETUP FOR TRACKERS -
               //showInitialSettingsPopup(context, 1);
@@ -169,7 +169,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
             },
           ),
           ElevatedButton(
-            child: Text('Back'),
+            child: const Text('Back'),
             onPressed: () {
               // To do - pop nav
               Navigator.of(context).pop();

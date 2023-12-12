@@ -35,7 +35,7 @@ class _AdvTrackerInfoState extends State<AdvTrackerInfo> {
   Future getCurrValue() async {
     List<dynamic> values = await _selectedTracker!.getValuesFor(DateTimeExt.lastWeek, DateTime.now());
 
-    if (values.length == 0) return _currValue = '0';
+    if (values.isEmpty) return _currValue = '0';
 
     double total = 0;
     for (dynamic v in values) {
@@ -50,7 +50,7 @@ class _AdvTrackerInfoState extends State<AdvTrackerInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 100,
       height: 100,
       child: Card(
@@ -59,7 +59,7 @@ class _AdvTrackerInfoState extends State<AdvTrackerInfo> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('ADV'),
+            const Text('ADV'),
             Text(_currValue),
           ],
         ),

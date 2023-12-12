@@ -11,7 +11,7 @@ import 'TrackerWeekInfo/week_info_grid.dart';
 
 class TrackerWeek extends StatefulWidget {
   final Trackable trackable;
-  TrackerWeek(this.trackable, {Key? key}) : super(key: key);
+  const TrackerWeek(this.trackable, {Key? key}) : super(key: key);
 
   @override
   State<TrackerWeek> createState() => _TrackerWeekState();
@@ -46,7 +46,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
 
     // TODO - Work out why the scroll view is not working
 
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).copyWith().size.height,
       child: Padding(
         padding: const EdgeInsets.only(left: 8, right: 8),

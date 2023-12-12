@@ -7,7 +7,7 @@ class DietOption {
   String? id;
   String? title;
 
-  DietOption({this.id, this.title}) {}
+  DietOption({this.id, this.title});
 
   static Future<List<DietOption>> getOptions() async {
     return DietOption.getCollection().get().then((data) {

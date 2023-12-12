@@ -17,7 +17,7 @@ class Trackable {
   List<String> trackerIDs = [];
   List<TrackOption> trackers = [];
 
-  List<DataLog> _log = [];
+  final List<DataLog> _log = [];
   List<DataLog> get log => _log;
 
   Trackable({this.title});
@@ -27,7 +27,7 @@ class Trackable {
     if (_dietTracker != null) return _dietTracker as Tracker;
 
     _dietTracker = Tracker(
-        id ?? '', new TrackOption(title: 'Diet Tracker', trackType: 'diet'));
+        id ?? '', TrackOption(title: 'Diet Tracker', trackType: 'diet'));
     return _dietTracker as Tracker;
   }
   

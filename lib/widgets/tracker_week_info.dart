@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
-import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/count_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/diet_tracker_week_info.dart';

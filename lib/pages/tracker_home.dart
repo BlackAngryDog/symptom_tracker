@@ -13,7 +13,6 @@ import 'package:symptom_tracker/pages/tracker_options_page.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
 import 'package:symptom_tracker/widgets/bottom_tracker_panel.dart';
-import 'package:symptom_tracker/widgets/info_header.dart';
 import 'package:symptom_tracker/widgets/tracker_week.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -32,9 +31,9 @@ class TrackerPage extends StatelessWidget {
         context: ctx,
         builder: (_) {
           return GestureDetector(
-            child: AddTracker(_addTracker),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
+            child: AddTracker(_addTracker),
           );
         });
   }
@@ -90,7 +89,7 @@ class TrackerPage extends StatelessWidget {
     Navigator.push(
       ctx,
       MaterialPageRoute(
-        builder: (context) => DietOptionsPage(),
+        builder: (context) => const DietOptionsPage(),
       ),
     );
   }
@@ -141,9 +140,9 @@ class TrackerPage extends StatelessWidget {
         context: ctx,
         builder: (_) {
           return GestureDetector(
-            child: BottomTrackerSelectionPanel(),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
+            child: const BottomTrackerSelectionPanel(),
           );
         });
   }
@@ -190,7 +189,7 @@ class TrackerPage extends StatelessWidget {
       ),
 
       body: SafeArea(
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).copyWith().size.height,
           child: Column(
             children: [
@@ -206,8 +205,8 @@ class TrackerPage extends StatelessWidget {
           _addTrackerPopup(context);
         },
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
         mini: true,
+        child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniCenterDocked,
@@ -216,7 +215,7 @@ class TrackerPage extends StatelessWidget {
         notchMargin: 3,
         height: 60,
         elevation: 10,
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: Row(
           children: <Widget>[
             IconButton(

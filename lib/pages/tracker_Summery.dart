@@ -23,7 +23,7 @@ class TrackerSummeryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('history'),
+        title: const Text('history'),
       ),
       body: getState(),
     );

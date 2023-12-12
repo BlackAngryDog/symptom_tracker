@@ -46,7 +46,7 @@ class _TrackerListState extends State<TrackerList> {
                     }),
                   },
                 );
-              }).toList() as List<Widget>,
+              }).toList(),
             ),
           ),
         ],

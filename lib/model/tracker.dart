@@ -60,7 +60,7 @@ class Tracker {
         .where('title', isEqualTo: option.title ?? 'Default')
         .where('time', isGreaterThanOrEqualTo: start)
         .where('time', isLessThanOrEqualTo: end)
-        .get(GetOptions(source: Source.cache))
+        .get(const GetOptions(source: Source.cache))
         .then((data) {
       List<DataLog> log = data.docs.map((doc) {
         return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);

@@ -65,7 +65,7 @@ class _ValueTrackerState extends State<ValueTracker> {
       icon = Icons.arrow_drop_down;
     }
     currValue = curr.toString();
-    print('last ${last} , curr ${curr}');
+    print('last $last , curr $curr');
     setState(() {
       subtitle = currValue.toString();
     });

@@ -39,10 +39,10 @@ class _MiniCountTrackerState extends State<MiniCountTracker> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Card(
+        const Card(
           color: Colors.blueGrey,
           elevation: 5,
-          shape: const RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(25)),
             side: BorderSide(width: 4, color: Colors.white38),
           ),
@@ -53,7 +53,7 @@ class _MiniCountTrackerState extends State<MiniCountTracker> {
               Positioned(
                 right: 10,
                 bottom: 10,
-                child: const FaIcon(
+                child: FaIcon(
                   FontAwesomeIcons.weightScale,
                   size: 45,
                 ),

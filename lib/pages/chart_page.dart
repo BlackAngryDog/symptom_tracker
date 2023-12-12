@@ -18,7 +18,7 @@ class _ChartPageState extends State<ChartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('history'),
+        title: const Text('history'),
       ),
       body: Center(
         child: StreamBuilder<QuerySnapshot>(
@@ -26,7 +26,7 @@ class _ChartPageState extends State<ChartPage> {
                 DataLog.getCollection(widget.trackable.id ?? "Default").orderBy('time', descending: true).snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               } else {

@@ -102,7 +102,7 @@ class _DietChartState extends State<DietChart> {
 
   Future<List<PieChartSectionData>> _getData() async {
     // TODO - GET ALL OTHER DATA LOGS TO COMPARE WITH EACH FOOD OPTION!?
-    Map<String, List<PieChartSectionData>> _pieSections =
+    Map<String, List<PieChartSectionData>> pieSections =
         <String, List<PieChartSectionData>>{};
     // Read data as a list of diet changes.
     Tracker dietTracker = _selectedTarget.getDietTracker();
@@ -162,19 +162,19 @@ class _DietChartState extends State<DietChart> {
         // Get adverage value.
         _chartMap[data.symptom]!.add(
             DietChartData(entry.key, total / data.history.entries.length, 0));
-        if (_pieSections[data.symptom] == null) _pieSections[data.symptom] = [];
-        _pieSections[data.symptom]!.add(PieChartSectionData(
+        if (pieSections[data.symptom] == null) pieSections[data.symptom] = [];
+        pieSections[data.symptom]!.add(PieChartSectionData(
           title: entry.key,
           value: total / data.history.entries.length,
           color: Colors.redAccent,
           radius: 40,
-          titleStyle: TextStyle(
+          titleStyle: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff)),
+              color: Color(0xffffffff)),
         ));
         setState(() {
-          _pieData = _pieSections[data.symptom] ?? [];
+          _pieData = pieSections[data.symptom] ?? [];
         });
       }
 
@@ -217,7 +217,7 @@ class _DietChartState extends State<DietChart> {
 */
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 100,
       height: 100,
       child: PieChart(
@@ -227,7 +227,7 @@ class _DietChartState extends State<DietChart> {
           centerSpaceRadius: 10,
           sectionsSpace: 2,
         ),
-        swapAnimationDuration: Duration(milliseconds: 150), // Optional
+        swapAnimationDuration: const Duration(milliseconds: 150), // Optional
         swapAnimationCurve: Curves.linear, // Optional
       ),
     );

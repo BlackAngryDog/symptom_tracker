@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/extentions/extention_methods.dart';
 
 class WeekInfoGrid extends StatefulWidget {
   final List<String> _data;

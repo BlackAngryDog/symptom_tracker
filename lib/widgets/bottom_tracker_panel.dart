@@ -13,7 +13,7 @@ class _BottomTrackerSelectionPanelState extends State<BottomTrackerSelectionPane
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext ctx, BoxConstraints constraints) {
-        return Card(
+        return const Card(
           color: Colors.orange,
           child: Flex(
             direction: Axis.horizontal,

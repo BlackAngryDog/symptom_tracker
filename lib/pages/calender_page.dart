@@ -46,12 +46,12 @@ class _CalenderPageState extends State<CalenderPage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        title: Text('history'),
+        title: const Text('history'),
       ),
       body: SafeArea(
         child: SfCalendar(
           view: widget.calendarView ?? CalendarView.month,
-          scheduleViewSettings: ScheduleViewSettings(
+          scheduleViewSettings: const ScheduleViewSettings(
               monthHeaderSettings: MonthHeaderSettings(height: 50)),
           dataSource: source,
           // by default the month appointment display mode set as Indicator, we can
@@ -97,7 +97,7 @@ class _CalenderPageState extends State<CalenderPage> {
       setState(() {
         source = MeetingDataSource(logs);
       });
-      print("LOADED DATA ${start} to ${end} cound is ${logs.length}");
+      print("LOADED DATA $start to $end cound is ${logs.length}");
       return logs;
     }); // TODO - ADD ERROR
     return logs;
@@ -132,7 +132,7 @@ class MeetingDataSource extends CalendarDataSource {
 
   @override
   DateTime getEndTime(int index) {
-    return _getMeetingData(index).time.add(Duration(hours: 1));
+    return _getMeetingData(index).time.add(const Duration(hours: 1));
   }
 
   @override

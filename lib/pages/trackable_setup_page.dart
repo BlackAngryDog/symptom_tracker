@@ -36,13 +36,14 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
         initialDate: selectedDate,
         firstDate: DateTime(2000),
         lastDate: DateTime.now());
-    if (picked != null && picked != selectedDate)
+    if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
         var date =
             "${picked.toLocal().day}/${picked.toLocal().month}/${picked.toLocal().year}";
         _dateController.text = date;
       });
+    }
   }
 
   @override
@@ -111,15 +112,16 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
                           },
                           controller: TextEditingController(
                               text: DateTime.now().toString()),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: "Date",
                             icon: Icon(Icons.calendar_today),
                             enabledBorder: _enabledBoader,
                             focusedBorder: _focusedBorder,
                           ),
                           validator: (value) {
-                            if (value!.isEmpty)
+                            if (value!.isEmpty) {
                               return "Please enter a date for your task";
+                            }
                             return null;
                           },
                         ),
@@ -129,7 +131,7 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
                 ),
                 TextFormField(
                   textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.numberWithOptions(signed: false),
+                  keyboardType: const TextInputType.numberWithOptions(signed: false),
                   keyboardAppearance: Brightness.dark,
                   controller: TextEditingController(text: newTrackable.title),
                   decoration: const InputDecoration(
@@ -156,7 +158,7 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
                   },
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: ElevatedButton(
                     onPressed: () {
                       // Validate will return true if the form is valid, or false if
@@ -178,7 +180,7 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
                         );
                       }
                     },
-                    child: Text('Submit'),
+                    child: const Text('Submit'),
                   ),
                 ),
               ],

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
 
 class InfoHeader extends StatefulWidget {
   const InfoHeader({Key? key}) : super(key: key);
@@ -55,7 +53,7 @@ class _InfoHeaderState extends State<InfoHeader> {
                     width: MediaQuery.of(context).copyWith().size.width,
                     child: Text(
                       _selectedTarget.title ?? "DOG",
-                      style: Theme.of(context).textTheme.headline2,
+                      style: Theme.of(context).textTheme.displayMedium,
                       textAlign: TextAlign.center,
                     ),
                   ),

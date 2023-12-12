@@ -23,9 +23,9 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
         context: ctx,
         builder: (_) {
           return GestureDetector(
-            child: AddDietOption(_addOption),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
+            child: AddDietOption(_addOption),
           );
         });
   }
@@ -61,7 +61,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
       appBar: AppBar(
 // Here we take the value from the MyHomePage object that was created by
 // the App.build method, and use it to set our appbar title.
-        title: Text('Select current Foods types'),
+        title: const Text('Select current Foods types'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -72,13 +72,13 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
         ],
       ),
       body: SafeArea(
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).copyWith().size.height,
           child: StreamBuilder<QuerySnapshot>(
               stream: DietOption.getCollection().orderBy('title').snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 } else {
@@ -97,7 +97,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
                             children: options,
                           );
                         } else {
-                          return Center(
+                          return const Center(
                               //child: CircularProgressIndicator(),
                               );
                         }
@@ -109,7 +109,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
       floatingActionButton: ButtonBar(
         children: <Widget>[
           ElevatedButton(
-            child: Text('Save'),
+            child: const Text('Save'),
             onPressed: () {
               // To do - save data
               final result = Map.fromEntries(options
@@ -121,7 +121,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
             },
           ),
           ElevatedButton(
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
             onPressed: () {
               // To do - pop nav
               Navigator.of(context).pop();

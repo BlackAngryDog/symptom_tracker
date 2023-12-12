@@ -5,7 +5,7 @@ import 'package:symptom_tracker/widgets/mini_trackers/count_tracker.dart';
 class TrackerItem extends StatelessWidget {
   final Tracker item;
 
-  TrackerItem(this.item, {Key? key}) : super(key: key);
+  const TrackerItem(this.item, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/tracker_item.dart';
 
 class TrackerButtonGrid extends StatefulWidget {
-  TrackerButtonGrid({Key? key}) : super(key: key);
+  const TrackerButtonGrid({Key? key}) : super(key: key);
 
   @override
   State<TrackerButtonGrid> createState() => _TrackerButtonGridState();
@@ -56,9 +56,9 @@ class _TrackerButtonGridState extends State<TrackerButtonGrid> {
               setState(() {
                 Navigator.of(context).pop();
                 _selectedTracker = tracker;
-                if (_selectedTracker != null)
+                if (_selectedTracker != null) {
                   EventManager.selectedTracker = _selectedTracker;
-                ;
+                }
               }),
             },
           );

@@ -56,7 +56,7 @@ class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
             ? Center(
                 child: Column(
                   children: [
-                    Text("No Data"),
+                    const Text("No Data"),
                     TrackerControls(null, DateTime.now()),
                   ],
                 ),

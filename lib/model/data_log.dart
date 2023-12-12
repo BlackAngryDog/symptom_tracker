@@ -10,7 +10,7 @@ class DataLog {
   String? type;
   String trackableID;
 
-  DataLog(this.trackableID, this.time, {this.id, this.title, this.value, this.type}) {}
+  DataLog(this.trackableID, this.time, {this.id, this.title, this.value, this.type});
 
   // How is are logs stored for retreaval and reading
 

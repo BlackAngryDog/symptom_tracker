@@ -15,6 +15,7 @@ class ValueTrackerWeekInfo extends AbsWeekInfo {
 
 class _ValueTrackerWeekInfoState extends AbsWeekInfoState<ValueTrackerWeekInfo> {
 
+  @override
   String subtitle = 'count today is 0';
 
   void showHistory(BuildContext ctx) {
