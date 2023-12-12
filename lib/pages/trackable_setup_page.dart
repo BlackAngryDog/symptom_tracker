@@ -3,9 +3,9 @@ import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/pages/tracker_options_page.dart';
 
 class TrackableSetupPage extends StatefulWidget {
-  Trackable? trackable;
+  final Trackable? trackable;
 
-  TrackableSetupPage({Key? key, this.trackable}) : super(key: key);
+  const TrackableSetupPage({Key? key, this.trackable}) : super(key: key);
 
   @override
   State<TrackableSetupPage> createState() => _TrackableSetupPageState();
@@ -25,7 +25,7 @@ const OutlineInputBorder _focusedBorder = OutlineInputBorder(
 class _TrackableSetupPageState extends State<TrackableSetupPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  late Trackable newTrackable = widget.trackable ??= Trackable();
+  late Trackable newTrackable = widget.trackable ??  Trackable();
 
   DateTime selectedDate = DateTime.now();
   final TextEditingController _dateController = TextEditingController();

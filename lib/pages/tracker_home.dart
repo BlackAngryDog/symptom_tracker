@@ -17,7 +17,7 @@ import 'package:symptom_tracker/widgets/tracker_week.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class TrackerPage extends StatelessWidget {
-  Trackable trackable;
+  final Trackable trackable;
   TrackerPage(this.trackable, {Key? key}) : super(key: key) {
     EventManager(trackable);
   }

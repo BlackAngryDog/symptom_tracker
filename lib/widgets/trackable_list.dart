@@ -5,7 +5,7 @@ import 'package:symptom_tracker/pages/trackable_setup_page.dart';
 import 'package:symptom_tracker/widgets/trackable_item.dart';
 
 class TrackableList extends StatelessWidget {
-  Function(BuildContext)? addTrackerPage;
+  final Function(BuildContext)? addTrackerPage;
   TrackableList({Key? key, this.addTrackerPage}) : super(key: key);
 
   final db = FirebaseFirestore.instance;

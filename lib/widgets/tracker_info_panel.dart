@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
-import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/widgets/tracker_control_list.dart';
 import 'package:symptom_tracker/widgets/tracker_controls.dart';
@@ -15,7 +14,6 @@ class TrackerInfoPanel extends StatefulWidget {
 }
 
 class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
-  Trackable? get _selectedTarget => EventManager.selectedTarget;
   Tracker? get _selectedTracker => EventManager.selectedTracker;
 
   late StreamSubscription trackableSubscription;
