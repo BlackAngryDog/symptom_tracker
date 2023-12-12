@@ -4,13 +4,13 @@ import 'package:symptom_tracker/model/databaseTool.dart';
 // Used to store daily log information to be retrieved by date for user id
 class DataLog {
   String? id;
-  String? title;
+
   DateTime time;
   dynamic value;
-  String? type;
-  String trackableID;
 
-  DataLog(this.trackableID, this.time, {this.id, this.title, this.value, this.type});
+  String optionID;
+
+  DataLog(this.optionID, this.time, {this.id, this.value,});
 
   // How is are logs stored for retreaval and reading
 
@@ -21,8 +21,8 @@ class DataLog {
 
   // PERSISTANCE
 
-  DataLog save() {
-    CollectionReference collection = getCollection(trackableID);
+  DataLog save(String owner) {
+    CollectionReference collection = getCollection(owner);
     if (id != null) {
       collection
           .doc(id)
@@ -49,19 +49,15 @@ class DataLog {
   }
 
   DataLog.fromJson(String? key, Map<String, dynamic> json)
-      : trackableID = json['trackableID'],
+      : optionID = json['optionID'],
         time = (json['time'] as Timestamp).toDate() {
-    id = key;
-    title = json['title'];
-    value = json['value'];
-    type = json['type'];
+        id = key;
+        value = json['value'];
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
-        'trackableID': trackableID,
-        'title': title,
-        'time': time,
-        'value': value,
-        'type': type,
+      'optionID': optionID,
+      'time': time,
+      'value': value,
       };
 }

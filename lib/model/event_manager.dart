@@ -49,9 +49,9 @@ class EventManager {
 
   static Stream<UpdateEvent> get stream => _instance.trackableController.stream;
 
-  factory EventManager(Trackable selectedTarget) {
+  factory EventManager(Trackable tgt) {
     //instance._selectedTarget = _selectedTarget;
-    selectedTarget = selectedTarget;
+    selectedTarget = tgt;
     return _instance;
   }
   EventManager._internal();

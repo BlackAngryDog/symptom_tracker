@@ -37,11 +37,10 @@ class Tracker {
     DateTime minTimeFrame = date.add(const Duration(hours: -1));
     List<DataLog> logs = await getLogs(minTimeFrame, date);
     DataLog? log = logs.firstOrNull;
-    log ??= DataLog(trackableID, date,
-        title: option.title, type: option.trackType, value: value);
+    log ??= DataLog(option.id??"", date, value: value);
     log.time = date;
     log.value = value;
-    log.save();
+    log.save(trackableID);
   }
 
   // get data from logs for day ?
@@ -57,7 +56,7 @@ class Tracker {
   Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
     if (trackableID == '') return [];
     return DataLog.getCollection(trackableID)
-        .where('title', isEqualTo: option.title ?? 'Default')
+        .where('optionID', isEqualTo: option.id ?? '')
         .where('time', isGreaterThanOrEqualTo: start)
         .where('time', isLessThanOrEqualTo: end)
         .get(const GetOptions(source: Source.cache))
@@ -76,7 +75,7 @@ class Tracker {
 
     return await DataLog.getCollection(trackableID)
         .where('time', isLessThanOrEqualTo: date)
-        .where('title', isEqualTo: option.title ?? 'Default')
+        .where('optionID', isEqualTo: option.id ?? '')
         .limit(1)
         .orderBy('time', descending: true)
         .get()

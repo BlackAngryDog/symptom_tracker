@@ -128,7 +128,7 @@ class MeetingDataSource extends CalendarDataSource {
 
   @override
   String getSubject(int index) {
-    return _getMeetingData(index).title ?? "";
+    return _getMeetingData(index).value ?? "";
   }
 
   @override
