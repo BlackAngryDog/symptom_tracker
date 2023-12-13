@@ -32,7 +32,7 @@ class EventManager {
       _instance._selectedTracker =
           Tracker.fromTrackOption(value.id ?? '', initialTrackerOption);
     }
-    dispatchUpdate(UpdateEvent(EventType.trackerChanged));
+    dispatchUpdate(UpdateEvent(EventType.targetChanged));
   }
 
   static set selectedTracker(Tracker? value) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 
 class TrackableItem extends StatelessWidget {
@@ -13,6 +14,8 @@ class TrackableItem extends StatelessWidget {
       // TODO - MAY NEED TO OPEN TRACKER HOME PAGE
       // Navigator
       Navigator.pop(ctx, item);
+      EventManager.selectedTarget = item;
+
     });
   }
 

@@ -10,8 +10,8 @@ import '../model/tracker.dart';
 import 'TrackerWeekInfo/week_info_grid.dart';
 
 class TrackerWeek extends StatefulWidget {
-  final Trackable trackable;
-  const TrackerWeek(this.trackable, {Key? key}) : super(key: key);
+
+  const TrackerWeek({Key? key}) : super(key: key);
 
   @override
   State<TrackerWeek> createState() => _TrackerWeekState();
@@ -26,7 +26,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
     super.initState();
 
     trackerSubscription = EventManager.stream.listen((event) {
-      if (event.event == EventType.trackerAdded) {
+      if (event.event == EventType.trackerAdded || event.event == EventType.targetChanged) {
         setState(() {});
       }
     });
@@ -40,11 +40,11 @@ class _TrackerWeekState extends State<TrackerWeek> {
 
   @override
   Widget build(BuildContext context) {
-    final trackers = EventManager.selectedTarget.trackers
-        .map((e) => Tracker(EventManager.selectedTarget.id ?? '', e))
-        .toList();
+    //final trackers = EventManager.selectedTarget.trackers
+     //   .map((e) => Tracker(EventManager.selectedTarget.id ?? '', e))
+     //   .toList();
 
-    // TODO - Work out why the scroll view is not working
+    // TODO - Need to load trakers on switch
 
     return SizedBox(
       height: MediaQuery.of(context).copyWith().size.height,
@@ -57,12 +57,27 @@ class _TrackerWeekState extends State<TrackerWeek> {
             Flexible(child: WeekInfoGrid(daysOfWeek, DateTime.now())),
             Expanded(
               flex: 9,
-              child: ListView(
-                shrinkWrap: true,
-                children: trackers.map((doc) {
-                  return TrackerWeekInfo(doc, DateTime.now());
-                }).toList(),
-              ),
+              // Load Trackers
+              child: FutureBuilder<Trackable?>(
+                  future:
+                  Trackable.load(EventManager.selectedTarget.id??''),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      var trackable = snapshot.data ?? Trackable();
+                      return ListView(
+                        shrinkWrap: true,
+                        children: trackable.trackers.map((info) {
+                          return TrackerWeekInfo(Tracker(trackable.id ?? '', info), DateTime.now());
+                        }).toList(),
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  }),
+
+
             ),
           ],
         ),

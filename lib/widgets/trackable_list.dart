@@ -29,6 +29,7 @@ class TrackableList extends StatelessWidget {
             return _hasTracker(snapshot.data?.docs)
                 ? ListView(
                     children: snapshot.data?.docs.map((doc) {
+
                       return TrackableItem(Trackable.fromJson(doc.id, doc.data() as Map<String, dynamic>));
                     }).toList() as List<TrackableItem>,
                   )
