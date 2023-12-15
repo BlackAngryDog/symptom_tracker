@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
@@ -84,13 +85,13 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
       if (event.event == EventType.trackerChanged &&
           event.tracker == widget._tracker) {
         setState(() {});
-        getCurrValue();
+        //  getCurrValue();
       }
     });
-    getCurrValue();
+    //getCurrValue();
   }
 
-  Future getCurrValue() async {
+  Future<List<String>> getCurrValue() async {
     // TODO: should we run this from today - 7 or keep is as week starting?
 
     // TODO - Can we change this to have a range - over day, week, month so that the format can easily change depending on data ?
@@ -109,15 +110,30 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
       i++;
     }
     widget.currValues.clear();
-    setState(() {
-      widget.currValues.addAll(v);
-    });
+    // setState(() {
+    widget.currValues.addAll(v);
+    // });
+    return v;
   }
 
   // TODO - 6 days of history with one Larger day for today, with name field taking up part og the height and seventh being full height.
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<List<String>>(
+        future: getCurrValue(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return InfoItem();
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
+  }
+
+  Widget InfoItem() {
     var count = widget.currValues.length - 1;
     IconData? icon;
     if (widget._tracker.option.icon != null) {
