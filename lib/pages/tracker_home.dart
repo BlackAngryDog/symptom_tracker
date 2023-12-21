@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/model/trackable.dart';
@@ -155,6 +156,9 @@ class TrackerPage extends StatelessWidget {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
+    DataProcessManager.getData();
+
     print("build");
     return Scaffold(
       appBar: AppBar(
