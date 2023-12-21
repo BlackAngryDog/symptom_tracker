@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/track_option.dart';
@@ -30,14 +31,13 @@ class Trackable {
         id ?? '', TrackOption(title: 'Diet Tracker', trackType: 'diet'));
     return _dietTracker as Tracker;
   }
-  
+
   Future<List<TrackOption>> getTrackOptions() async {
-   
-    for(var id in trackerIDs){
+    for (var id in trackerIDs) {
       var option = await TrackOption.load(id);
       trackers.add(option);
     }
-      
+
     return trackers;
     //return trackerIDs.map((e) => await TrackOption.getOption(e)).toList();
   }
@@ -46,8 +46,8 @@ class Trackable {
     List<DataLog> logs = [];
     if (id == null) return logs;
 
-    start = DateTime(start.year, start.month, start.day);
-    end = DateTime(end.year, end.month, end.day, 11, 59, 59);
+    start = start.startOfDay;
+    end = end.endOfDay;
 
     return await DataLog.getCollection(id ?? "Default")
         .where('time', isGreaterThanOrEqualTo: start)
@@ -93,8 +93,8 @@ class Trackable {
 
     return doc.get().then(
       (snapshot) async {
-        var item = Trackable.fromJson(
-            doc.id, snapshot.data() as Map<String, dynamic>);
+        var item =
+            Trackable.fromJson(doc.id, snapshot.data() as Map<String, dynamic>);
         await item.getTrackOptions();
         return item;
       },
@@ -106,16 +106,20 @@ class Trackable {
     );
   }
 
-  Trackable.fromJson(String? key, Map<String, dynamic> json)  {
+  Trackable.fromJson(String? key, Map<String, dynamic> json) {
     id = key;
     title = json['title'];
 
     // set trackerIDs to json
-    trackerIDs = json['trackerIDs'] != null ? List.from(json['trackerIDs']) : [];
+    trackerIDs =
+        json['trackerIDs'] != null ? List.from(json['trackerIDs']) : [];
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
         'title': title,
-        'trackerIDs': trackers.where((element) => element.id?.isNotEmpty == true).map((e) => e.id).toList(),
-  };
+        'trackerIDs': trackers
+            .where((element) => element.id?.isNotEmpty == true)
+            .map((e) => e.id)
+            .toList(),
+      };
 }

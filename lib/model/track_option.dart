@@ -46,6 +46,8 @@ class TrackOption {
   }
 
   static Future<TrackOption> load(String key) async {
+    if (key.isEmpty) return TrackOption();
+
     final doc = getCollection().doc(key);
 
     return doc
@@ -60,7 +62,9 @@ class TrackOption {
   }
 
   TrackOption.fromJson(String? key, Map<String, dynamic> json) {
-    id =  key!.isEmpty ? json['id'] : key; // TODO - LINK TRAKER OPTION TO DATA - LINK DATA LOGS TO OPTION
+    id = key!.isEmpty
+        ? json['id']
+        : key; // TODO - LINK TRAKER OPTION TO DATA - LINK DATA LOGS TO OPTION
     title = json['title'];
     trackType = json['trackType'];
     icon = json['icon'];

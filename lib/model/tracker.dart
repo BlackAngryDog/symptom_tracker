@@ -37,7 +37,7 @@ class Tracker {
     DateTime minTimeFrame = date.add(const Duration(hours: -1));
     List<DataLog> logs = await getLogs(minTimeFrame, date);
     DataLog? log = logs.firstOrNull;
-    log ??= DataLog(option.id??"", date, value: value);
+    log ??= DataLog(option.id ?? "", date, value: value);
     log.time = date;
     log.value = value;
     log.save(trackableID);
@@ -89,7 +89,7 @@ class Tracker {
       DataLog? lastEntry = log.lastOrNull;
       DateTime time = lastEntry!.time;
       Duration diff = date.difference(time);
-      print('days diff is ${diff.inDays}');
+      //print('days diff is ${diff.inDays}');
       if (today == true && diff.inDays >= 1) return null;
 
       return log.lastOrNull;

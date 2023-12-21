@@ -4,7 +4,12 @@ extension DateTimeExt on DateTime {
   }
 
   DateTime get endOfDay {
-    return DateTime(year, month, day).add(const Duration(hours: 23, minutes: 59, seconds: 59));
+    return DateTime(year, month, day)
+        .add(const Duration(hours: 23, minutes: 59, seconds: 59));
+  }
+
+  DateTime get startOfDay {
+    return DateTime(year, month, day);
   }
 
   static DateTime get today {
@@ -23,14 +28,20 @@ extension DateTimeExt on DateTime {
   }
 
   bool isSameDate(DateTime other) {
-    return year == other.year &&
-        month == other.month &&
-        day == other.day;
+    return year == other.year && month == other.month && day == other.day;
   }
 
-  String dayOfWeek(){
+  String dayOfWeek() {
     // list of string representing days if the week
-    List<String> days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    List<String> days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday'
+    ];
     return days[weekday];
   }
 }
@@ -53,4 +64,3 @@ extension DateHelper on DateTime {
   }
 }
 */
-

@@ -10,7 +10,12 @@ class DataLog {
 
   String optionID;
 
-  DataLog(this.optionID, this.time, {this.id, this.value,});
+  DataLog(
+    this.optionID,
+    this.time, {
+    this.id,
+    this.value,
+  });
 
   // How is are logs stored for retreaval and reading
 
@@ -49,15 +54,15 @@ class DataLog {
   }
 
   DataLog.fromJson(String? key, Map<String, dynamic> json)
-      : optionID = json['optionID'],
+      : optionID = json['optionID'] ?? '',
         time = (json['time'] as Timestamp).toDate() {
-        id = key;
-        value = json['value'];
+    id = key;
+    value = json['value'];
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
-      'optionID': optionID,
-      'time': time,
-      'value': value,
+        'optionID': optionID,
+        'time': time,
+        'value': value,
       };
 }
