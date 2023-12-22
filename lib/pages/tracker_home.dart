@@ -157,7 +157,15 @@ class TrackerPage extends StatelessWidget {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
 
-    DataProcessManager.getData();
+    DataProcessManager.getAverage(diet: "Beef", option: "Itchyness");
+    DataProcessManager.getMin(diet: "Beef", option: "Itchyness");
+    DataProcessManager.getMax(diet: "Beef", option: "Itchyness");
+
+    DataProcessManager.getAverage(diet: "Venison", option: "Itchyness");
+    DataProcessManager.getMin(diet: "Venison", option: "Itchyness");
+    DataProcessManager.getMax(diet: "Venison", option: "Itchyness");
+    //DataProcessManager.getMin();
+    //DataProcessManager.getMax();
 
     print("build");
     return Scaffold(
