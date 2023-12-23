@@ -12,7 +12,8 @@ class AddTracker extends StatefulWidget {
   final Tracker? tracker;
   final Function(TrackOption option) onAddTracker;
 
-  const AddTracker(this.onAddTracker, {Key? key, this.tracker}) : super(key: key);
+  const AddTracker(this.onAddTracker, {Key? key, this.tracker})
+      : super(key: key);
 
   @override
   State<AddTracker> createState() => _AddTrackerState();
@@ -98,7 +99,8 @@ class _AddTrackerState extends State<AddTracker> {
   @override
   Widget build(BuildContext context) {
     titleController.text = widget.tracker?.option.title ?? '';
-    valueController.text = widget.tracker?.getLastValue(true).toString() ?? '';
+    valueController.text =
+        widget.tracker?.getAutoFillValue(true).toString() ?? '';
     selectedValue = widget.tracker?.option.trackType ?? 'counter';
     selectedIcon = widget.tracker?.option.icon ?? 'favorite';
 

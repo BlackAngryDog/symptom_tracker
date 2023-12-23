@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
+
+// TODO - ADD AUTO FILL OPTIONS - Weight may need ideal or target but is that here? ??
+enum AutoFill { initial, empty, last }
 
 // Used to store daily log information to be retrieved by date for user id
 class TrackOption {
@@ -8,6 +12,7 @@ class TrackOption {
   String? title;
   String? trackType;
   String? icon;
+  AutoFill? autoFill;
 
   TrackOption({this.id, this.title, this.trackType, this.icon});
 
@@ -68,6 +73,7 @@ class TrackOption {
     title = json['title'];
     trackType = json['trackType'];
     icon = json['icon'];
+    autoFill = AutoFill.values.byName(json['autoFill'] ?? 'initial');
   }
 
   TrackOption.fromTracker(Tracker tracker) {
@@ -75,11 +81,13 @@ class TrackOption {
     title = tracker.option.title;
     trackType = tracker.option.trackType;
     icon = tracker.option.icon;
+    autoFill = tracker.option.autoFill;
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
         'title': title,
         'trackType': trackType,
         'icon': icon,
+        'autoFill': autoFill?.toShortString(),
       };
 }

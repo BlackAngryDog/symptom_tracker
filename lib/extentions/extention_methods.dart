@@ -45,6 +45,12 @@ extension DateTimeExt on DateTime {
     return days[weekday];
   }
 }
+
+extension ParseToString on Enum {
+  String toShortString() {
+    return toString().split('.').last;
+  }
+}
 /*
 extension DateHelper on DateTime {
 

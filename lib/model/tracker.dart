@@ -53,6 +53,21 @@ class Tracker {
     dataLog.addAll(log);
   }
 
+  Future<String> getFirstEntry() async {
+    if (trackableID == '') return '';
+    return DataLog.getCollection(trackableID)
+        .where('optionID', isEqualTo: option.id ?? '')
+        .limit(1)
+        .orderBy('time', descending: false)
+        .get(const GetOptions(source: Source.cache))
+        .then((data) {
+      List<DataLog> log = data.docs.map((doc) {
+        return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+      return log.firstOrNull?.value.toString() ?? '';
+    });
+  }
+
   Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
     if (trackableID == '') return [];
     return DataLog.getCollection(trackableID)
@@ -98,7 +113,24 @@ class Tracker {
 
   Type typeOf<T>() => T;
 
-  Future<String> getLastValue(bool today) async {
+  // get value based on TrackerOption autofill property
+  Future<String> getAutoFillValue(bool today) async {
+    if (trackableID == '') return '';
+
+    switch (option.autoFill) {
+      case AutoFill.last:
+        return _getLastValue(today);
+      case AutoFill.initial:
+        return await getFirstEntry();
+      case AutoFill.empty:
+        return '';
+    }
+
+    return '';
+  }
+
+  // get last value for this tracker
+  Future<String> _getLastValue(bool today) async {
     if (trackableID == '') return '';
     DataLog? dataLog = await getLastEntry(today);
     return dataLog?.value.toString() ?? '';
@@ -109,7 +141,8 @@ class Tracker {
     if (trackableID == '') return '';
     DataLog? dataLog =
         await getLastEntry(!includePrevious, before: day.endOfDay);
-    return dataLog?.value.toString() ?? '';
+    return dataLog?.value.toString() ??
+        await getAutoFillValue(!includePrevious);
   }
 
   Future<List<dynamic>> getValuesFor(DateTime start, DateTime end) async {

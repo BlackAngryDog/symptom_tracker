@@ -156,7 +156,7 @@ class TrackerPage extends StatelessWidget {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-
+/*
     DataProcessManager.getAverage(diet: "Beef", option: "Itchyness");
     DataProcessManager.getMin(diet: "Beef", option: "Itchyness");
     DataProcessManager.getMax(diet: "Beef", option: "Itchyness");
@@ -164,6 +164,7 @@ class TrackerPage extends StatelessWidget {
     DataProcessManager.getAverage(diet: "Venison", option: "Itchyness");
     DataProcessManager.getMin(diet: "Venison", option: "Itchyness");
     DataProcessManager.getMax(diet: "Venison", option: "Itchyness");
+  */
     //DataProcessManager.getMin();
     //DataProcessManager.getMax();
 
