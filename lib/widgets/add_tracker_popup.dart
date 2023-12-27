@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:icon_picker/icon_picker.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 
@@ -50,19 +51,27 @@ class _AddTrackerState extends State<AddTracker> {
     return menuItems;
   }
 
+  List<DropdownMenuItem<AutoFill>> get autofillItems {
+    return AutoFill.values
+        .map((e) => DropdownMenuItem<AutoFill>(
+            value: e, child: Text(e.toShortString())))
+        .toList();
+  }
+
   void OnSubmitTracker() {
     print("test");
     final String title = titleController.text;
 
-    final String value = valueController.text;
+    //final String value = valueController.text;
 
-    if (title == '' || value == '') return;
+    if (title == '') return;
 
     option.save();
     widget.onAddTracker(option);
     // ADD STARTING VALUE;
-    Tracker.fromTrackOption(EventManager.selectedTarget.id ?? '', option)
-        .updateLog(value, DateTime.now());
+    // var tracker =
+    //     Tracker.fromTrackOption(EventManager.selectedTarget.id ?? '', option);
+    // tracker.updateLog(value, DateTime.now());
 
     Navigator.of(context).pop();
   }
@@ -99,8 +108,6 @@ class _AddTrackerState extends State<AddTracker> {
   @override
   Widget build(BuildContext context) {
     titleController.text = widget.tracker?.option.title ?? '';
-    valueController.text =
-        widget.tracker?.getAutoFillValue(true).toString() ?? '';
     selectedValue = widget.tracker?.option.trackType ?? 'counter';
     selectedIcon = widget.tracker?.option.icon ?? 'favorite';
 
@@ -143,7 +150,15 @@ class _AddTrackerState extends State<AddTracker> {
                   });
                 },
                 items: dropdownItems),
-            getControl(context),
+            DropdownButton(
+                value: option.autoFill,
+                onChanged: (AutoFill? newValue) {
+                  setState(() {
+                    option.autoFill = newValue!;
+                  });
+                },
+                items: autofillItems),
+            //getControl(context),
 
             // TODO - need an icon for quality and ratings - do we need one for tracker ?
 

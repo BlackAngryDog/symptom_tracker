@@ -102,8 +102,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
       var date = widget._trackerDate.add(Duration(days: -i));
       if (date.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch) {
         //v.add(i.toString());
-        v.add(await widget._tracker
-            .getLastValueFor(date, includePrevious: false));
+        v.add(await widget._tracker.getValue(day: date));
       } else {
         v.add("-");
       }

@@ -35,9 +35,8 @@ class _ValueTrackerState extends State<CountTracker> {
   }
 
   Future getCurrValue() async {
-    currValue = int.tryParse(await widget._tracker.getLastValueFor(
-            widget._trackerDate.dateOnly,
-            includePrevious: false)) ??
+    currValue = int.tryParse(
+            await widget._tracker.getValue(day: widget._trackerDate)) ??
         0;
     print('val2 $currValue');
     setState(() {

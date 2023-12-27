@@ -31,7 +31,7 @@ class DataProcessManager {
     // for each TrackOption, get logs and compare to diet logs.
     for (var log in logs) {
       // get diet value at this time.
-      var diet = dietTracker.getLastValueFor(log.time);
+      var diet = dietTracker.getValue(day: log.time);
 
       // if diet is null, skip.
       if (diet == null) continue;
@@ -43,8 +43,7 @@ class DataProcessManager {
       if (key.isEmpty || value == 0) continue;
 
       // what was the diet value at this time?
-      DataLog? dietLog =
-          await dietTracker.getLastEntry(false, before: log.time);
+      DataLog? dietLog = await dietTracker.getLog(day: log.time);
 
       if (dietLog == null) continue;
 

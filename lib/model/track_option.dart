@@ -4,7 +4,7 @@ import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 
 // TODO - ADD AUTO FILL OPTIONS - Weight may need ideal or target but is that here? ??
-enum AutoFill { initial, empty, last }
+enum AutoFill { initial, zero, last }
 
 // Used to store daily log information to be retrieved by date for user id
 class TrackOption {

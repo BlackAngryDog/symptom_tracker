@@ -51,10 +51,10 @@ class _ValueTrackerState extends State<ValueTracker> {
 
   Future getCurrValue() async {
     double curr = double.tryParse(
-            await widget._tracker.getLastValueFor(widget._trackerDate)) ??
+            await widget._tracker.getValue(day: widget._trackerDate)) ??
         0;
-    double last = double.tryParse(await widget._tracker.getLastValueFor(
-            widget._trackerDate.add(const Duration(days: -1)))) ??
+    double last = double.tryParse(await widget._tracker.getValue(
+            day: widget._trackerDate.add(const Duration(days: -1)))) ??
         0;
 
     // GET TREND ICON

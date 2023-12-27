@@ -32,7 +32,7 @@ class _TrackerInfoPanelState extends State<TrackerInfoPanel> {
     if (!mounted) {
       return;
     }
-    hasData = await _selectedTracker?.getAutoFillValue(false) != '';
+    hasData = await _selectedTracker?.getValue() != '';
     setState(() {});
   }
 

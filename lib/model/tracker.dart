@@ -53,21 +53,6 @@ class Tracker {
     dataLog.addAll(log);
   }
 
-  Future<String> getFirstEntry() async {
-    if (trackableID == '') return '';
-    return DataLog.getCollection(trackableID)
-        .where('optionID', isEqualTo: option.id ?? '')
-        .limit(1)
-        .orderBy('time', descending: false)
-        .get(const GetOptions(source: Source.cache))
-        .then((data) {
-      List<DataLog> log = data.docs.map((doc) {
-        return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
-      }).toList();
-      return log.firstOrNull?.value.toString() ?? '';
-    });
-  }
-
   Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
     if (trackableID == '') return [];
     return DataLog.getCollection(trackableID)
@@ -83,6 +68,48 @@ class Tracker {
     });
   }
 
+  Future<DataLog?> _getFirstEntry({DateTime? date}) async {
+    if (trackableID == '') return null;
+
+    var dateFilter = (date ?? DateTime.now()).startOfDay;
+
+    return DataLog.getCollection(trackableID)
+        .where('optionID', isEqualTo: option.id ?? '')
+        .where('time', isGreaterThanOrEqualTo: dateFilter)
+        .orderBy('time', descending: false)
+        .limit(1)
+        .get(const GetOptions(source: Source.cache))
+        .then((data) {
+      List<DataLog> log = data.docs.map((doc) {
+        return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+      return log.firstOrNull;
+    });
+  }
+
+  Future<DataLog?> _getLastEntry({DateTime? date, bool? dateOnly}) async {
+    if (trackableID == '') return null;
+
+    var end = (date ?? DateTime.now()).endOfDay;
+    var start =
+        dateOnly == true ? (date ?? DateTime.now()).startOfDay : DateTime(0);
+
+    return DataLog.getCollection(trackableID)
+        .where('optionID', isEqualTo: option.id ?? '')
+        .where('time', isGreaterThanOrEqualTo: start)
+        .where('time', isLessThanOrEqualTo: end)
+        .orderBy('time', descending: true)
+        .limit(1)
+        .get(const GetOptions(source: Source.cache))
+        .then((data) {
+      List<DataLog> log = data.docs.map((doc) {
+        return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+      return log.firstOrNull;
+    });
+  }
+
+/*
   Future<DataLog?> getLastEntry(bool today, {DateTime? before}) async {
     if (trackableID == '') return null;
 
@@ -110,41 +137,53 @@ class Tracker {
       return log.lastOrNull;
     });
   }
-
+*/
   Type typeOf<T>() => T;
 
   // get value based on TrackerOption autofill property
-  Future<String> getAutoFillValue(bool today) async {
-    if (trackableID == '') return '';
+  Future<String> getValue({DateTime? day}) async {
+    return await getLog(day: day).then((log) => log?.value.toString() ?? '');
+  }
 
+  // get value based on TrackerOption autofill property
+  Future<DataLog?> getLog({DateTime? day}) async {
+    if (trackableID == '') return null;
+
+    // get log for this day
+    var log = _getLastEntry(date: day, dateOnly: true);
+    if (log != null) return log;
+
+    // get autofill value if log not available for this day
     switch (option.autoFill) {
       case AutoFill.last:
-        return _getLastValue(today);
+        return await _getLastEntry(date: day);
       case AutoFill.initial:
-        return await getFirstEntry();
-      case AutoFill.empty:
-        return '';
+        return await _getFirstEntry(date: day);
+      case AutoFill.zero:
+        return null;
     }
 
-    return '';
+    return null;
   }
 
   // get last value for this tracker
+  /*
   Future<String> _getLastValue(bool today) async {
     if (trackableID == '') return '';
     DataLog? dataLog = await getLastEntry(today);
     return dataLog?.value.toString() ?? '';
   }
+  */
 
+/*
   Future<String> getLastValueFor(DateTime day,
       {bool includePrevious = true}) async {
     if (trackableID == '') return '';
-    DataLog? dataLog =
-        await getLastEntry(!includePrevious, before: day.endOfDay);
+    DataLog? dataLog = await getLastEntry(true, before: day.endOfDay);
     return dataLog?.value.toString() ??
         await getAutoFillValue(!includePrevious);
   }
-
+*/
   Future<List<dynamic>> getValuesFor(DateTime start, DateTime end) async {
     if (trackableID == '') return [];
     List<DataLog> logs = await getLogs(start, end);

@@ -37,8 +37,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
   }
 
   Future<List<DietOptionItem>> _getData() async {
-    DataLog? log =
-        await EventManager.selectedTarget.getDietTracker().getLastEntry(false);
+    DataLog? log = await EventManager.selectedTarget.getDietTracker().getLog();
 
     if (log == null) return options;
 

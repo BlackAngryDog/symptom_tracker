@@ -33,7 +33,7 @@ class _QualityTrackerState extends State<QualityTracker> {
 
   Future getCurrValue() async {
     currValue = double.tryParse(
-            await widget._tracker.getLastValueFor(widget._trackerDate)) ??
+            await widget._tracker.getValue(day: widget._trackerDate)) ??
         0;
 
     setState(() {

@@ -28,7 +28,7 @@ class _MiniCountTrackerState extends State<MiniCountTracker> {
   }
 
   Future getCurrValue() async {
-    currValue = int.tryParse(await widget._tracker.getAutoFillValue(true)) ?? 0;
+    currValue = int.tryParse(await widget._tracker.getValue()) ?? 0;
 
     setState(() {
       subtitle = 'today is $currValue';

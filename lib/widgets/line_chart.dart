@@ -81,8 +81,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
     if (logs.isEmpty) return list;
 
-    DataLog? start =
-        await _selectedTracker!.getLastEntry(false, before: startDate);
+    DataLog? start = await _selectedTracker!.getLog(day: startDate);
     /*
     if (start != null) {
       double d = double.parse(start.value is String ? start.value : start.value.toStringAsFixed(2));

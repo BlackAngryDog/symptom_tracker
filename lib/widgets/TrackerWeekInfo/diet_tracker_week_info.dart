@@ -35,8 +35,8 @@ class _DietTrackerWeekInfoState extends State<DietTrackerWeekInfo> {
     final currDay = DateTime.now().weekday;
     List<String> v = [];
     while (i++ < 7) {
-      v.add(await widget._tracker.getLastValueFor(
-          widget._trackerDate.add(Duration(days: i - currDay))));
+      v.add(await widget._tracker
+          .getValue(day: widget._trackerDate.add(Duration(days: i - currDay))));
     }
     currValues.clear();
     setState(() {
