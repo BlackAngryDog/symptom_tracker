@@ -71,11 +71,8 @@ class Tracker {
   Future<DataLog?> _getFirstEntry({DateTime? date}) async {
     if (trackableID == '') return null;
 
-    var dateFilter = (date ?? DateTime.now()).startOfDay;
-
     return DataLog.getCollection(trackableID)
         .where('optionID', isEqualTo: option.id ?? '')
-        .where('time', isGreaterThanOrEqualTo: dateFilter)
         .orderBy('time', descending: false)
         .limit(1)
         .get(const GetOptions(source: Source.cache))
@@ -92,7 +89,7 @@ class Tracker {
 
     var end = (date ?? DateTime.now()).endOfDay;
     var start =
-        dateOnly == true ? (date ?? DateTime.now()).startOfDay : DateTime(0);
+        dateOnly == true ? (date ?? DateTime.now()).startOfDay : DateTime(2000);
 
     return DataLog.getCollection(trackableID)
         .where('optionID', isEqualTo: option.id ?? '')
@@ -150,20 +147,20 @@ class Tracker {
     if (trackableID == '') return null;
 
     // get log for this day
-    var log = _getLastEntry(date: day, dateOnly: true);
+    var log = await _getLastEntry(date: day, dateOnly: true);
     if (log != null) return log;
 
     // get autofill value if log not available for this day
     switch (option.autoFill) {
       case AutoFill.last:
-        return await _getLastEntry(date: day);
+        log = await _getLastEntry(date: day);
+        break;
       case AutoFill.initial:
-        return await _getFirstEntry(date: day);
-      case AutoFill.zero:
-        return null;
+        log = await _getFirstEntry();
+        break;
     }
 
-    return null;
+    return log;
   }
 
   // get last value for this tracker
