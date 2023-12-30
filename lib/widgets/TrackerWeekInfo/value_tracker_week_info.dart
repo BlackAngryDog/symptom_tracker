@@ -13,8 +13,8 @@ class ValueTrackerWeekInfo extends AbsWeekInfo {
   State<ValueTrackerWeekInfo> createState() => _ValueTrackerWeekInfoState();
 }
 
-class _ValueTrackerWeekInfoState extends AbsWeekInfoState<ValueTrackerWeekInfo> {
-
+class _ValueTrackerWeekInfoState
+    extends AbsWeekInfoState<ValueTrackerWeekInfo> {
   @override
   String subtitle = 'count today is 0';
 
@@ -30,5 +30,41 @@ class _ValueTrackerWeekInfoState extends AbsWeekInfoState<ValueTrackerWeekInfo> 
   }
 
   // TODO - Show trends in this area
+  @override
+  Widget getDay(int index) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Container(
+        // add a box decoration with round corners
+        decoration: getContainerDecoration(index),
+        alignment: Alignment.center,
 
+        child: Stack(
+          fit: StackFit.expand,
+          alignment: Alignment.center,
+          children: [
+            FittedBox(
+              child: Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: Icon(widget.trendIcons[index]),
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.contain,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  widget.currValues[index],
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      backgroundColor: Colors.transparent,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

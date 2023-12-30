@@ -21,6 +21,7 @@ class AbsWeekInfo extends StatefulWidget {
     "S"
   ]; // TODO - GET TODYS COUNT FOR TRACKER
   int _selectedIndex = -1;
+  final List<IconData> trendIcons = [];
 
   AbsWeekInfo(this._tracker, this._trackerDate, {Key? key}) : super(key: key);
 
@@ -97,22 +98,35 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     // TODO - Can we change this to have a range - over day, week, month so that the format can easily change depending on data ?
 
     int i = 0;
-    List<String> v = [];
+    widget.currValues.clear();
+    widget.trendIcons.clear();
+
     while (i < 7) {
       var date = widget._trackerDate.add(Duration(days: -i));
-      if (date.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch) {
-        //v.add(i.toString());
-        v.add(await widget._tracker.getValue(day: date));
-      } else {
-        v.add("-");
-      }
+      var prevDate = widget._trackerDate.add(Duration(days: -i + 1));
+
+      var currValue = await widget._tracker.getValue(day: date);
+      var prevValue = await widget._tracker.getValue(day: prevDate);
+
+      widget.currValues.add(currValue);
+      widget.trendIcons.add(getTrendIcon(prevValue, currValue));
       i++;
     }
-    widget.currValues.clear();
-    // setState(() {
-    widget.currValues.addAll(v);
-    // });
-    return v;
+
+    return widget.currValues;
+  }
+
+  IconData getTrendIcon(String lastValue, String currValue) {
+    var last = double.tryParse(lastValue) ?? 0;
+    var curr = double.tryParse(currValue) ?? 0;
+
+    var icon = Icons.arrow_right;
+    if (curr > last) {
+      icon = Icons.arrow_drop_up;
+    } else if (curr < last) {
+      icon = Icons.arrow_drop_down;
+    }
+    return icon;
   }
 
   // TODO - 6 days of history with one Larger day for today, with name field taking up part og the height and seventh being full height.
