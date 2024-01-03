@@ -14,7 +14,7 @@ class TrackOption {
   String? icon;
   AutoFill? autoFill;
 
-  TrackOption({this.id, this.title, this.trackType, this.icon});
+  TrackOption({this.id, this.title, this.trackType, this.icon, this.autoFill});
 
   static Future<List<TrackOption>> getOptions() async {
     return TrackOption.getCollection().get().then((data) {

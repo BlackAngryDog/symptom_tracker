@@ -28,7 +28,9 @@ class Trackable {
     if (_dietTracker != null) return _dietTracker as Tracker;
 
     _dietTracker = Tracker(
-        id ?? '', TrackOption(title: 'Diet Tracker', trackType: 'diet'));
+        id ?? '',
+        TrackOption(
+            title: 'Diet Tracker', trackType: 'diet', autoFill: AutoFill.last));
     return _dietTracker as Tracker;
   }
 

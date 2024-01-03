@@ -21,7 +21,7 @@ class AbsWeekInfo extends StatefulWidget {
     "S"
   ]; // TODO - GET TODYS COUNT FOR TRACKER
   int _selectedIndex = -1;
-  final List<IconData> trendIcons = [];
+  final List<IconData> trendIcons = List<IconData>.filled(7, Icons.arrow_right);
 
   AbsWeekInfo(this._tracker, this._trackerDate, {Key? key}) : super(key: key);
 
@@ -98,8 +98,8 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     // TODO - Can we change this to have a range - over day, week, month so that the format can easily change depending on data ?
 
     int i = 0;
-    widget.currValues.clear();
-    widget.trendIcons.clear();
+    //widget.currValues.clear();
+    //widget.trendIcons.clear();
 
     while (i < 7) {
       var date = widget._trackerDate.add(Duration(days: -i));
@@ -108,8 +108,9 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
       var currValue = await widget._tracker.getValue(day: date);
       var prevValue = await widget._tracker.getValue(day: prevDate);
 
-      widget.currValues.add(currValue);
-      widget.trendIcons.add(getTrendIcon(prevValue, currValue));
+      widget.currValues[i] = currValue;
+      widget.trendIcons[i] = getTrendIcon(prevValue, currValue);
+
       i++;
     }
 
