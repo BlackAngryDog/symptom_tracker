@@ -36,34 +36,13 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
   Widget build(BuildContext context) {
     if (_selectedTracker == null) return Container();
 
-    return GestureDetector(
-      onTap: () {
-        _editTrackerPopup(context);
-      },
-      child: Card(
-        elevation: 3,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: getDisplay(),
-        ),
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: getDisplay(),
       ),
     );
-  }
-
-  void _editTrackerPopup(BuildContext ctx) {
-    if (_selectedTracker == null) return;
-
-    showModalBottomSheet(
-        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-        context: ctx,
-        builder: (_) {
-          return GestureDetector(
-            onTap: () {},
-            behavior: HitTestBehavior.opaque,
-            child:
-                AddTracker((option) {}, tracker: _selectedTracker as Tracker),
-          );
-        });
   }
 
   StatefulWidget getDisplay() {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 
 class TrackerSummeryPage extends StatelessWidget {
@@ -36,13 +37,37 @@ class TrackerDietSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('Summery of ${_tracker.option.title}'),
-        TrackerDietSummaryItem('Beef', 2, 3, 6, 10),
-        TrackerDietSummaryItem('Venision', 5, 6, 7, 10),
-        // LineChartWidget(_tracker),
-      ],
+    return FutureBuilder<List<DataLogSummary>>(
+      future:
+          DataProcessManager.getSummary(option: _tracker.option.title ?? ""),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data?.isEmpty != true) {
+          // get lowest value from data
+          var minlog = snapshot.data
+              ?.reduce((curr, next) => curr.min < next.min ? curr : next);
+          var maxlog = snapshot.data
+              ?.reduce((curr, next) => curr.max > next.max ? curr : next);
+
+          var chartTotal = (maxlog?.max ?? 10) + (minlog?.min ?? 0);
+
+          return Column(
+            children: [
+              Text('Summery of ${_tracker.option.title}'),
+              Text('High is  ${maxlog?.diet} of ${maxlog?.max}'),
+              Text('low is  ${minlog?.diet} of ${minlog?.min}'),
+              Column(
+                  children: snapshot.data
+                      ?.map((e) => TrackerDietSummaryItem(
+                          e.diet, e.min, e.average, e.max, chartTotal))
+                      .toList() as List<Widget>),
+            ],
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 }

@@ -17,6 +17,11 @@ extension DateTimeExt on DateTime {
     return DateTime(now.year, now.month, now.day);
   }
 
+  static DateTime get lastYear {
+    final now = DateTime.now();
+    return DateTime(now.year - 1, now.month, now.day);
+  }
+
   static DateTime get lastMonth {
     final now = DateTime.now();
     return DateTime(now.year, now.month - 1, now.day);

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
@@ -9,13 +10,13 @@ import 'package:collection/collection.dart';
 
 class DataProcessManager {
   static Future<Map<String, Map<String, List<double>>>> getData() async {
-    DateTime start = DateTimeExt.lastMonth;
+    DateTime start = DateTimeExt.lastYear;
 
     // Read data as a list of diet changes.
     Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
 
-    List<DataLog> dietLogs = await dietTracker.getLogs(
-        DateTimeExt.lastMonth, DateTime.now().endOfDay);
+    List<DataLog> dietLogs =
+        await dietTracker.getLogs(start, DateTime.now().endOfDay);
 
     // get all other trackers.
     List<TrackOption> options = (await TrackOption.getOptions())
@@ -64,6 +65,28 @@ class DataProcessManager {
     }
 
     return map;
+  }
+
+  static Future<List<DataLogSummary>> getSummary(
+      {String diet = "", String option = ""}) async {
+    var map = await getData();
+    var datalogs = List<DataLogSummary>.empty(growable: true);
+    var summary = <String, Map<String, DataLogSummary>>{};
+    for (var dietMap in map.entries) {
+      for (var entry in dietMap.value.entries) {
+        var log = DataLogSummary(entry.key, dietMap.key, entry.value);
+        if (diet.isNotEmpty && entry.key != diet) continue;
+        if (option.isNotEmpty && dietMap.key != option) continue;
+
+        datalogs.add(log);
+
+        summary.putIfAbsent(dietMap.key, () => {});
+        summary[dietMap.key]!.putIfAbsent(entry.key, () => log);
+        print(
+            'insight summary: ${dietMap.key} - ${entry.key} - ${entry.value.sum}');
+      }
+    }
+    return datalogs;
   }
 
   static getAverage({String diet = "", String option = ""}) async {
@@ -116,4 +139,21 @@ class DataProcessManager {
     }
     return min;
   }
+}
+
+class DataLogSummary {
+  final String diet;
+  final String option;
+  final List<double> values;
+
+  final double min;
+  final double max;
+  final double average;
+  final double total;
+
+  DataLogSummary(this.diet, this.option, this.values)
+      : min = values.min,
+        max = values.max,
+        average = (values.average * pow(10, 2)).round() / pow(10, 2),
+        total = values.sum;
 }

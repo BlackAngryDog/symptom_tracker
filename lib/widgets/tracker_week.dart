@@ -1,7 +1,10 @@
 // stateless widget that displays the tracker for the week
 import 'dart:async';
+import 'package:intl/intl.dart';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/widgets/tracker_week_info.dart';
 
@@ -10,7 +13,6 @@ import '../model/tracker.dart';
 import 'TrackerWeekInfo/week_info_grid.dart';
 
 class TrackerWeek extends StatefulWidget {
-
   const TrackerWeek({Key? key}) : super(key: key);
 
   @override
@@ -26,7 +28,8 @@ class _TrackerWeekState extends State<TrackerWeek> {
     super.initState();
 
     trackerSubscription = EventManager.stream.listen((event) {
-      if (event.event == EventType.trackerAdded || event.event == EventType.targetChanged) {
+      if (event.event == EventType.trackerAdded ||
+          event.event == EventType.targetChanged) {
         setState(() {});
       }
     });
@@ -38,14 +41,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
     trackerSubscription.cancel();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    //final trackers = EventManager.selectedTarget.trackers
-     //   .map((e) => Tracker(EventManager.selectedTarget.id ?? '', e))
-     //   .toList();
-
-    // TODO - Need to load trakers on switch
-
+  Widget getWeek(DateTime date) {
     return SizedBox(
       height: MediaQuery.of(context).copyWith().size.height,
       child: Padding(
@@ -54,20 +50,24 @@ class _TrackerWeekState extends State<TrackerWeek> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Flexible(child: WeekInfoGrid(daysOfWeek, DateTime.now())),
+            Text(
+              DateFormat.yMMMd().format(date),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Flexible(child: WeekInfoGrid(daysOfWeek, date)),
             Expanded(
               flex: 9,
               // Load Trackers
               child: FutureBuilder<Trackable?>(
-                  future:
-                  Trackable.load(EventManager.selectedTarget.id??''),
+                  future: Trackable.load(EventManager.selectedTarget.id ?? ''),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var trackable = snapshot.data ?? Trackable();
                       return ListView(
                         shrinkWrap: true,
                         children: trackable.trackers.map((info) {
-                          return TrackerWeekInfo(Tracker(trackable.id ?? '', info), DateTime.now());
+                          return TrackerWeekInfo(
+                              Tracker(trackable.id ?? '', info), date);
                         }).toList(),
                       );
                     } else {
@@ -76,14 +76,82 @@ class _TrackerWeekState extends State<TrackerWeek> {
                       );
                     }
                   }),
-
-
             ),
           ],
         ),
       ),
     );
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    //final trackers = EventManager.selectedTarget.trackers
+    //   .map((e) => Tracker(EventManager.selectedTarget.id ?? '', e))
+    //   .toList();
+
+    // TODO - Need to load trakers on switch
+
+    return CarouselSlider.builder(
+      options: CarouselOptions(
+        height: MediaQuery.of(context).size.height,
+        aspectRatio: 16 / 9,
+        viewportFraction: 1,
+        initialPage: 0,
+        enableInfiniteScroll: false,
+        reverse: true,
+        autoPlay: false,
+        enlargeCenterPage: true,
+        enlargeFactor: 0.3,
+        scrollDirection: Axis.horizontal,
+      ),
+      itemCount: 15,
+      itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) =>
+          Container(
+        child: getWeek(
+          DateTime.now().subtract(Duration(days: itemIndex * 7)),
+        ),
+      ),
+    );
+    /*
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: MediaQuery.of(context).size.height,
+        aspectRatio: 16 / 9,
+        viewportFraction: 1,
+        initialPage: 0,
+        enableInfiniteScroll: false,
+        reverse: true,
+        autoPlay: false,
+        enlargeCenterPage: true,
+        enlargeFactor: 0.3,
+        onPageChanged: callbackFunction,
+        scrollDirection: Axis.horizontal,
+      ),
+        CarouselSlider.builder(
+          itemCount: 15,
+          itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) =>
+              Container(
+                child: Text(itemIndex.toString()),
+              ),
+        )
+      items: [1, 2, 3, 4, 5].map((i) {
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.symmetric(horizontal: 5.0),
+              decoration: BoxDecoration(color: Colors.amber),
+              child: getWeek(
+                DateTime.now().subtract(Duration(days: 10 - i * 7)),
+              ),
+            );
+          },
+        );
+      }).toList(),
+    );
+
+
+     */
     /*child: FirebaseDatabaseListView(
         query: DatabaseTools.getRef(Tracker().getEndpoint()),
         itemBuilder: (context, snapshot) {

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/pages/tracker_Summery.dart';
+import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/tracker_controls.dart';
 
 class AbsWeekInfo extends StatefulWidget {
@@ -130,6 +132,32 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     return icon;
   }
 
+  void _editTrackerPopup(BuildContext ctx) {
+    showModalBottomSheet(
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+            onTap: () {},
+            behavior: HitTestBehavior.opaque,
+            child: AddTracker((option) {
+              _editTrackerPopup(context);
+            }, tracker: widget._tracker),
+          );
+        });
+  }
+
+  void _showHistory(BuildContext ctx) {
+    Navigator.push(
+      ctx,
+      MaterialPageRoute(
+        builder: (context) => TrackerSummeryPage(
+          widget._tracker,
+        ),
+      ),
+    );
+  }
+
   // TODO - 6 days of history with one Larger day for today, with name field taking up part og the height and seventh being full height.
 
   @override
@@ -170,24 +198,32 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      FittedBox(
-                        fit: BoxFit.fill,
-                        child: Row(
-                          children: [
-                            if (icon != null)
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Icon(
-                                  icon,
-                                  size: 24,
-                                ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          if (icon != null)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                icon,
+                                size: 24,
                               ),
-                            Text(widget._tracker.option.title ?? "",
-                                style: const TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.start),
-                          ],
-                        ),
+                            ),
+                          Text(widget._tracker.option.title ?? "",
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.start),
+                          Row(
+                            children: [
+                              IconButton(
+                                  onPressed: () => {_editTrackerPopup(context)},
+                                  icon: Icon(Icons.edit)),
+                              IconButton(
+                                  onPressed: () => {_showHistory(context)},
+                                  icon: Icon(Icons.history)),
+                            ],
+                          )
+                        ],
                       ),
                       SizedBox(
                         height: 40.0,
