@@ -9,7 +9,7 @@ import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
 
 class DataProcessManager {
-  static Future<Map<String, Map<String, List<double>>>> getData() async {
+  static Future<Map<String, Map<String, List<double>>>> getData({String optionID = ""}) async {
     DateTime start = DateTimeExt.lastYear;
 
     // Read data as a list of diet changes.
@@ -31,6 +31,8 @@ class DataProcessManager {
 
     // for each TrackOption, get logs and compare to diet logs.
     for (var log in logs) {
+      if (optionID.isNotEmpty && optionID == log.optionID) continue;
+
       // get diet value at this time.
       var diet = dietTracker.getValue(day: log.time);
 
@@ -39,6 +41,8 @@ class DataProcessManager {
 
       // get TrackOption
       var trackOption = options.where((e) => e.id == log.optionID).firstOrNull;
+
+
       var value = double.tryParse(log.value.toString()) ?? 0;
       var key = trackOption?.title ?? "";
       if (key.isEmpty || value == 0) continue;
@@ -48,20 +52,39 @@ class DataProcessManager {
 
       if (dietLog == null) continue;
 
+      map.putIfAbsent(key, () => {});
+      List<String> combo = [];
       for (var entry in dietLog.value!.entries) {
         if (entry.value == true) {
-          map.putIfAbsent(key, () => {});
-          map[key]!.putIfAbsent(entry.key, () => []);
-          map[key]![entry.key]!.add(value);
+          // Create Combined key
+          combo.add(entry.key);
+
+         // map[key]!.putIfAbsent(entry.key, () => []);
+          //map[key]![entry.key]!.add(value);
           //print(
           //    'insight total: ${trackOption?.title} -${entry.key} - ${log.time} - ${log.value}');
         }
-      }
-      //map.toString();
-      //Map<String, bool> currDiet = jsonDecode(val);
 
-      // print(
-      //    'TrackOption: ${trackOption?.title} -${val} - ${log.time} - ${log.value}');
+      }
+      try {
+
+        var combined = combo.join(",");
+        if (combo.length > 1) {
+          var last = combo.removeLast();
+          combined = "${combo.join(', ')} & $last";
+        }
+        map[key]!.putIfAbsent(combined, () => []);
+        map[key]![combined]!.add(value);
+      } on Exception catch (e) {
+        // Anything else that is an exception
+        print('Unknown exception: $e');
+      } catch (e) {
+        // No specified type, handles all
+        print('Something really unknown: $e');
+      }
+      // Check if there are combined options
+
+
     }
 
     return map;
@@ -69,9 +92,12 @@ class DataProcessManager {
 
   static Future<List<DataLogSummary>> getSummary(
       {String diet = "", String option = ""}) async {
-    var map = await getData();
+    var map = await getData(optionID: option);
     var datalogs = List<DataLogSummary>.empty(growable: true);
     var summary = <String, Map<String, DataLogSummary>>{};
+
+
+
     for (var dietMap in map.entries) {
       for (var entry in dietMap.value.entries) {
         var log = DataLogSummary(entry.key, dietMap.key, entry.value);
