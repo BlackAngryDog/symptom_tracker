@@ -48,7 +48,7 @@ class TrackerPage extends StatelessWidget {
 
     // Tracker tracker = value;
     //tracker.trackableID = trackable.id ?? 'default';
-    EventManager.selectedTarget.trackers.add(value);
+    EventManager.selectedTarget.trackOptions.add(value);
     EventManager.dispatchUpdate(UpdateEvent(EventType.trackerAdded));
     // TODO - Switch to tracker options list update
     //tracker.save();

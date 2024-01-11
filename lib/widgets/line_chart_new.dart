@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
 
 class LineDataChart extends StatelessWidget {
@@ -8,9 +9,9 @@ class LineDataChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: DataProcessManager.getSummary(),
+      future: DataProcessManager.getSummaryOverTime(DateTimeExt.lastWeek, DateTime.now()),
       builder: (context, snapshot) => snapshot.hasData
-          ? buildChart(snapshot.data as List<DataLogSummary>)
+          ? buildSymptomsOverTimeChart(snapshot.data as List<DataLogSummary>)
           : const Center(
               child: CircularProgressIndicator(),
             ),
@@ -18,7 +19,12 @@ class LineDataChart extends StatelessWidget {
     // TODO - Build chart data from map
   }
 
-  Widget buildChart(List<DataLogSummary> data) {
+  Widget buildSymptomsOverTimeChart(List<DataLogSummary> data) {
+
+    // bottom time
+    // left symptoms
+
+
     return LineChart(
       LineChartData(
         lineTouchData: lineTouchData1,

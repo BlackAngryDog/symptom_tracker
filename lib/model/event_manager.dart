@@ -27,7 +27,7 @@ class EventManager {
     _instance._selectedTracker = null;
     _instance._selectedTarget = value;
     TrackOption? initialTrackerOption =
-        _instance._selectedTarget.trackers.firstOrNull;
+        _instance._selectedTarget.trackOptions.firstOrNull;
     if (initialTrackerOption != null) {
       _instance._selectedTracker =
           Tracker.fromTrackOption(value.id ?? '', initialTrackerOption);

@@ -65,7 +65,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
                       var trackable = snapshot.data ?? Trackable();
                       return ListView(
                         shrinkWrap: true,
-                        children: trackable.trackers.map((info) {
+                        children: trackable.trackOptions.map((info) {
                           return TrackerWeekInfo(
                               Tracker(trackable.id ?? '', info), date);
                         }).toList(),

@@ -15,6 +15,7 @@ class DataProcessManager {
     // Read data as a list of diet changes.
     Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
 
+
     List<DataLog> dietLogs =
         await dietTracker.getLogs(start, DateTime.now().endOfDay);
 
@@ -42,7 +43,6 @@ class DataProcessManager {
       // get TrackOption
       var trackOption = options.where((e) => e.id == log.optionID).firstOrNull;
 
-
       var value = double.tryParse(log.value.toString()) ?? 0;
       var key = trackOption?.title ?? "";
       if (key.isEmpty || value == 0) continue;
@@ -55,17 +55,9 @@ class DataProcessManager {
       map.putIfAbsent(key, () => {});
       List<String> combo = [];
       for (var entry in dietLog.value!.entries) {
-        if (entry.value == true) {
-          // Create Combined key
-          combo.add(entry.key);
-
-         // map[key]!.putIfAbsent(entry.key, () => []);
-          //map[key]![entry.key]!.add(value);
-          //print(
-          //    'insight total: ${trackOption?.title} -${entry.key} - ${log.time} - ${log.value}');
-        }
-
+        if (entry.value == true) combo.add(entry.key);
       }
+
       try {
 
         var combined = combo.join(",");
@@ -82,11 +74,73 @@ class DataProcessManager {
         // No specified type, handles all
         print('Something really unknown: $e');
       }
-      // Check if there are combined options
-
 
     }
 
+    return map;
+  }
+
+  static Future<Map<String, Map<String, List<double>>>> getDataOverTime({DateTime? startTime, DateTime? endTime, String optionID = ""}) async {
+    DateTime start = startTime?.startOfDay ?? DateTimeExt.lastYear;
+    DateTime end = endTime?.endOfDay ?? DateTime.now().endOfDay;
+
+    // Read data as a list of diet changes.
+    Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
+
+    DateTime curr = start;
+    var map = <String, Map<String, List<double>>>{};
+
+    while(end.difference(curr).inDays > 0) {
+
+      List<DataLog> dietLogs =
+      await dietTracker.getLogs(curr, curr);
+
+      // get all other trackers.
+      List<TrackOption> options = (await TrackOption.getOptions())
+          .where((element) => element.trackType != dietTracker.option.trackType)
+          .toList(growable: false);
+
+
+      // get diet for this day
+      List<String> combo = [];
+      DataLog? dietLog = await dietTracker.getLog(day: curr.endOfDay);
+      for (var entry in dietLog?.value!.entries) {
+        if (entry.value == true) combo.add(entry.key);
+      }
+      var combined = combo.join(",");
+      if (combo.length > 1) {
+        var last = combo.removeLast();
+        combined = "${combo.join(', ')} & $last";
+      }
+
+      // get trackers and assign values
+      for (var tracker in EventManager.selectedTarget.trackers) {
+
+        try {
+
+          var combined = combo.join(",");
+          if (combo.length > 1) {
+            var last = combo.removeLast();
+            combined = "${combo.join(', ')} & $last";
+          }
+          String title = tracker.option.title??"";
+          map.putIfAbsent(title, () => {});
+          map[title]!.putIfAbsent(combined, () => []);
+          var v = await tracker.getValue(day:curr.endOfDay);
+          var value = double.tryParse(v) ?? 0;
+          map[title]![combined]!.add(value);
+
+        } on Exception catch (e) {
+          // Anything else that is an exception
+          print('Unknown exception: $e');
+        } catch (e) {
+          // No specified type, handles all
+          print('Something really unknown: $e');
+        }
+
+      }
+      curr = curr.add(Duration(days: 1));
+    }
     return map;
   }
 
@@ -95,8 +149,6 @@ class DataProcessManager {
     var map = await getData(optionID: option);
     var datalogs = List<DataLogSummary>.empty(growable: true);
     var summary = <String, Map<String, DataLogSummary>>{};
-
-
 
     for (var dietMap in map.entries) {
       for (var entry in dietMap.value.entries) {
@@ -113,6 +165,28 @@ class DataProcessManager {
       }
     }
     return datalogs;
+  }
+
+  static Future<List<DataLogSummary>> getSummaryOverTime(DateTime startTime, DateTime endTime, {String diet = "", String option = ""}) async {
+    var map = await getDataOverTime(startTime: startTime, endTime: endTime);
+    var dataLogs = List<DataLogSummary>.empty(growable: true);
+    var summary = <String, Map<String, DataLogSummary>>{};
+
+    for (var dietMap in map.entries) {
+      for (var entry in dietMap.value.entries) {
+        var log = DataLogSummary(entry.key, dietMap.key, entry.value);
+        if (diet.isNotEmpty && entry.key != diet) continue;
+        if (option.isNotEmpty && dietMap.key != option) continue;
+
+        dataLogs.add(log);
+
+        summary.putIfAbsent(dietMap.key, () => {});
+        summary[dietMap.key]!.putIfAbsent(entry.key, () => log);
+        print(
+            'insight summary: ${dietMap.key} - ${entry.key} - ${entry.value.sum}');
+      }
+    }
+    return dataLogs;
   }
 
   static getAverage({String diet = "", String option = ""}) async {

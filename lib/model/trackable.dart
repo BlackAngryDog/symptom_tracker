@@ -16,7 +16,8 @@ class Trackable {
   Tracker? _dietTracker;
 
   List<String> trackerIDs = [];
-  List<TrackOption> trackers = [];
+  List<TrackOption> trackOptions = [];
+  List<Tracker> trackers = [];
 
   final List<DataLog> _log = [];
   List<DataLog> get log => _log;
@@ -35,14 +36,18 @@ class Trackable {
   }
 
   Future<List<TrackOption>> getTrackOptions() async {
+    trackOptions.clear();
     for (var id in trackerIDs) {
       var option = await TrackOption.load(id);
-      trackers.add(option);
+      trackOptions.add(option);
+      trackers.add(Tracker(id??'', option));
     }
 
-    return trackers;
+    return trackOptions;
     //return trackerIDs.map((e) => await TrackOption.getOption(e)).toList();
   }
+
+
 
   Future<List<DataLog>> getDataLogs(DateTime start, DateTime end) async {
     List<DataLog> logs = [];
@@ -119,7 +124,7 @@ class Trackable {
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
         'title': title,
-        'trackerIDs': trackers
+        'trackerIDs': trackOptions
             .where((element) => element.id?.isNotEmpty == true)
             .map((e) => e.id)
             .toList(),

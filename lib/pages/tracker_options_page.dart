@@ -91,7 +91,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
   }
 
   Future<List<DietOptionItem>> _getData() async {
-    List<TrackOption> entries = widget._trackable.trackers;
+    List<TrackOption> entries = widget._trackable.trackOptions;
 
     if (entries.isEmpty) return options;
 
@@ -181,7 +181,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
   }
 
   Future initialiseTrackable(BuildContext context) async {
-    widget._trackable.trackers = options
+    widget._trackable.trackOptions = options
         .where((element) => element.selected == true)
         .map((value) => TrackOption(
             id: value.item.id, title: value.item.title, trackType: value.item.trackType, icon: value.item.icon))
