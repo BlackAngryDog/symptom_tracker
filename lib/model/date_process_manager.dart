@@ -144,8 +144,7 @@ class DataProcessManager {
     return map;
   }
 
-  static Future<List<DataLogSummary>> getSummary(
-      {String diet = "", String option = ""}) async {
+  static Future<List<DataLogSummary>> getSummary({String diet = "", String option = ""}) async {
     var map = await getData(optionID: option);
     var datalogs = List<DataLogSummary>.empty(growable: true);
     var summary = <String, Map<String, DataLogSummary>>{};

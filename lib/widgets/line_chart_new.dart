@@ -4,12 +4,15 @@ import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
 
 class LineDataChart extends StatelessWidget {
-  const LineDataChart({Key? key}) : super(key: key);
+  LineDataChart({Key? key}) : super(key: key);
+
+  List<String> symptoms = [];
+  List<String> diet = [];
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: DataProcessManager.getSummaryOverTime(DateTimeExt.lastWeek, DateTime.now()),
+      future: DataProcessManager.getSummary(),
       builder: (context, snapshot) => snapshot.hasData
           ? buildSymptomsOverTimeChart(snapshot.data as List<DataLogSummary>)
           : const Center(
@@ -21,21 +24,64 @@ class LineDataChart extends StatelessWidget {
 
   Widget buildSymptomsOverTimeChart(List<DataLogSummary> data) {
 
+    List<LineChartBarData> dataList = [];
+    List<Color> colours = [Colors.blue, Colors.red,Colors.yellow, Colors.green, Colors.orange, Colors.pink, Colors.purple];
+    // get array of colours
+    Map<String, List<DataLogSummary>> map = {};
+    for (var entry in data) {
+      map.putIfAbsent(entry.option, () => []);
+      map[entry.option]?.add(entry);
+    }
+
+    symptoms = map.keys.toList();
+
+    for (var option in map.keys) {
+
+      diet.addAll(map[option]!.where((e) => !diet.contains(e.diet) ).map((e) => e.diet));
+
+      var chartData = LineChartBarData(
+        isCurved: true,
+        color: colours[symptoms.indexOf(option)],
+        preventCurveOverShooting: true,
+        barWidth: 3,
+        isStrokeCapRound: true,
+        dotData: FlDotData(show: true),
+        belowBarData: BarAreaData(show: false),
+        spots: [],
+        show: option == "Fits", // Todo add filters
+
+      );
+
+      for (var dietName in diet){
+        var x = diet.indexOf(dietName).toDouble();
+        var y = map[option]?.where((element) => element.diet == dietName).firstOrNull?.average??0;
+        chartData.spots.add(FlSpot(x, y));
+
+      }
+
+      dataList.add(chartData);
+
+
+    }
+
+
+
     // bottom time
     // left symptoms
-
-
-    return LineChart(
-      LineChartData(
-        lineTouchData: lineTouchData1,
-        gridData: gridData,
-        titlesData: getTitles(leftTitles: data.map((e) => e.option).toList()),
-        borderData: borderData,
-        lineBarsData: lineBarsData(data),
-        minX: 0,
-        maxX: 14,
-        maxY: 4,
-        minY: 0,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: LineChart(
+        LineChartData(
+          lineTouchData: lineTouchData1,
+          gridData: gridData,
+          titlesData: getTitles(bottomTitles: diet, leftTitles: ["0","1","2","3","4","5"]),
+          borderData: borderData,
+          lineBarsData: dataList,
+          minX: 0,
+          maxX: diet.length.toDouble() - 1,
+          maxY: 5, // todo - need to adjust these based on visible data
+          minY: 0,
+        ),
       ),
     );
   }
@@ -83,14 +129,16 @@ class LineDataChart extends StatelessWidget {
   Widget TitleWidgets(String title, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 16,
+      fontSize: 8,
+
     );
-    Widget text = Text(title, style: style);
+    Widget text = Text(title, style: style, textAlign: TextAlign.end);
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 10,
       child: text,
+      angle: 0,
     );
   }
 
@@ -107,74 +155,34 @@ class LineDataChart extends StatelessWidget {
       );
 
   List<LineChartBarData> lineBarsData(List<DataLogSummary> data) {
-    List<LineChartBarData> list = [];
+    List<LineChartBarData> dataList = [];
+
+    Map<String, List<DataLogSummary>> map = {};
     for (var entry in data) {
-      var lineChartBarData = LineChartBarData(
-        isCurved: true,
-        color: Colors.blue,
-        barWidth: 8,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(show: false),
-        spots:
-            data.map((e) => FlSpot(list.length.toDouble(), e.average)).toList(),
-      );
-      list.add(lineChartBarData);
+      map.putIfAbsent(entry.diet, () => []);
+      map[entry.diet]?.add(entry);
+
     }
-    return list;
+
+    for (var option in map.keys) {
+      var chartData = LineChartBarData(
+          isCurved: true,
+          color: Colors.blue,
+          barWidth: 8,
+          isStrokeCapRound: true,
+          dotData: FlDotData(show: false),
+          belowBarData: BarAreaData(show: false),
+          spots: map[option]!.map((e) => FlSpot(map[option]?.indexOf(e).toDouble()??0, e.average)).toList(),
+      );
+      dataList.add(chartData);
+
+      symptoms.add(option);
+
+
+    }
+    diet = map.keys.toList();
+
+    return dataList;
   }
 
-  LineChartBarData get lineChartBarData1_1 => LineChartBarData(
-        isCurved: true,
-        color: Colors.green,
-        barWidth: 8,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(show: false),
-        spots: const [
-          FlSpot(1, 1),
-          FlSpot(3, 1.5),
-          FlSpot(5, 1.4),
-          FlSpot(7, 3.4),
-          FlSpot(10, 2),
-          FlSpot(12, 2.2),
-          FlSpot(13, 1.8),
-        ],
-      );
-
-  LineChartBarData get lineChartBarData1_2 => LineChartBarData(
-        isCurved: true,
-        color: Colors.amber,
-        barWidth: 8,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(
-          show: false,
-          color: Colors.amber.withOpacity(0),
-        ),
-        spots: const [
-          FlSpot(1, 1),
-          FlSpot(3, 2.8),
-          FlSpot(7, 1.2),
-          FlSpot(10, 2.8),
-          FlSpot(12, 2.6),
-          FlSpot(13, 3.9),
-        ],
-      );
-
-  LineChartBarData get lineChartBarData1_3 => LineChartBarData(
-        isCurved: true,
-        color: Colors.cyan,
-        barWidth: 8,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(show: false),
-        spots: const [
-          FlSpot(1, 2.8),
-          FlSpot(3, 1.9),
-          FlSpot(6, 3),
-          FlSpot(10, 1.3),
-          FlSpot(13, 2.5),
-        ],
-      );
 }
