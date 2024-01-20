@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/widgets/data_log_list.dart';
+import 'package:symptom_tracker/widgets/data_timeline.dart';
 
 class TrackerHistoryPage extends StatelessWidget {
   final Trackable trackable;
@@ -23,7 +24,7 @@ class TrackerHistoryPage extends StatelessWidget {
       body: Center(
 // Center is a layout widget. It takes a single child and positions it
 // in the middle of the parent.
-        child: DataLogList(trackable),
+        child: DataTimeLine(trackable),
       ),
     );
   }

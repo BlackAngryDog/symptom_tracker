@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
@@ -9,6 +10,22 @@ import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
 
 class DataProcessManager {
+
+
+  static Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
+
+    return DataLog.getCollection(EventManager.selectedTarget.id??'default')
+        .where('time', isGreaterThanOrEqualTo: start)
+        .where('time', isLessThanOrEqualTo: end)
+        .get(const GetOptions(source: Source.cache))
+        .then((data) {
+      List<DataLog> log = data.docs.map((doc) {
+        return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+      return log;
+    });
+  }
+
   static Future<Map<String, Map<String, List<double>>>> getData({String optionID = ""}) async {
     DateTime start = DateTimeExt.lastYear;
 
