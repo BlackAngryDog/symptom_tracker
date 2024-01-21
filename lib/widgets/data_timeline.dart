@@ -5,6 +5,7 @@ import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/widgets/data_log_item.dart';
+import 'package:symptom_tracker/widgets/time_line_item.dart';
 
 class DataTimeLine extends StatefulWidget {
   final Trackable _trackable;
@@ -16,20 +17,19 @@ class DataTimeLine extends StatefulWidget {
 }
 
 class _DataTimeLineState extends State<DataTimeLine> {
-
-  List<DataLog> _data = [];
+  List<TimeLineEntry> _data = [];
   var date = DateTime.now();
   var duration = const Duration(days: 1);
   bool reachedEnd = false;
 
-  void getMoreData() async{
-
-
-    var nextSet = await DataProcessManager.getLogs(date.subtract(duration), date);
-
+  void getMoreData() async {
+    var nextSet =
+        await DataProcessManager.getTimeLine(date.subtract(duration), date);
 
     setState(() {
-      _data.addAll(nextSet);
+      for (var entry in nextSet.values) {
+        _data.addAll(entry);
+      }
     });
 
     date = date.subtract(duration);
@@ -51,22 +51,21 @@ class _DataTimeLineState extends State<DataTimeLine> {
       xValue += step;
     });
     */
-
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemBuilder: (context, index) {
-      if (index < _data.length) {
-        // Show your info
-        return DataLogItem(_data[index]);
-      } else {
-
-        getMoreData();
-        return Center(child: CircularProgressIndicator());
-      }
-    }, itemCount: _data.length + (reachedEnd ? 0 :  1),
+      itemBuilder: (context, index) {
+        if (index < _data.length) {
+          // Show your info
+          return TimeLineItem(_data[index]);
+        } else {
+          getMoreData();
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+      itemCount: _data.length + (reachedEnd ? 0 : 1),
     );
   }
   /*
