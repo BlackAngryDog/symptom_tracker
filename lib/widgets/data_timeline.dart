@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
@@ -5,6 +7,7 @@ import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/widgets/data_log_item.dart';
+import 'package:symptom_tracker/widgets/time_line_item.dart';
 
 class DataTimeLine extends StatefulWidget {
   final Trackable _trackable;
@@ -16,23 +19,33 @@ class DataTimeLine extends StatefulWidget {
 }
 
 class _DataTimeLineState extends State<DataTimeLine> {
-
-  List<DataLog> _data = [];
+  final Map<String, List<TimeLineEntry>> _data = {};
   var date = DateTime.now();
   var duration = const Duration(days: 1);
   bool reachedEnd = false;
 
-  void getMoreData() async{
+  void getMoreData() async {
+    var nextSet =
+        await DataProcessManager.getTimeLine(date.subtract(duration), date);
 
+    // get earliest date from data
+    if (nextSet.isNotEmpty && nextSet.values.isNotEmpty) {
+      var next = nextSet.values
+          .where((element) => element.isNotEmpty)
+          .map((e) => e.first.startDateTime)
+          .reduce(
+              (value, element) => value.isBefore(element) ? value : element);
+      date = date.difference(next).inDays > duration.inDays
+          ? next
+          : date = date.subtract(duration);
 
-    var nextSet = await DataProcessManager.getLogs(date.subtract(duration), date);
-
-
-    setState(() {
-      _data.addAll(nextSet);
-    });
-
-    date = date.subtract(duration);
+      setState(() {
+        _data.addEntries(
+            nextSet.entries.where((element) => element.value.isNotEmpty));
+      });
+    } else {
+      date = date.subtract(duration);
+    }
   }
 
   @override
@@ -51,22 +64,24 @@ class _DataTimeLineState extends State<DataTimeLine> {
       xValue += step;
     });
     */
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemBuilder: (context, index) {
-      if (index < _data.length) {
-        // Show your info
-        return DataLogItem(_data[index]);
-      } else {
+    var keys = _data.keys.toList();
 
-        getMoreData();
-        return Center(child: CircularProgressIndicator());
-      }
-    }, itemCount: _data.length + (reachedEnd ? 0 :  1),
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        if (index < _data.length) {
+          // Show your info
+
+          return TimeLineItem(_data[keys[index]] ?? []);
+        } else {
+          getMoreData();
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+      itemCount: _data.length + (reachedEnd ? 0 : 1),
     );
   }
   /*

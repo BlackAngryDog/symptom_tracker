@@ -10,11 +10,8 @@ import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
 
 class DataProcessManager {
-
-
   static Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
-
-    return DataLog.getCollection(EventManager.selectedTarget.id??'default')
+    return DataLog.getCollection(EventManager.selectedTarget.id ?? 'default')
         .where('time', isGreaterThanOrEqualTo: start)
         .where('time', isLessThanOrEqualTo: end)
         .get(const GetOptions(source: Source.cache))
@@ -26,12 +23,96 @@ class DataProcessManager {
     });
   }
 
-  static Future<Map<String, Map<String, List<double>>>> getData({String optionID = ""}) async {
+  static Future<Map<String, List<TimeLineEntry>>> getTimeLine(
+      DateTime start, DateTime end,
+      {String optionID = ""}) async {
+    // Read data as a list of diet changes.
+    Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
+
+    List<DataLog> dietLogs =
+        await dietTracker.getLogs(start.startOfDay, end.endOfDay);
+
+    if (dietLogs.isEmpty) {
+      DataLog? dietLog = await dietTracker.getLog(day: end.endOfDay);
+      if (dietLog != null) {
+        dietLogs.add(dietLog);
+      } else {
+        return {};
+      }
+    }
+
+    var map = <String, List<TimeLineEntry>>{};
+
+    // get start date and timespan between each log and the next.
+    for (var i = 0; i < dietLogs.length; i++) {
+      // get events within this timeframe tagged with this diet type
+      var startSegment = dietLogs[i].time;
+      var endSegment =
+          dietLogs.length < i + 1 ? dietLogs[i + 1].time : end.endOfDay;
+
+      //get combined name for this segment
+      List<String> combo = [];
+      for (var entry in dietLogs[i].value!.entries) {
+        if (entry.value == true) combo.add(entry.key);
+      }
+      var combined = combo.join(",");
+      if (combo.length > 1) {
+        var last = combo.removeLast();
+        combined = "${combo.join(', ')} & $last";
+      }
+      var logID = dietLogs[i].id.toString();
+      map.putIfAbsent(logID, () => []);
+
+      // get all other trackers.
+      List<TrackOption> options = (await TrackOption.getOptions())
+          .where((element) => element.trackType != dietTracker.option.trackType)
+          .toList(growable: false);
+
+      // Get all logs for target
+      var logs = await EventManager.selectedTarget
+          .getDataLogs(startSegment, endSegment);
+
+      // for each TrackOption, get logs and compare to diet logs.
+      for (var log in logs) {
+        if (optionID.isNotEmpty && optionID == log.optionID) continue;
+
+        // get TrackOption
+        var trackOption =
+            options.where((e) => e.id == log.optionID).firstOrNull;
+
+        var value = double.tryParse(log.value.toString()) ?? 0;
+        var key = trackOption?.title ?? "";
+        if (key.isEmpty || value == 0) continue;
+
+        try {
+          var entry =
+              map[logID]!.where((element) => element.option == key).firstOrNull;
+
+          if (entry == null) {
+            map[logID]!.add(TimeLineEntry(
+                startSegment, endSegment, combined, key, [value]));
+            continue;
+          }
+
+          entry.values.add(value);
+        } on Exception catch (e) {
+          // Anything else that is an exception
+          print('Unknown exception: $e');
+        } catch (e) {
+          // No specified type, handles all
+          print('Something really unknown: $e');
+        }
+      }
+    }
+    return map;
+  }
+
+  static Future<Map<String, Map<String, List<double>>>> getData(
+      {String optionID = ""}) async {
     DateTime start = DateTimeExt.lastYear;
 
     // Read data as a list of diet changes.
     Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
-
 
     List<DataLog> dietLogs =
         await dietTracker.getLogs(start, DateTime.now().endOfDay);
@@ -76,7 +157,6 @@ class DataProcessManager {
       }
 
       try {
-
         var combined = combo.join(",");
         if (combo.length > 1) {
           var last = combo.removeLast();
@@ -91,13 +171,13 @@ class DataProcessManager {
         // No specified type, handles all
         print('Something really unknown: $e');
       }
-
     }
 
     return map;
   }
 
-  static Future<Map<String, Map<String, List<double>>>> getDataOverTime({DateTime? startTime, DateTime? endTime, String optionID = ""}) async {
+  static Future<Map<String, Map<String, List<double>>>> getDataOverTime(
+      {DateTime? startTime, DateTime? endTime, String optionID = ""}) async {
     DateTime start = startTime?.startOfDay ?? DateTimeExt.lastYear;
     DateTime end = endTime?.endOfDay ?? DateTime.now().endOfDay;
 
@@ -107,16 +187,13 @@ class DataProcessManager {
     DateTime curr = start;
     var map = <String, Map<String, List<double>>>{};
 
-    while(end.difference(curr).inDays > 0) {
-
-      List<DataLog> dietLogs =
-      await dietTracker.getLogs(curr, curr);
+    while (end.difference(curr).inDays > 0) {
+      List<DataLog> dietLogs = await dietTracker.getLogs(curr, curr);
 
       // get all other trackers.
       List<TrackOption> options = (await TrackOption.getOptions())
           .where((element) => element.trackType != dietTracker.option.trackType)
           .toList(growable: false);
-
 
       // get diet for this day
       List<String> combo = [];
@@ -132,21 +209,18 @@ class DataProcessManager {
 
       // get trackers and assign values
       for (var tracker in EventManager.selectedTarget.trackers) {
-
         try {
-
           var combined = combo.join(",");
           if (combo.length > 1) {
             var last = combo.removeLast();
             combined = "${combo.join(', ')} & $last";
           }
-          String title = tracker.option.title??"";
+          String title = tracker.option.title ?? "";
           map.putIfAbsent(title, () => {});
           map[title]!.putIfAbsent(combined, () => []);
-          var v = await tracker.getValue(day:curr.endOfDay);
+          var v = await tracker.getValue(day: curr.endOfDay);
           var value = double.tryParse(v) ?? 0;
           map[title]![combined]!.add(value);
-
         } on Exception catch (e) {
           // Anything else that is an exception
           print('Unknown exception: $e');
@@ -154,14 +228,14 @@ class DataProcessManager {
           // No specified type, handles all
           print('Something really unknown: $e');
         }
-
       }
       curr = curr.add(Duration(days: 1));
     }
     return map;
   }
 
-  static Future<List<DataLogSummary>> getSummary({String diet = "", String option = ""}) async {
+  static Future<List<DataLogSummary>> getSummary(
+      {String diet = "", String option = ""}) async {
     var map = await getData(optionID: option);
     var datalogs = List<DataLogSummary>.empty(growable: true);
     var summary = <String, Map<String, DataLogSummary>>{};
@@ -183,7 +257,9 @@ class DataProcessManager {
     return datalogs;
   }
 
-  static Future<List<DataLogSummary>> getSummaryOverTime(DateTime startTime, DateTime endTime, {String diet = "", String option = ""}) async {
+  static Future<List<DataLogSummary>> getSummaryOverTime(
+      DateTime startTime, DateTime endTime,
+      {String diet = "", String option = ""}) async {
     var map = await getDataOverTime(startTime: startTime, endTime: endTime);
     var dataLogs = List<DataLogSummary>.empty(growable: true);
     var summary = <String, Map<String, DataLogSummary>>{};
@@ -272,4 +348,21 @@ class DataLogSummary {
         max = values.max,
         average = (values.average * pow(10, 2)).round() / pow(10, 2),
         total = values.sum;
+}
+
+class TimeLineEntry {
+  final String diet;
+  final String option;
+  final List<double> values;
+  final DateTime startDateTime;
+  final DateTime endDateTime;
+
+  double get min => values.isEmpty ? 0 : values.min;
+  double get max => values.isEmpty ? 0 : values.max;
+  double get average =>
+      values.isEmpty ? 0 : (values.average * pow(10, 2)).round() / pow(10, 2);
+  double get total => values.isEmpty ? 0 : values.sum;
+
+  TimeLineEntry(this.startDateTime, this.endDateTime, this.diet, this.option,
+      this.values);
 }
