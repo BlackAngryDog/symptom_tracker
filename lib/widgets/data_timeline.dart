@@ -75,7 +75,7 @@ class _DataTimeLineState extends State<DataTimeLine> {
         if (index < _data.length) {
           // Show your info
 
-          return TimeLineItem(_data[keys[index]] ?? []);
+          return TimeLineItem(_data[keys[index]] ?? [], comparisonLog: index>0?_data[keys[0]]:null,);
         } else {
           getMoreData();
           return Center(child: CircularProgressIndicator());

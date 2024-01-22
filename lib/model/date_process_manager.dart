@@ -26,6 +26,7 @@ class DataProcessManager {
   static Future<Map<String, List<TimeLineEntry>>> getTimeLine(
       DateTime start, DateTime end,
       {String optionID = ""}) async {
+
     // Read data as a list of diet changes.
     Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
 
