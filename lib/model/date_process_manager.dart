@@ -93,7 +93,7 @@ class DataProcessManager {
                 startSegment, endSegment, combined, key, [value]));
             continue;
           }
-
+          entry.endDateTime = endSegment;
           entry.values.add(value);
         } on Exception catch (e) {
           // Anything else that is an exception
@@ -355,7 +355,7 @@ class TimeLineEntry {
   final String option;
   final List<double> values;
   final DateTime startDateTime;
-  final DateTime endDateTime;
+  DateTime endDateTime;
 
   double get min => values.isEmpty ? 0 : values.min;
   double get max => values.isEmpty ? 0 : values.max;
