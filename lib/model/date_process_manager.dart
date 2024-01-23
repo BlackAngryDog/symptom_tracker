@@ -23,7 +23,47 @@ class DataProcessManager {
     });
   }
 
-  static Future<Map<String, List<TimeLineEntry>>> getTimeLine(
+  static Future<List<LogTimeLineEntry>> getTimeLine(DateTime start, DateTime end,
+      {String optionID = ""}) async {
+
+    List<TrackOption> options = (await TrackOption.getOptions())
+        //.where((element) => element.trackType != dietTracker.option.trackType)
+        .toList(growable: false);
+
+    // Get all logs for target
+    var logs = await EventManager.selectedTarget.getDataLogs(start, end);
+
+    List<LogTimeLineEntry> timelineLogs = [];
+
+    for(var log in logs){
+
+      var trackOption = options.where((e) => e.id == log.optionID).firstOrNull;
+      var date = log.time;
+      var title = trackOption?.title ?? "";
+      var value = log.value;
+      if (value is Map && value.entries.isNotEmpty){
+        List<String> combo = [];
+        for (var entry in value!.entries) {
+          if (entry.value == true) combo.add(entry.key);
+        }
+        title = combo.join(",");
+        if (combo.length > 1) {
+          var last = combo.removeLast();
+          title = "${combo.join(', ')} & $last";
+
+        }
+        value = 0;
+      }
+
+      timelineLogs.add(LogTimeLineEntry(date, title, double.tryParse(value.toString())??0.0));
+    }
+
+
+
+    return timelineLogs;
+  }
+
+  static Future<Map<String, List<TimeLineEntry>>> getTimeLineByDiet(
       DateTime start, DateTime end,
       {String optionID = ""}) async {
 
@@ -366,4 +406,13 @@ class TimeLineEntry {
 
   TimeLineEntry(this.startDateTime, this.endDateTime, this.diet, this.option,
       this.values);
+}
+
+class LogTimeLineEntry {
+
+  final String title;
+  final double value;
+  final DateTime date;
+
+  LogTimeLineEntry(this.date,this.title,this.value);
 }

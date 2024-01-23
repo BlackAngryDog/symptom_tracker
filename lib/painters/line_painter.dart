@@ -9,16 +9,24 @@ class LinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    var paint = Paint()
+    var paint1 = Paint()
       ..color = Colors.teal
-      ..strokeWidth = 15;
+      ..strokeWidth = 1;
+
+    var paint2 = Paint()
+      ..color = Colors.teal
+      ..strokeWidth = 3;
 
     var w2 = size.width/2;
 
+    Offset center = Offset(w2, size.height/2 );
     Offset start = Offset(w2, size.height/2 );
     Offset end = Offset(w2 + (w2*width), size.height/2);
+    canvas.drawCircle(center, 5, paint1);
 
-    canvas.drawLine(start, end, paint);
+    canvas.drawLine(Offset(w2, 0 ), Offset(w2, size.height ), paint2);
+
+    canvas.drawLine(start, end, paint1);
   }
 
   @override

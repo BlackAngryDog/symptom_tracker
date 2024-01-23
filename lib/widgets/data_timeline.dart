@@ -7,6 +7,7 @@ import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/widgets/data_log_item.dart';
+import 'package:symptom_tracker/widgets/log_time_line_item.dart';
 import 'package:symptom_tracker/widgets/time_line_item.dart';
 
 class DataTimeLine extends StatefulWidget {
@@ -19,10 +20,10 @@ class DataTimeLine extends StatefulWidget {
 }
 
 class _DataTimeLineState extends State<DataTimeLine> {
-  final Map<String, List<TimeLineEntry>> _data = {};
+  final List<LogTimeLineEntry> _data = [];
 
   var date = DateTime.now();
-  var duration = const Duration(days: 1);
+  var duration = const Duration(days: 30);
   bool reachedEnd = false;
 
   void getMoreData() async {
@@ -30,10 +31,9 @@ class _DataTimeLineState extends State<DataTimeLine> {
         await DataProcessManager.getTimeLine(date.subtract(duration), date);
 
     // get earliest date from data
-    if (nextSet.isNotEmpty && nextSet.values.isNotEmpty) {
-      var next = nextSet.values
-          .where((element) => element.isNotEmpty)
-          .map((e) => e.first.startDateTime)
+    if (nextSet.isNotEmpty && nextSet.isNotEmpty) {
+      var next = nextSet
+          .map((e) => e.date)
           .reduce(
               (value, element) => value.isBefore(element) ? value : element);
 
@@ -42,8 +42,7 @@ class _DataTimeLineState extends State<DataTimeLine> {
           : date = date.subtract(duration);
 
       setState(() {
-        _data.addEntries(
-            nextSet.entries.where((element) => element.value.isNotEmpty));
+        _data.addAll(nextSet);
       });
     } else {
       date = date.subtract(duration);
@@ -70,24 +69,23 @@ class _DataTimeLineState extends State<DataTimeLine> {
 
   @override
   Widget build(BuildContext context) {
-    var keys = _data.keys.toList();
+
     var numDays = DateTime.now().difference(date).inDays;
     var i = 0;
-    var count = keys.length;
+    var count = _data.length;
     // BUILD MY DATA
-    List<TimeLineEntry> events =
-        _data.values.expand((element) => element).toList();
-    List<TimeLineItem> entries = [];
+    List<LogTimeLineEntry> events = List.from(_data);
+    List<LogTimeLineItem> entries = [];
     //var entryDate = DateTime.now();
     while (entries.length < numDays) {
       var nextDate = DateTime.now().subtract(Duration(days: entries.length));
       var entriesForDay = events
           .where((element) =>
-              element.startDateTime.difference(nextDate).inDays == 0)
+              element.date.difference(nextDate).inDays == 0)
           .toList();
 
       if (entriesForDay.isNotEmpty) {
-        entries.add(TimeLineItem(nextDate, entriesForDay));
+        entries.add(LogTimeLineItem(nextDate, entriesForDay, comparisonLog: _data));
 
         for (var entry in entriesForDay) {
           events.remove(entry);
@@ -96,7 +94,7 @@ class _DataTimeLineState extends State<DataTimeLine> {
         continue;
       }
 
-      entries.add(TimeLineItem(nextDate, []));
+      entries.add(LogTimeLineItem(nextDate, []));
     }
 
     //var dataCopy = Map.castFrom(_data);

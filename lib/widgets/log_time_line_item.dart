@@ -6,13 +6,13 @@ import 'package:symptom_tracker/model/track_option.dart';
 import 'package:collection/collection.dart';
 import 'package:symptom_tracker/painters/line_painter.dart';
 
-class TimeLineItem extends StatelessWidget {
+class LogTimeLineItem extends StatelessWidget {
 
   final DateTime date;
-  final List<TimeLineEntry> logs;
-  final List<TimeLineEntry>? comparisonLog;
+  final List<LogTimeLineEntry> logs;
+  final List<LogTimeLineEntry>? comparisonLog;
 
-  const TimeLineItem(this.date, this.logs, {this.comparisonLog, Key? key})
+  const LogTimeLineItem(this.date, this.logs, {this.comparisonLog, Key? key})
       : super(key: key);
 
   @override
@@ -21,36 +21,45 @@ class TimeLineItem extends StatelessWidget {
 
     if (logs.isEmpty)
       return Container(
-        child: Text(date.dateOnly.toString()),
+        child: Center(child: Text(date.dateOnly.toString())),
       );
 
     for (var entry in logs) {
-      TimeLineEntry? comp = comparisonLog
-          ?.firstWhereOrNull((element) => element.option == entry.option);
+      LogTimeLineEntry? comp = comparisonLog
+          ?.lastWhereOrNull((element) => element.title == entry.title);
       var data = _dataVo(entry, comp);
-      if (data.showEntry) filteredLogs.add(data);
+      var diff = comp?.date.difference(entry.date).inDays;
+      if (data.showEntry || comp == entry)
+        filteredLogs.add(data);
+      else
+        print("test");
+
     }
 
     return Column(
       children: [
-        Text(logs.first.diet),
         for (var entry in filteredLogs) getLogEntry(entry, context),
       ],
     );
   }
 
   Widget getLogEntry(_dataVo entry, BuildContext context) {
-    var width = 0.1 * entry.advChange;
-    /*
+    var width = 0.1 * entry.advChange;// == 0 ? entry.adv : entry.advChange;
+
     return CustomPaint(
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: 30,
-        child: Center(child: Text("${entry.title} ${entry.advChange > 0 ? "+${entry.advChange.toString()}" : entry.advChange.toString()}" ?? "")),
+        child: Expanded(
+          child: Text("${entry.title} ${entry.advChange > 0
+              ? "+${entry.advChange.toString()}"
+              : entry.advChange.toString()}" ?? "", textAlign: entry.advChange < 0 ? TextAlign.start : TextAlign.end),
+
+        ),
       ),
       painter: LinePainter(width),
     );
-  */
+
     return CustomPaint(
       child: Card(
         child: ListTile(
@@ -61,7 +70,7 @@ class TimeLineItem extends StatelessWidget {
           trailing: CustomPaint(
             painter: (entry.advChange != entry.adv) ? LinePainter(width) : null,
             child: Container(
-                width: 200,
+                width: 100,
                 height: 30,
                 child: Center(
                   child: entry.advChange != entry.adv
@@ -78,17 +87,17 @@ class TimeLineItem extends StatelessWidget {
 }
 
 class _dataVo {
-  final TimeLineEntry current;
-  final TimeLineEntry? comparison;
+  final LogTimeLineEntry current;
+  final LogTimeLineEntry? comparison;
 
   late String title;
   late double adv;
   late double advChange;
 
   _dataVo(this.current, this.comparison) {
-    title = current.option;
-    adv = current.values.average;
-    advChange = adv - (comparison?.average ?? 0);
+    title = current.title;
+    adv = current.value;
+    advChange = adv - (comparison?.value ?? 0);
   }
 
   bool get showEntry => advChange != 0;
