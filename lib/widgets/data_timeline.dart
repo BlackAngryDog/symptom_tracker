@@ -20,6 +20,7 @@ class DataTimeLine extends StatefulWidget {
 
 class _DataTimeLineState extends State<DataTimeLine> {
   final Map<String, List<TimeLineEntry>> _data = {};
+
   var date = DateTime.now();
   var duration = const Duration(days: 1);
   bool reachedEnd = false;
@@ -35,6 +36,7 @@ class _DataTimeLineState extends State<DataTimeLine> {
           .map((e) => e.first.startDateTime)
           .reduce(
               (value, element) => value.isBefore(element) ? value : element);
+
       date = date.difference(next).inDays > duration.inDays
           ? next
           : date = date.subtract(duration);
@@ -69,19 +71,45 @@ class _DataTimeLineState extends State<DataTimeLine> {
   @override
   Widget build(BuildContext context) {
     var keys = _data.keys.toList();
+    var numDays = DateTime.now().difference(date).inDays;
+    var i = 0;
+    var count = keys.length;
+    // BUILD MY DATA
+    List<TimeLineEntry> events =
+        _data.values.expand((element) => element).toList();
+    List<TimeLineItem> entries = [];
+    //var entryDate = DateTime.now();
+    while (entries.length < numDays) {
+      var nextDate = DateTime.now().subtract(Duration(days: entries.length));
+      var entriesForDay = events
+          .where((element) =>
+              element.startDateTime.difference(nextDate).inDays == 0)
+          .toList();
 
+      if (entriesForDay.isNotEmpty) {
+        entries.add(TimeLineItem(nextDate, entriesForDay));
+
+        for (var entry in entriesForDay) {
+          events.remove(entry);
+        }
+
+        continue;
+      }
+
+      entries.add(TimeLineItem(nextDate, []));
+    }
+
+    //var dataCopy = Map.castFrom(_data);
     return ListView.builder(
       itemBuilder: (context, index) {
-        if (index < _data.length) {
-          // Show your info
-
-          return TimeLineItem(_data[keys[index]] ?? [], comparisonLog: index>0?_data[keys[0]]:null,);
+        if (index < entries.length) {
+          return entries[index];
         } else {
           getMoreData();
           return Center(child: CircularProgressIndicator());
         }
       },
-      itemCount: _data.length + (reachedEnd ? 0 : 1),
+      itemCount: entries.length + (reachedEnd ? 0 : 1),
     );
   }
   /*
