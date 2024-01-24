@@ -36,6 +36,8 @@ class LineDataChart extends StatelessWidget {
 
     // TODO - need to build up a data set for all days between start and end with filler data for missing days
 
+    // Can I just get value for symptom tracker for date and force last if 0?
+
     for (var option in symptoms) {
 
       //diet.addAll(map[option]!.where((e) => !diet.contains(e.diet) ).map((e) => e.diet));
