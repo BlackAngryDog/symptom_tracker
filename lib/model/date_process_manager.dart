@@ -6,6 +6,7 @@ import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/track_option.dart';
+import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
 
@@ -23,9 +24,62 @@ class DataProcessManager {
     });
   }
 
-  static Future<List<LogTimeLineEntry>> getTimeLine(DateTime start, DateTime end,
-      {String optionID = ""}) async {
+  static Future<List<String>> getCurrValue(
+      DateTime start, Tracker tracker) async {
+    // TODO: should we run this from today - 7 or keep is as week starting?
 
+    // TODO - Can we change this to have a range - over day, week, month so that the format can easily change depending on data ?
+
+    int i = 0;
+    //widget.currValues.clear();
+    //widget.trendIcons.clear();
+
+    while (i < 7) {
+      var date = start.add(Duration(days: -i));
+      var prevDate = start.add(Duration(days: -i + 1));
+
+      var currValue = await tracker.getValue(day: date);
+      var prevValue = await tracker.getValue(day: prevDate);
+
+      i++;
+    }
+    return [];
+  }
+
+  static Future<List<LogTimeLineEntry>> getTrackersFor(
+      DateTime start, DateTime end) async {
+    var trackable = await Trackable.load(EventManager.selectedTarget.id ?? '');
+    var logs = List<LogTimeLineEntry>.empty(growable: true);
+    var trackers = trackable.trackOptions.map((info) {
+      return Tracker(trackable.id ?? '', info);
+    });
+
+    for (var tracker in trackable.trackers) {
+      await getCurrValue(DateTime.now(), tracker);
+
+      if (tracker.option.title != "Fits") {
+        continue;
+      }
+
+      var tgtDate = start;
+      var test = await tracker.getLogs(DateTime(2000), DateTime.now());
+
+      while (tgtDate.isBefore(end.endOfDay)) {
+        var value = await tracker.getValue(day: tgtDate);
+        if (value != "") {
+          print("test");
+        }
+        logs.add(LogTimeLineEntry(tgtDate, tracker.option.title ?? "",
+            double.tryParse(value) ?? 0.0));
+        tgtDate = tgtDate.add(const Duration(days: 1));
+      }
+    }
+    return logs;
+  }
+
+  static Future<List<LogTimeLineEntry>> getTimeLine(
+      DateTime start, DateTime end,
+      {String optionID = ""}) async {
     List<TrackOption> options = (await TrackOption.getOptions())
         //.where((element) => element.trackType != dietTracker.option.trackType)
         .toList(growable: false);
@@ -35,13 +89,12 @@ class DataProcessManager {
 
     List<LogTimeLineEntry> timelineLogs = [];
 
-    for(var log in logs){
-
+    for (var log in logs) {
       var trackOption = options.where((e) => e.id == log.optionID).firstOrNull;
       var date = log.time;
       var title = trackOption?.title ?? "";
       var value = log.value;
-      if (value is Map && value.entries.isNotEmpty){
+      if (value is Map && value.entries.isNotEmpty) {
         List<String> combo = [];
         for (var entry in value!.entries) {
           if (entry.value == true) combo.add(entry.key);
@@ -50,15 +103,13 @@ class DataProcessManager {
         if (combo.length > 1) {
           var last = combo.removeLast();
           title = "${combo.join(', ')} & $last";
-
         }
         value = 0;
       }
 
-      timelineLogs.add(LogTimeLineEntry(date, title, double.tryParse(value.toString())??0.0));
+      timelineLogs.add(LogTimeLineEntry(
+          date, title, double.tryParse(value.toString()) ?? 0.0));
     }
-
-
 
     return timelineLogs;
   }
@@ -66,7 +117,6 @@ class DataProcessManager {
   static Future<Map<String, List<TimeLineEntry>>> getTimeLineByDiet(
       DateTime start, DateTime end,
       {String optionID = ""}) async {
-
     // Read data as a list of diet changes.
     Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
 
@@ -409,10 +459,9 @@ class TimeLineEntry {
 }
 
 class LogTimeLineEntry {
-
   final String title;
   final double value;
   final DateTime date;
 
-  LogTimeLineEntry(this.date,this.title,this.value);
+  LogTimeLineEntry(this.date, this.title, this.value);
 }

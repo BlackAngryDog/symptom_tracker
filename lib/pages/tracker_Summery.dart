@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/widgets/line_chart_new.dart';
 
 class TrackerSummeryPage extends StatelessWidget {
   final Tracker _tracker;
@@ -52,7 +53,10 @@ class TrackerDietSummary extends StatelessWidget {
 
           return Column(
             children: [
+              Expanded(child: LineDataChart()),
+              /*
               Text('Summery of ${_tracker.option.title}'),
+
               Text('High is  ${maxlog?.diet} of ${maxlog?.max}'),
               Text('low is  ${minlog?.diet} of ${minlog?.min}'),
               Column(
@@ -60,6 +64,8 @@ class TrackerDietSummary extends StatelessWidget {
                       ?.map((e) => TrackerDietSummaryItem(
                           e.diet, e.min, e.average, e.max, chartTotal))
                       .toList() as List<Widget>),
+
+               */
             ],
           );
         } else {

@@ -12,9 +12,11 @@ class LineDataChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: DataProcessManager.getTimeLine(DateTime.now().subtract(const Duration(days: 7)), DateTime.now()),
+      future: DataProcessManager.getTrackersFor(
+          DateTime.now().subtract(const Duration(days: 7)), DateTime.now()),
       builder: (context, snapshot) => snapshot.hasData
-          ? buildSymptomsAdvOverTimeChart(snapshot.data as List<LogTimeLineEntry>)
+          ? buildSymptomsAdvOverTimeChart(
+              snapshot.data as List<LogTimeLineEntry>)
           : const Center(
               child: CircularProgressIndicator(),
             ),
@@ -23,13 +25,20 @@ class LineDataChart extends StatelessWidget {
   }
 
   Widget buildSymptomsAdvOverTimeChart(List<LogTimeLineEntry> data) {
-
     List<LineChartBarData> dataList = [];
-    List<Color> colours = [Colors.blue, Colors.red,Colors.yellow, Colors.green, Colors.orange, Colors.pink, Colors.purple];
-    List<String> days = ["1","2","2","4","5","6","7"];
+    List<Color> colours = [
+      Colors.blue,
+      Colors.red,
+      Colors.yellow,
+      Colors.green,
+      Colors.orange,
+      Colors.pink,
+      Colors.purple
+    ];
+    List<String> days = ["1", "2", "2", "4", "5", "6", "7"];
     // get array of colours
     List<String> symptoms = [];
-    for (var log in data){
+    for (var log in data) {
       if (symptoms.contains(log.title)) continue;
       symptoms.add(log.title);
     }
@@ -39,7 +48,6 @@ class LineDataChart extends StatelessWidget {
     // Can I just get value for symptom tracker for date and force last if 0?
 
     for (var option in symptoms) {
-
       //diet.addAll(map[option]!.where((e) => !diet.contains(e.diet) ).map((e) => e.diet));
 
       var chartData = LineChartBarData(
@@ -52,27 +60,15 @@ class LineDataChart extends StatelessWidget {
         belowBarData: BarAreaData(show: false),
         spots: [],
         //show: option == "Fits", // Todo add filters
-
       );
 
       var timeline = data.where((element) => element.title == option).toList();
-
-      int day = 7;
-      while (++day >= 7){
-        // Get log from timeline closes to datetime.now - day to get value
-        var greater = timeline.toList()..sort((a,b) => a.date.difference(DateTime.now()).inDays);
-
-        var x = day.toDouble();
-        var y = greater.firstOrNull!.value;
-        chartData.spots.add(FlSpot(x, y));
-      }
+      chartData.spots.addAll(timeline
+          .map((e) => FlSpot(timeline.indexOf(e).toDouble(), e.value))
+          .toList());
 
       dataList.add(chartData);
-
-
     }
-
-
 
     // bottom time
     // left symptoms
@@ -82,7 +78,9 @@ class LineDataChart extends StatelessWidget {
         LineChartData(
           lineTouchData: lineTouchData1,
           gridData: gridData,
-          titlesData: getTitles(bottomTitles: days, leftTitles: ["0","1","2","3","4","5"]),
+          titlesData: getTitles(
+              bottomTitles: days,
+              leftTitles: ["0", "1", "2", "3", "4", "5", "6"]),
           borderData: borderData,
           lineBarsData: dataList,
           minX: 0,
@@ -95,9 +93,16 @@ class LineDataChart extends StatelessWidget {
   }
 
   Widget buildSymptomsAdvOverDietChart(List<DataLogSummary> data) {
-
     List<LineChartBarData> dataList = [];
-    List<Color> colours = [Colors.blue, Colors.red,Colors.yellow, Colors.green, Colors.orange, Colors.pink, Colors.purple];
+    List<Color> colours = [
+      Colors.blue,
+      Colors.red,
+      Colors.yellow,
+      Colors.green,
+      Colors.orange,
+      Colors.pink,
+      Colors.purple
+    ];
     // get array of colours
     Map<String, List<DataLogSummary>> map = {};
     for (var entry in data) {
@@ -108,8 +113,8 @@ class LineDataChart extends StatelessWidget {
     symptoms = map.keys.toList();
 
     for (var option in map.keys) {
-
-      diet.addAll(map[option]!.where((e) => !diet.contains(e.diet) ).map((e) => e.diet));
+      diet.addAll(
+          map[option]!.where((e) => !diet.contains(e.diet)).map((e) => e.diet));
 
       var chartData = LineChartBarData(
         isCurved: true,
@@ -121,22 +126,20 @@ class LineDataChart extends StatelessWidget {
         belowBarData: BarAreaData(show: false),
         spots: [],
         //show: option == "Fits", // Todo add filters
-
       );
 
-      for (var dietName in diet){
+      for (var dietName in diet) {
         var x = diet.indexOf(dietName).toDouble();
-        var y = map[option]?.where((element) => element.diet == dietName).firstOrNull?.average??0;
+        var y = map[option]
+                ?.where((element) => element.diet == dietName)
+                .firstOrNull
+                ?.average ??
+            0;
         chartData.spots.add(FlSpot(x, y));
-
       }
 
       dataList.add(chartData);
-
-
     }
-
-
 
     // bottom time
     // left symptoms
@@ -146,7 +149,8 @@ class LineDataChart extends StatelessWidget {
         LineChartData(
           lineTouchData: lineTouchData1,
           gridData: gridData,
-          titlesData: getTitles(bottomTitles: diet, leftTitles: ["0","1","2","3","4","5"]),
+          titlesData: getTitles(
+              bottomTitles: diet, leftTitles: ["0", "1", "2", "3", "4", "5"]),
           borderData: borderData,
           lineBarsData: dataList,
           minX: 0,
@@ -202,7 +206,6 @@ class LineDataChart extends StatelessWidget {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 8,
-
     );
     Widget text = Text(title, style: style, textAlign: TextAlign.end);
 
@@ -233,28 +236,27 @@ class LineDataChart extends StatelessWidget {
     for (var entry in data) {
       map.putIfAbsent(entry.diet, () => []);
       map[entry.diet]?.add(entry);
-
     }
 
     for (var option in map.keys) {
       var chartData = LineChartBarData(
-          isCurved: true,
-          color: Colors.blue,
-          barWidth: 8,
-          isStrokeCapRound: true,
-          dotData: FlDotData(show: false),
-          belowBarData: BarAreaData(show: false),
-          spots: map[option]!.map((e) => FlSpot(map[option]?.indexOf(e).toDouble()??0, e.average)).toList(),
+        isCurved: true,
+        color: Colors.blue,
+        barWidth: 8,
+        isStrokeCapRound: true,
+        dotData: FlDotData(show: false),
+        belowBarData: BarAreaData(show: false),
+        spots: map[option]!
+            .map((e) =>
+                FlSpot(map[option]?.indexOf(e).toDouble() ?? 0, e.average))
+            .toList(),
       );
       dataList.add(chartData);
 
       symptoms.add(option);
-
-
     }
     diet = map.keys.toList();
 
     return dataList;
   }
-
 }

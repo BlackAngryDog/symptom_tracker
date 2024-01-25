@@ -4,6 +4,7 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
+import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
@@ -96,7 +97,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
 
   Future<List<String>> getCurrValue() async {
     // TODO: should we run this from today - 7 or keep is as week starting?
-
+    await DataProcessManager.getCurrValue(widget._trackerDate, widget._tracker);
     // TODO - Can we change this to have a range - over day, week, month so that the format can easily change depending on data ?
 
     int i = 0;
