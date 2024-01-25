@@ -92,9 +92,8 @@ class LineDataChart extends StatelessWidget {
           i+=segments;
       }
 
-      chartData.spots.addAll(segmentData.where((element) => element > 0)
+      chartData.spots.addAll(segmentData.where((element) => element >= 0)
           .map((e) => FlSpot(segmentData.indexOf(e).toDouble(), e)).toList());
-
 
       dataList.add(chartData);
     }
