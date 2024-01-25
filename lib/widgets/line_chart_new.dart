@@ -80,18 +80,21 @@ class LineDataChart extends StatelessWidget {
 
       var timeline = data.where((element) => element.title == option).toList();
 
+      // TODO - ADD 0s?
+
       List<double> segmentData = [];
       var i = 0;
       for(var tl in timeline){
           var list = timeline.where((e) => timeline.indexOf(e) >= i && timeline.indexOf(e) < i + segments);
-          var advList = list.map((element) => element.value).toList();
+          var advList = list.where((element) => element.value > 0).map((element) => element.value).toList();
 
           segmentData.add(advList.isEmpty ? 0.0 : advList.average);
           i+=segments;
       }
 
-      chartData.spots.addAll(segmentData
+      chartData.spots.addAll(segmentData.where((element) => element > 0)
           .map((e) => FlSpot(segmentData.indexOf(e).toDouble(), e)).toList());
+
 
       dataList.add(chartData);
     }
@@ -106,12 +109,12 @@ class LineDataChart extends StatelessWidget {
           gridData: gridData,
           titlesData: getTitles(
               bottomTitles: days,
-              leftTitles: ["0", "1", "2", "3", "4", "5", "6"]),
+              leftTitles: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]),
           borderData: borderData,
           lineBarsData: dataList,
           minX: 0,
           maxX: days.length.toDouble() - 1,
-          maxY: 5, // todo - need to adjust these based on visible data
+          maxY: 14, // todo - need to adjust these based on visible data
           minY: 0,
         ),
       ),
