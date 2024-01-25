@@ -96,8 +96,10 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
   }
 
   Future<List<String>> getCurrValue() async {
+
+
     // TODO: should we run this from today - 7 or keep is as week starting?
-    await DataProcessManager.getCurrValue(widget._trackerDate, widget._tracker);
+
     // TODO - Can we change this to have a range - over day, week, month so that the format can easily change depending on data ?
 
     int i = 0;
@@ -163,6 +165,9 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return FutureBuilder<List<String>>(
         future: getCurrValue(),
         builder: (context, snapshot) {

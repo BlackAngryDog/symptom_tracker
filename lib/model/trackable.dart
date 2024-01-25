@@ -37,8 +37,8 @@ class Trackable {
 
   Future<List<TrackOption>> getTrackOptions() async {
     trackOptions.clear();
-    for (var id in trackerIDs) {
-      var option = await TrackOption.load(id);
+    for (var tid in trackerIDs) {
+      var option = await TrackOption.load(tid);
       trackOptions.add(option);
       trackers.add(Tracker(id??'', option));
     }

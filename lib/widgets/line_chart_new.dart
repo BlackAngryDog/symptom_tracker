@@ -1,19 +1,31 @@
+import 'dart:ffi';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/extentions/extention_methods.dart';
+
 import 'package:symptom_tracker/model/date_process_manager.dart';
+import 'package:symptom_tracker/model/trackable.dart';
+import 'package:symptom_tracker/extentions/extention_methods.dart';
+
+import 'package:collection/collection.dart';
 
 class LineDataChart extends StatelessWidget {
-  LineDataChart({Key? key}) : super(key: key);
+
+  final Trackable trackable;
+
+  LineDataChart(this.trackable, {Key? key}) : super(key: key);
 
   List<String> symptoms = [];
   List<String> diet = [];
 
+  DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
+  DateTime endDate = DateTime.now();
+
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: DataProcessManager.getTrackersFor(
-          DateTime.now().subtract(const Duration(days: 7)), DateTime.now()),
+      future: DataProcessManager.getTrackersFor(startDate, endDate),
       builder: (context, snapshot) => snapshot.hasData
           ? buildSymptomsAdvOverTimeChart(
               snapshot.data as List<LogTimeLineEntry>)
@@ -35,7 +47,7 @@ class LineDataChart extends StatelessWidget {
       Colors.pink,
       Colors.purple
     ];
-    List<String> days = ["1", "2", "2", "4", "5", "6", "7"];
+    List<String> days = List.filled(7, " ");
     // get array of colours
     List<String> symptoms = [];
     for (var log in data) {
@@ -47,12 +59,16 @@ class LineDataChart extends StatelessWidget {
 
     // Can I just get value for symptom tracker for date and force last if 0?
 
+    // if days > 60 - group by month
+    // If days > 14 - group by week
+    var numDays = endDate.difference(startDate).inDays;
+    var segments = 7;
+
     for (var option in symptoms) {
-      //diet.addAll(map[option]!.where((e) => !diet.contains(e.diet) ).map((e) => e.diet));
 
       var chartData = LineChartBarData(
         isCurved: true,
-        color: colours[0],
+        color: colours[symptoms.indexOf(option)],
         preventCurveOverShooting: true,
         barWidth: 3,
         isStrokeCapRound: true,
@@ -63,9 +79,19 @@ class LineDataChart extends StatelessWidget {
       );
 
       var timeline = data.where((element) => element.title == option).toList();
-      chartData.spots.addAll(timeline
-          .map((e) => FlSpot(timeline.indexOf(e).toDouble(), e.value))
-          .toList());
+
+      List<double> segmentData = [];
+      var i = 0;
+      for(var tl in timeline){
+          var list = timeline.where((e) => timeline.indexOf(e) >= i && timeline.indexOf(e) < i + segments);
+          var advList = list.map((element) => element.value).toList();
+
+          segmentData.add(advList.isEmpty ? 0.0 : advList.average);
+          i+=segments;
+      }
+
+      chartData.spots.addAll(segmentData
+          .map((e) => FlSpot(segmentData.indexOf(e).toDouble(), e)).toList());
 
       dataList.add(chartData);
     }

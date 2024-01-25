@@ -53,8 +53,7 @@ class TrackerDietSummary extends StatelessWidget {
 
           return Column(
             children: [
-              Expanded(child: LineDataChart()),
-              /*
+
               Text('Summery of ${_tracker.option.title}'),
 
               Text('High is  ${maxlog?.diet} of ${maxlog?.max}'),
@@ -65,7 +64,7 @@ class TrackerDietSummary extends StatelessWidget {
                           e.diet, e.min, e.average, e.max, chartTotal))
                       .toList() as List<Widget>),
 
-               */
+
             ],
           );
         } else {

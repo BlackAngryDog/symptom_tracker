@@ -48,29 +48,19 @@ class DataProcessManager {
 
   static Future<List<LogTimeLineEntry>> getTrackersFor(
       DateTime start, DateTime end) async {
-    var trackable = await Trackable.load(EventManager.selectedTarget.id ?? '');
+
     var logs = List<LogTimeLineEntry>.empty(growable: true);
-    var trackers = trackable.trackOptions.map((info) {
-      return Tracker(trackable.id ?? '', info);
-    });
 
-    for (var tracker in trackable.trackers) {
-      await getCurrValue(DateTime.now(), tracker);
+    for (var tracker in EventManager.selectedTarget.trackers)
+    {
 
-      if (tracker.option.title != "Fits") {
-        continue;
-      }
+      var tgtDate = start.startOfDay;
 
-      var tgtDate = start;
-      var test = await tracker.getLogs(DateTime(2000), DateTime.now());
-
-      while (tgtDate.isBefore(end.endOfDay)) {
+      while (tgtDate.isBefore(end.startOfDay)) {
         var value = await tracker.getValue(day: tgtDate);
-        if (value != "") {
-          print("test");
-        }
-        logs.add(LogTimeLineEntry(tgtDate, tracker.option.title ?? "",
-            double.tryParse(value) ?? 0.0));
+        // get last log with title
+        var chartValue = double.tryParse(value) ?? 0.0;
+        logs.add(LogTimeLineEntry(tgtDate, tracker.option.title ?? "",chartValue));
         tgtDate = tgtDate.add(const Duration(days: 1));
       }
     }
@@ -462,6 +452,9 @@ class LogTimeLineEntry {
   final String title;
   final double value;
   final DateTime date;
+  int count = 0;
 
   LogTimeLineEntry(this.date, this.title, this.value);
 }
+
+

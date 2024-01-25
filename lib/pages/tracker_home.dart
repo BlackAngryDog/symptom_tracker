@@ -205,13 +205,16 @@ class TrackerPage extends StatelessWidget {
       body: SafeArea(
         child: SizedBox(
           height: MediaQuery.of(context).copyWith().size.height,
-          child: Column(
+          child:  Column(
             children: [
-              //Expanded(child: TrackerWeek()),
-              Expanded(child: LineDataChart()),
+              Expanded(child: LineDataChart(trackable)),
+              Expanded(child: TrackerWeek()),
+
             ],
             //TrackerList(widget.trackable),
           ),
+
+
         ),
       ),
 
