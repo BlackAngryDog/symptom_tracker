@@ -258,7 +258,12 @@ class DataProcessManager {
   }
 
   static Future<Map<String, Map<String, List<double>>>> getDataOverTime(
-      {DateTime? startTime, DateTime? endTime, String optionID = ""}) async {
+      {
+        DateTime? startTime,
+        DateTime? endTime,
+        String optionID = ""}
+      ) async
+  {
     DateTime start = startTime?.startOfDay ?? DateTimeExt.lastYear;
     DateTime end = endTime?.endOfDay ?? DateTime.now().endOfDay;
 
