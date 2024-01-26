@@ -64,7 +64,7 @@ class DataProcessManager {
         tgtDate = tgtDate.add(const Duration(days: 1));
       }
     }
-    return logs;
+    return logs.sorted((a, b) { return a.date.compareTo(b.date);});
   }
 
   static Future<List<LogTimeLineEntry>> getTimeLine(

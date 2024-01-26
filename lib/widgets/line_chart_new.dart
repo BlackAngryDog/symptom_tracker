@@ -18,7 +18,7 @@ class LineDataChart extends StatelessWidget {
   List<String> symptoms = [];
   List<String> diet = [];
 
-  DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
+  DateTime startDate = DateTime.now().subtract(const Duration(days: 90));
   DateTime endDate = DateTime.now();
 
 
@@ -47,7 +47,7 @@ class LineDataChart extends StatelessWidget {
       Colors.pink,
       Colors.purple
     ];
-    List<String> days = List.filled(7, " ");
+
     // get array of colours
     List<String> symptoms = [];
     for (var log in data) {
@@ -55,14 +55,18 @@ class LineDataChart extends StatelessWidget {
       symptoms.add(log.title);
     }
 
+
+    var segments = 30;
+
+
     // TODO - need to build up a data set for all days between start and end with filler data for missing days
 
     // Can I just get value for symptom tracker for date and force last if 0?
 
     // if days > 60 - group by month
     // If days > 14 - group by week
-    var numDays = endDate.difference(startDate).inDays;
-    var segments = 7;
+
+
 
     for (var option in symptoms) {
 
@@ -82,21 +86,29 @@ class LineDataChart extends StatelessWidget {
 
       // TODO - ADD 0s?
 
-      List<double> segmentData = [];
-      var i = 0;
-      for(var tl in timeline){
-          var list = timeline.where((e) => timeline.indexOf(e) >= i && timeline.indexOf(e) < i + segments);
-          var advList = list.where((element) => element.value > 0).map((element) => element.value).toList();
+      //List<double> segmentData = [];
 
-          segmentData.add(advList.isEmpty ? 0.0 : advList.average);
-          i+=segments;
+      for( var i = 0; i< timeline.length; i+=segments){
+
+          var list = timeline.where((e) => timeline.indexOf(e) >= i && timeline.indexOf(e) < i + segments);
+          var advList = list.map((element) => element.value).toList();
+          var adv = advList.isEmpty ? 0.0 : advList.average;
+         // segmentData.add(advList.isEmpty ? 0.0 : advList.average);
+          //if (adv > 0)
+            chartData.spots.add(FlSpot((i/segments).toDouble(), adv));
       }
 
-      chartData.spots.addAll(segmentData.where((element) => element >= 0)
-          .map((e) => FlSpot(segmentData.indexOf(e).toDouble(), e)).toList());
+
+
+
+     // chartData.spots.addAll(segmentData.where((element) => element >= 0)
+      //    .map((e) => FlSpot(segmentData.indexOf(e).toDouble(), e)).toList());
 
       dataList.add(chartData);
     }
+
+    var numDays = dataList.first.spots.length;
+    List<String> days = List.filled(numDays, " ");
 
     // bottom time
     // left symptoms
