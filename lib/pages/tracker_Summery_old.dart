@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/widgets/diet_chart.dart';
 import 'package:symptom_tracker/widgets/line_chart_new.dart';
 
 class TrackerSummeryPage extends StatelessWidget {
@@ -28,21 +27,7 @@ class TrackerSummeryPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('history'),
       ),
-      body: SafeArea(
-        child: SizedBox(
-          height: MediaQuery.of(context).copyWith().size.height,
-          child:  Column(
-            children: [
-
-              Expanded(child: DietChart()),
-              Expanded(child: LineDataChart()),
-            ],
-            //TrackerList(widget.trackable),
-          ),
-
-
-        ),
-      ),
+      body: TrackerDietSummary(_tracker),
     );
   }
 }

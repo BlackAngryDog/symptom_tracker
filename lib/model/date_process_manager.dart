@@ -104,6 +104,56 @@ class DataProcessManager {
     return timelineLogs;
   }
 
+  static Future<Map<String, Duration>> getDietFor(
+      DateTime start, DateTime end,
+      {String optionID = ""}) async {
+    // Read data as a list of diet changes.
+    Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
+
+    List<DataLog> dietLogs =
+    await dietTracker.getLogs(start.startOfDay, end.endOfDay);
+
+    if (dietLogs.isEmpty) {
+      DataLog? dietLog = await dietTracker.getLog(day: end.endOfDay);
+      if (dietLog != null) {
+        dietLogs.add(dietLog);
+      } else {
+        return {};
+      }
+    }
+
+    var map = <String, Duration>{};
+
+    // get start date and timespan between each log and the next.
+    for (var i = 0; i < dietLogs.length; i++) {
+      // get events within this timeframe tagged with this diet type
+      var startSegment = dietLogs[i].time;
+      var endSegment = dietLogs.length < i + 1
+          ? dietLogs[i + 1].time
+          : end.endOfDay;
+
+      //get combined name for this segment
+      List<String> combo = [];
+      for (var entry in dietLogs[i].value!.entries) {
+        if (entry.value == true) combo.add(entry.key);
+      }
+      var combined = combo.join(",");
+      if (combo.length > 1) {
+        var last = combo.removeLast();
+        combined = "${combo.join(', ')} & $last";
+      }
+
+      var duration = endSegment.difference(startSegment);
+      map.putIfAbsent(combined, () => new Duration());
+      map[combined] = duration += map[combined]!;
+    }
+
+    return map;
+
+  }
+
+
+
   static Future<Map<String, List<TimeLineEntry>>> getTimeLineByDiet(
       DateTime start, DateTime end,
       {String optionID = ""}) async {
@@ -141,6 +191,8 @@ class DataProcessManager {
         var last = combo.removeLast();
         combined = "${combo.join(', ')} & $last";
       }
+
+
       var logID = dietLogs[i].id.toString();
       map.putIfAbsent(logID, () => []);
 

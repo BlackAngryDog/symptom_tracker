@@ -114,8 +114,8 @@ class _LineDataChartState extends State<LineDataChart> {
           chartData.spots.add(FlSpot((i/widget.segments).toDouble(), list.isEmpty ? 0.0 : list.average));
 
           // set min to list.min if lower
-          minVal = min(list.min, minVal);
-          maxVal = max(list.max, maxVal);
+          minVal = min(list.average, minVal);
+          maxVal = max(list.average+1, maxVal);
 
       }
 

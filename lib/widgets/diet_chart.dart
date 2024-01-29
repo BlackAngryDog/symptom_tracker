@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
+import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
@@ -61,15 +62,15 @@ class _DietChartState extends State<DietChart> {
   void initState() {
     super.initState();
     _getData();
-    trackableSubscription = EventManager.stream.listen((event) {
-      if (_selectedTracker != null) _getData();
-    });
+    //trackableSubscription = EventManager.stream.listen((event) {
+    //  if (_selectedTracker != null) _getData();
+    //});
   }
 
   @override
   void dispose() {
     super.dispose();
-    trackableSubscription.cancel();
+    //trackableSubscription.cancel();
   }
 
   double scaleMin = 0;
@@ -106,16 +107,28 @@ class _DietChartState extends State<DietChart> {
         <String, List<PieChartSectionData>>{};
     // Read data as a list of diet changes.
     Tracker dietTracker = _selectedTarget.getDietTracker();
+
+    // TODO - setup timeframe
+    DateTime start = DateTimeExt.lastMonth;
+    DateTime end =  DateTime.now();
     List<DataLog> dietLogs =
-        await dietTracker.getLogs(DateTimeExt.lastMonth, DateTime.now());
+        await dietTracker.getLogs(start, DateTime.now());
 
     //Make sure data is sorted by time
     dietLogs.sort((a, b) => a.time.compareTo(b.time));
 
-    DateTime start = DateTimeExt.lastMonth;
-
     // map to symptom, diet title, logs.
     List<DietData> dietDataList = [];
+
+    Map<String,Duration> logEntries = await DataProcessManager.getDietFor(start, end);
+
+    // get array of colours
+    Map<String, Duration> dietType = {};
+    for (var entry in logEntries.entries) {
+       //TODO - map key (diet name) to duration for chart
+
+    }
+
 
     // extract date data to then read other trackers to compare.
     for (DataLog data in dietLogs) {
