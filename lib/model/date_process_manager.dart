@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,7 +5,6 @@ import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/track_option.dart';
-import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
 
@@ -86,7 +84,7 @@ class DataProcessManager {
       var value = log.value;
       if (value is Map && value.entries.isNotEmpty) {
         List<String> combo = [];
-        for (var entry in value!.entries) {
+        for (var entry in value.entries) {
           if (entry.value == true) combo.add(entry.key);
         }
         title = combo.join(",");
@@ -144,7 +142,7 @@ class DataProcessManager {
       }
 
       var duration = endSegment.difference(startSegment);
-      map.putIfAbsent(combined, () => new Duration());
+      map.putIfAbsent(combined, () => const Duration());
       map[combined] = duration += map[combined]!;
     }
 
@@ -268,9 +266,6 @@ class DataProcessManager {
       // get diet value at this time.
       var diet = dietTracker.getValue(day: log.time);
 
-      // if diet is null, skip.
-      if (diet == null) continue;
-
       // get TrackOption
       var trackOption = options.where((e) => e.id == log.optionID).firstOrNull;
 
@@ -367,7 +362,7 @@ class DataProcessManager {
           print('Something really unknown: $e');
         }
       }
-      curr = curr.add(Duration(days: 1));
+      curr = curr.add(const Duration(days: 1));
     }
     return map;
   }

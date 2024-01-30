@@ -4,7 +4,6 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
-import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
@@ -223,10 +222,10 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                             children: [
                               IconButton(
                                   onPressed: () => {_editTrackerPopup(context)},
-                                  icon: Icon(Icons.edit)),
+                                  icon: const Icon(Icons.edit)),
                               IconButton(
                                   onPressed: () => {_showHistory(context)},
-                                  icon: Icon(Icons.history)),
+                                  icon: const Icon(Icons.history)),
                             ],
                           )
                         ],

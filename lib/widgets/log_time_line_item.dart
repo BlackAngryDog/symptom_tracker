@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
-import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
-import 'package:symptom_tracker/model/track_option.dart';
 import 'package:collection/collection.dart';
 import 'package:symptom_tracker/painters/line_painter.dart';
 
@@ -19,20 +17,22 @@ class LogTimeLineItem extends StatelessWidget {
   Widget build(BuildContext context) {
     List<_dataVo> filteredLogs = [];
 
-    if (logs.isEmpty)
+    if (logs.isEmpty) {
       return Container(
         child: Center(child: Text(date.dateOnly.toString())),
       );
+    }
 
     for (var entry in logs) {
       LogTimeLineEntry? comp = comparisonLog
           ?.lastWhereOrNull((element) => element.title == entry.title);
       var data = _dataVo(entry, comp);
       var diff = comp?.date.difference(entry.date).inDays;
-      if (data.showEntry || comp == entry)
+      if (data.showEntry || comp == entry) {
         filteredLogs.add(data);
-      else
+      } else {
         print("test");
+      }
 
     }
 
@@ -47,7 +47,8 @@ class LogTimeLineItem extends StatelessWidget {
     var width = 0.1 * entry.advChange;// == 0 ? entry.adv : entry.advChange;
 
     return CustomPaint(
-      child: Container(
+      painter: LinePainter(width),
+      child: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: 30,
         child: Expanded(
@@ -57,7 +58,6 @@ class LogTimeLineItem extends StatelessWidget {
 
         ),
       ),
-      painter: LinePainter(width),
     );
 
     return CustomPaint(
@@ -69,7 +69,7 @@ class LogTimeLineItem extends StatelessWidget {
           subtitle: Text(entry.adv.toString()),
           trailing: CustomPaint(
             painter: (entry.advChange != entry.adv) ? LinePainter(width) : null,
-            child: Container(
+            child: SizedBox(
                 width: 100,
                 height: 30,
                 child: Center(

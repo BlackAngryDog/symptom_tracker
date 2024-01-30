@@ -1,14 +1,8 @@
-import 'dart:ffi';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/extentions/extention_methods.dart';
-import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/widgets/data_log_item.dart';
 import 'package:symptom_tracker/widgets/log_time_line_item.dart';
-import 'package:symptom_tracker/widgets/time_line_item.dart';
 
 class DataTimeLine extends StatefulWidget {
   final Trackable _trackable;
@@ -94,7 +88,7 @@ class _DataTimeLineState extends State<DataTimeLine> {
         continue;
       }
 
-      entries.add(LogTimeLineItem(nextDate, []));
+      entries.add(LogTimeLineItem(nextDate, const []));
     }
 
     //var dataCopy = Map.castFrom(_data);
@@ -104,7 +98,7 @@ class _DataTimeLineState extends State<DataTimeLine> {
           return entries[index];
         } else {
           getMoreData();
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
       },
       itemCount: entries.length + (reachedEnd ? 0 : 1),

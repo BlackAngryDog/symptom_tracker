@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/extentions/extention_methods.dart';
 
 import 'package:collection/collection.dart';
 import 'dart:math';
@@ -17,7 +15,7 @@ class LineDataChart extends StatefulWidget {
   final int span;
   final int segments;
 
-  LineDataChart({this.span = 30, this.segments = 7, this.date, Key? key})
+  const LineDataChart({this.span = 30, this.segments = 7, this.date, Key? key})
       : super(key: key);
 
   @override
@@ -313,8 +311,8 @@ class _LineDataChartState extends State<LineDataChart> {
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 10,
-      child: text,
       angle: 0,
+      child: text,
     );
   }
 
@@ -322,11 +320,11 @@ class _LineDataChartState extends State<LineDataChart> {
 
   FlBorderData get borderData => FlBorderData(
         show: true,
-        border: Border(
+        border: const Border(
           bottom: BorderSide(color: Colors.blue, width: 4),
-          left: const BorderSide(color: Colors.transparent),
-          right: const BorderSide(color: Colors.transparent),
-          top: const BorderSide(color: Colors.transparent),
+          left: BorderSide(color: Colors.transparent),
+          right: BorderSide(color: Colors.transparent),
+          top: BorderSide(color: Colors.transparent),
         ),
       );
 

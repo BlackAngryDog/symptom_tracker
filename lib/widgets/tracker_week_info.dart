@@ -7,7 +7,6 @@ import 'package:symptom_tracker/widgets/TrackerWeekInfo/quality_tracker_week_inf
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/rating_tracker_week_info.dart';
 import 'package:symptom_tracker/widgets/TrackerWeekInfo/value_tracker_week_info.dart';
 
-import 'add_tracker_popup.dart';
 
 class TrackerWeekInfo extends StatefulWidget {
   final Tracker? item;

@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/widgets/tracker_week_info.dart';
 

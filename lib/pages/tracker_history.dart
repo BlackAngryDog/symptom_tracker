@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/widgets/data_log_list.dart';
 import 'package:symptom_tracker/widgets/data_timeline.dart';
 
 class TrackerHistoryPage extends StatelessWidget {

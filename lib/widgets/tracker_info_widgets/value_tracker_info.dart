@@ -1,7 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 
 class ValueTrackerDisplay extends StatelessWidget {
@@ -9,7 +7,7 @@ class ValueTrackerDisplay extends StatelessWidget {
   final DateTime start;
   final DateTime end;
 
-  ValueTrackerDisplay(this._tracker, this.start, this.end, {Key? key})
+  const ValueTrackerDisplay(this._tracker, this.start, this.end, {Key? key})
       : super(key: key);
 
   @override

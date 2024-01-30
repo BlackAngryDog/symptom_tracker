@@ -33,7 +33,7 @@ class TrackableList extends StatelessWidget {
                       return TrackableItem(Trackable.fromJson(doc.id, doc.data() as Map<String, dynamic>));
                     }).toList() as List<TrackableItem>,
                   )
-                : TrackableSetupPage();
+                : const TrackableSetupPage();
           }
         },
       ),

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/date_process_manager.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/model/trackable.dart';
@@ -14,7 +13,6 @@ import 'package:symptom_tracker/pages/tracker_options_page.dart';
 import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
 import 'package:symptom_tracker/widgets/bottom_tracker_panel.dart';
-import 'package:symptom_tracker/widgets/line_chart_new.dart';
 import 'package:symptom_tracker/widgets/tracker_week.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -205,7 +203,7 @@ class TrackerPage extends StatelessWidget {
       body: SafeArea(
         child: SizedBox(
           height: MediaQuery.of(context).copyWith().size.height,
-          child:  Column(
+          child:  const Column(
             children: [
               Expanded(child: TrackerWeek()),
 

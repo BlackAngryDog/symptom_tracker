@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/pages/tracker_Summery.dart';
 import 'package:symptom_tracker/widgets/diet_chart.dart';
 import 'package:symptom_tracker/widgets/line_chart_new.dart';
 import 'package:symptom_tracker/widgets/tracker_info_widgets/value_tracker_info.dart';
@@ -46,7 +44,7 @@ class _ChartPageState extends State<ChartPage> {
                   Expanded(child: DietChart()),
                 ],
               )),
-              Expanded(child: LineDataChart()),
+              const Expanded(child: LineDataChart()),
             ],
           ),
         ),

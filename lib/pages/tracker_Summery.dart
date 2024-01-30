@@ -35,7 +35,7 @@ class TrackerSummeryPage extends StatelessWidget {
             children: [
 
               Expanded(child: DietChart()),
-              Expanded(child: LineDataChart()),
+              const Expanded(child: LineDataChart()),
             ],
             //TrackerList(widget.trackable),
           ),
@@ -113,8 +113,8 @@ class TrackerDietSummaryItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Summery of ${title}'),
-          Container(
+          Text('Summery of $title'),
+          SizedBox(
             height: 30,
             width: width,
             child: DecoratedBox(
@@ -125,7 +125,7 @@ class TrackerDietSummaryItem extends StatelessWidget {
                   width: 1,
                 ),
                 gradient: LinearGradient(
-                  colors: <Color>[
+                  colors: const <Color>[
                     Colors.blueGrey,
                     Colors.blueGrey,
                     Colors.blue,
@@ -160,7 +160,7 @@ class TrackerDietSummaryItem extends StatelessWidget {
                 Expanded(
                   flex: (min).round(),
                   child: Text(
-                    'min:${min}',
+                    'min:$min',
                     textAlign: TextAlign.end,
                   ),
                 ),
@@ -169,7 +169,7 @@ class TrackerDietSummaryItem extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                     child: Text(
-                      'adv:${advarage}',
+                      'adv:$advarage',
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -177,7 +177,7 @@ class TrackerDietSummaryItem extends StatelessWidget {
                 Expanded(
                     flex: (((total - max) / total) * 10).round(),
                     child: Text(
-                      'max:${max}',
+                      'max:$max',
                       textAlign: TextAlign.start,
                     )),
               ],

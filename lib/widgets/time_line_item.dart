@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
-import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/date_process_manager.dart';
-import 'package:symptom_tracker/model/track_option.dart';
 import 'package:collection/collection.dart';
 import 'package:symptom_tracker/painters/line_painter.dart';
 
@@ -19,10 +17,11 @@ class TimeLineItem extends StatelessWidget {
   Widget build(BuildContext context) {
     List<_dataVo> filteredLogs = [];
 
-    if (logs.isEmpty)
+    if (logs.isEmpty) {
       return Container(
         child: Text(date.dateOnly.toString()),
       );
+    }
 
     for (var entry in logs) {
       TimeLineEntry? comp = comparisonLog
@@ -60,7 +59,7 @@ class TimeLineItem extends StatelessWidget {
           subtitle: Text(entry.adv.toString()),
           trailing: CustomPaint(
             painter: (entry.advChange != entry.adv) ? LinePainter(width) : null,
-            child: Container(
+            child: SizedBox(
                 width: 200,
                 height: 30,
                 child: Center(

@@ -23,7 +23,7 @@ class _TrackableSelectionPageState extends State<TrackableSelectionPage> {
   void addTrackable(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TrackableSetupPage()),
+      MaterialPageRoute(builder: (context) => const TrackableSetupPage()),
     );
   }
 

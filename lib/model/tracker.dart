@@ -68,7 +68,7 @@ class Tracker {
     });
   }
 
-  Future<DataLog?> _getFirstEntry({DateTime? date}) async {
+  Future<DataLog?> _getFirstEntry() async {
     if (trackableID == '') return null;
 
     return DataLog.getCollection(trackableID)
