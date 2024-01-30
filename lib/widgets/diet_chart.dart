@@ -109,10 +109,9 @@ class _DietChartState extends State<DietChart> {
     Tracker dietTracker = _selectedTarget.getDietTracker();
 
     // TODO - setup timeframe
-    DateTime start = DateTimeExt.lastMonth;
-    DateTime end =  DateTime.now();
-    List<DataLog> dietLogs =
-        await dietTracker.getLogs(start, DateTime.now());
+    DateTime start = DateTime.now().add(const Duration(days: -90));
+    DateTime end = DateTime.now();
+    List<DataLog> dietLogs = await dietTracker.getLogs(start, DateTime.now());
 
     //Make sure data is sorted by time
     dietLogs.sort((a, b) => a.time.compareTo(b.time));
@@ -120,15 +119,30 @@ class _DietChartState extends State<DietChart> {
     // map to symptom, diet title, logs.
     List<DietData> dietDataList = [];
 
-    Map<String,Duration> logEntries = await DataProcessManager.getDietFor(start, end);
+    Map<String, Duration> logEntries =
+        await DataProcessManager.getDietFor(start, end);
 
     // get array of colours
-    Map<String, Duration> dietType = {};
+    List<PieChartSectionData> sections = [];
     for (var entry in logEntries.entries) {
-       //TODO - map key (diet name) to duration for chart
+      //TODO - map key (diet name) to duration for chart
+      //pieSections.putIfAbsent(entry.key, () => null)
+      sections.add(PieChartSectionData(
+        title: entry.key,
+        value: entry.value.inMinutes.toDouble(),
+        color: Colors.redAccent,
+        radius: 80,
+        titleStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Color(0xffffffff)),
+      ));
 
+      setState(() {
+        _pieData = sections;
+      });
     }
-
+    return _pieData;
 
     // extract date data to then read other trackers to compare.
     for (DataLog data in dietLogs) {
@@ -230,9 +244,7 @@ class _DietChartState extends State<DietChart> {
 */
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 100,
-      height: 100,
+    return Card(
       child: PieChart(
         PieChartData(
           // read about it in the PieChartData section

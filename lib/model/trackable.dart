@@ -14,6 +14,7 @@ class Trackable {
   String? title;
 
   Tracker? _dietTracker;
+  Tracker? _weightTracker;
 
   List<String> trackerIDs = [];
   List<TrackOption> trackOptions = [];
@@ -35,19 +36,25 @@ class Trackable {
     return _dietTracker as Tracker;
   }
 
+  Tracker getWeightTracker() {
+    if (_weightTracker != null) return _weightTracker as Tracker;
+
+    _weightTracker =
+        trackers.firstWhere((element) => element.option.title == 'Weight ');
+    return _weightTracker as Tracker;
+  }
+
   Future<List<TrackOption>> getTrackOptions() async {
     trackOptions.clear();
     for (var tid in trackerIDs) {
       var option = await TrackOption.load(tid);
       trackOptions.add(option);
-      trackers.add(Tracker(id??'', option));
+      trackers.add(Tracker(id ?? '', option));
     }
 
     return trackOptions;
     //return trackerIDs.map((e) => await TrackOption.getOption(e)).toList();
   }
-
-
 
   Future<List<DataLog>> getDataLogs(DateTime start, DateTime end) async {
     List<DataLog> logs = [];

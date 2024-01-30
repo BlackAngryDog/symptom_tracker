@@ -12,14 +12,13 @@ import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:collection/collection.dart';
 import 'dart:math';
 
-
 class LineDataChart extends StatefulWidget {
-
   final DateTime? date;
   final int span;
   final int segments;
 
-  LineDataChart({this.span = 30, this.segments = 7, this.date, Key? key}) : super(key: key);
+  LineDataChart({this.span = 30, this.segments = 7, this.date, Key? key})
+      : super(key: key);
 
   @override
   State<LineDataChart> createState() => _LineDataChartState();
@@ -51,10 +50,9 @@ class _LineDataChartState extends State<LineDataChart> {
 
   @override
   Widget build(BuildContext context) {
-
-
-    DateTime startDate = widget.date?.subtract(Duration(days: widget.span))?? DateTime.now().subtract(Duration(days: widget.span));
-    DateTime endDate = widget.date??DateTime.now();
+    DateTime startDate = widget.date?.subtract(Duration(days: widget.span)) ??
+        DateTime.now().subtract(Duration(days: widget.span));
+    DateTime endDate = widget.date ?? DateTime.now();
 
     return FutureBuilder(
       future: DataProcessManager.getTrackersFor(startDate, endDate),
@@ -106,17 +104,20 @@ class _LineDataChartState extends State<LineDataChart> {
       // filter out data for curr symptom
       var timeline = data.where((element) => element.title == option).toList();
 
-      for( var i = 0; i< timeline.length; i+=widget.segments){
-          var list = timeline
-              .where((e) => timeline.indexOf(e) >= i && timeline.indexOf(e) < i + widget.segments)
-              .map((element) => element.value).toList();
+      for (var i = 0; i < timeline.length; i += widget.segments) {
+        var list = timeline
+            .where((e) =>
+                timeline.indexOf(e) >= i &&
+                timeline.indexOf(e) < i + widget.segments)
+            .map((element) => element.value)
+            .toList();
 
-          chartData.spots.add(FlSpot((i/widget.segments).toDouble(), list.isEmpty ? 0.0 : list.average));
+        chartData.spots.add(FlSpot((i / widget.segments).toDouble(),
+            list.isEmpty ? 0.0 : list.average));
 
-          // set min to list.min if lower
-          minVal = min(list.average, minVal);
-          maxVal = max(list.average+1, maxVal);
-
+        // set min to list.min if lower
+        minVal = min(list.average, minVal);
+        maxVal = max(list.average + 1, maxVal);
       }
 
       dataList.add(chartData);
@@ -132,56 +133,61 @@ class _LineDataChartState extends State<LineDataChart> {
     }
     // bottom time
     // left symptoms
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Expanded(
-            child: LineChart(
-              LineChartData(
-                lineTouchData: lineTouchData1,
-                gridData: gridData,
-                titlesData: getTitles(
-                    bottomTitles: bottomTitles,
-                    leftTitles: leftTitles),
-                borderData: borderData,
-                lineBarsData: dataList,
-                minX: 0,
-                maxX: bottomTitles.length.toDouble() - 1,
-                maxY: leftTitles.length.toDouble()-1, // todo - need to adjust these based on visible data
-                minY: 0,
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: LineChart(
+                LineChartData(
+                  lineTouchData: lineTouchData1,
+                  gridData: gridData,
+                  titlesData: getTitles(
+                      bottomTitles: bottomTitles, leftTitles: leftTitles),
+                  borderData: borderData,
+                  lineBarsData: dataList,
+                  minX: 0,
+                  maxX: bottomTitles.length.toDouble() - 1,
+                  maxY: leftTitles.length.toDouble() -
+                      1, // todo - need to adjust these based on visible data
+                  minY: 0,
+                ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(symptoms.length, (index) {
-            return Row(
-                children: <Widget>[
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colours[index],
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    symptoms[index],
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: colours[index],
-                    ),
-                  ),
-                ],
-              );
-            },),
-          ),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(
+                symptoms.length,
+                (index) {
+                  return Row(
+                    children: <Widget>[
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: colours[index],
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        symptoms[index],
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: colours[index],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -256,6 +262,7 @@ class _LineDataChartState extends State<LineDataChart> {
     );
   }
 
+  // TODO - handle touch events on chart
   LineTouchData get lineTouchData1 => LineTouchData(
         handleBuiltInTouches: true,
         touchTooltipData: LineTouchTooltipData(
