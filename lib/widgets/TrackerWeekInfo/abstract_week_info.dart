@@ -13,19 +13,12 @@ import 'package:symptom_tracker/widgets/tracker_controls.dart';
 class AbsWeekInfo extends StatefulWidget {
   final Tracker _tracker;
   final DateTime _trackerDate;
-  final List<String> currValues = [
-    "M",
-    "T",
-    "W",
-    "T",
-    "F",
-    "S",
-    "S"
-  ]; // TODO - GET TODYS COUNT FOR TRACKER
+  final List<String> currValues;
+
   int _selectedIndex = -1;
   final List<IconData> trendIcons = List<IconData>.filled(7, Icons.arrow_right);
 
-  AbsWeekInfo(this._tracker, this._trackerDate, {Key? key}) : super(key: key);
+  AbsWeekInfo(this._tracker, this._trackerDate, this.currValues, {Key? key}) : super(key: key);
 
   void showControlPanel(BuildContext ctx, int index) {
     _selectedIndex = index;
@@ -87,38 +80,11 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     trackerSubscription = EventManager.stream.listen((event) {
       if (event.event == EventType.trackerChanged &&
           event.tracker == widget._tracker) {
-        setState(() {});
-        //  getCurrValue();
+        setState(() {
+          getCurrValue();
+        });
       }
     });
-    //getCurrValue();
-  }
-
-  Future<List<String>> getCurrValue() async {
-
-
-    // TODO: should we run this from today - 7 or keep is as week starting?
-
-    // TODO - Can we change this to have a range - over day, week, month so that the format can easily change depending on data ?
-
-    int i = 0;
-    //widget.currValues.clear();
-    //widget.trendIcons.clear();
-
-    while (i < 7) {
-      var date = widget._trackerDate.add(Duration(days: -i));
-      var prevDate = widget._trackerDate.add(Duration(days: -i + 1));
-
-      var currValue = await widget._tracker.getValue(day: date);
-      var prevValue = await widget._tracker.getValue(day: prevDate);
-
-      widget.currValues[i] = currValue;
-      widget.trendIcons[i] = getTrendIcon(prevValue, currValue);
-
-      i++;
-    }
-
-    return widget.currValues;
   }
 
   IconData getTrendIcon(String lastValue, String currValue) {
@@ -160,24 +126,29 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     );
   }
 
-  // TODO - 6 days of history with one Larger day for today, with name field taking up part og the height and seventh being full height.
+
+  Future<List<String>> getCurrValue() async {
+
+    int i = 0;
+    while (i < 7) {
+      var date = widget._trackerDate.add(Duration(days: -i));
+      var prevDate = widget._trackerDate.add(Duration(days: -i + 1));
+
+      var currValue = await widget._tracker.getValue(day: date);
+      var prevValue = await widget._tracker.getValue(day: prevDate);
+
+      widget.currValues[i] = currValue;
+      widget.trendIcons[i] = getTrendIcon(prevValue, currValue);
+
+      i++;
+    }
+
+    return widget.currValues;
+  }
 
   @override
   Widget build(BuildContext context) {
-
-
-
-    return FutureBuilder<List<String>>(
-        future: getCurrValue(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return InfoItem();
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+    return InfoItem();
   }
 
   Widget InfoItem() {

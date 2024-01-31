@@ -7,8 +7,8 @@ import 'abstract_week_info.dart';
 class CountTrackerWeekInfo extends AbsWeekInfo {
   final Tracker _tracker;
 
-  CountTrackerWeekInfo(this._tracker, _trackerDate, {Key? key})
-      : super(_tracker, _trackerDate, key: key);
+  CountTrackerWeekInfo(this._tracker, _trackerDate, _currValues, {Key? key})
+      : super(_tracker, _trackerDate, _currValues, key: key);
 
   @override
   State<CountTrackerWeekInfo> createState() => _ValueTrackerState();

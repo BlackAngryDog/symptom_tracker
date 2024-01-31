@@ -6,8 +6,8 @@ import 'package:symptom_tracker/widgets/TrackerWeekInfo/abstract_week_info.dart'
 class ValueTrackerWeekInfo extends AbsWeekInfo {
   final Tracker _tracker;
 
-  ValueTrackerWeekInfo(this._tracker, _trackerDate, {Key? key})
-      : super(_tracker, _trackerDate, key: key);
+  ValueTrackerWeekInfo(this._tracker, _trackerDate, _currValues, {Key? key})
+      : super(_tracker, _trackerDate, _currValues, key: key);
 
   @override
   State<ValueTrackerWeekInfo> createState() => _ValueTrackerWeekInfoState();

@@ -1,10 +1,8 @@
 // stateless widget that displays the tracker for the week
 import 'dart:async';
 import 'package:intl/intl.dart';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/widgets/tracker_week_info.dart';
 
 import '../model/event_manager.dart';
@@ -29,7 +27,10 @@ class _TrackerWeekState extends State<TrackerWeek> {
     trackerSubscription = EventManager.stream.listen((event) {
       if (event.event == EventType.trackerAdded ||
           event.event == EventType.targetChanged) {
-        setState(() {});
+        setState(() {
+          getTrackerValues(DateTime.now());
+
+        });
       }
     });
   }
@@ -38,6 +39,26 @@ class _TrackerWeekState extends State<TrackerWeek> {
   void dispose() {
     super.dispose();
     trackerSubscription.cancel();
+  }
+
+  Future<Map<Tracker,List<String>>> getTrackerValues(DateTime trackerDate, {int numDays = 7}) async
+  {
+    var trackerValues = <Tracker,List<String>>{};
+    for (var tracker in EventManager.selectedTarget.trackers)
+    {
+
+      int i = 0;
+      trackerValues.putIfAbsent(tracker, () => []);
+
+      while (i < numDays) {
+        var date = trackerDate.add(Duration(days: -i));
+        var currValue = await tracker.getValue(day: date);
+        trackerValues[tracker]?.add(currValue);
+        i++;
+      }
+
+    }
+    return trackerValues;
   }
 
   Widget getWeek(DateTime date) {
@@ -57,24 +78,22 @@ class _TrackerWeekState extends State<TrackerWeek> {
             Expanded(
               flex: 9,
               // Load Trackers
-              child: FutureBuilder<Trackable?>(
-                  future: Trackable.load(EventManager.selectedTarget.id ?? ''),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      var trackable = snapshot.data ?? Trackable();
-                      return ListView(
-                        shrinkWrap: true,
-                        children: trackable.trackOptions.map((info) {
-                          return TrackerWeekInfo(
-                              Tracker(trackable.id ?? '', info), date);
-                        }).toList(),
-                      );
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  }),
+              child: FutureBuilder<Map<Tracker,List<String>>>(
+                future: getTrackerValues(date),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView(
+                      shrinkWrap: true,
+                      children: snapshot.data!.entries.map((tracker) {
+                        return TrackerWeekInfo(tracker.key, date, tracker.value);
+                      }).toList(),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+
             ),
           ],
         ),

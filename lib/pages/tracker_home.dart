@@ -206,7 +206,6 @@ class TrackerPage extends StatelessWidget {
           child:  const Column(
             children: [
               Expanded(child: TrackerWeek()),
-
             ],
             //TrackerList(widget.trackable),
           ),

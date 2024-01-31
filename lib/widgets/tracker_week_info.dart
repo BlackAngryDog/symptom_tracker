@@ -9,10 +9,11 @@ import 'package:symptom_tracker/widgets/TrackerWeekInfo/value_tracker_week_info.
 
 
 class TrackerWeekInfo extends StatefulWidget {
-  final Tracker? item;
-  final DateTime? date;
+  final Tracker item;
+  final DateTime date;
+  final List<String> data;
 
-  const TrackerWeekInfo(this.item, this.date, {Key? key}) : super(key: key);
+  const TrackerWeekInfo(this.item, this.date, this.data, {Key? key}) : super(key: key);
 
   @override
   State<TrackerWeekInfo> createState() => _TrackerWeekInfoState();
@@ -48,19 +49,19 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
     switch (_selectedTracker!.option.trackType) {
       case "counter":
         return CountTrackerWeekInfo(
-            _selectedTracker!, widget.date ?? DateTime.now());
+            _selectedTracker!, widget.date, widget.data);
       case "quality":
         return QualityTrackerWeekInfo(
-            _selectedTracker!, widget.date ?? DateTime.now());
+            _selectedTracker!, widget.date, widget.data);
       case "rating":
         return RatingTrackerWeekInfo(
-            _selectedTracker!, widget.date ?? DateTime.now());
+            _selectedTracker!, widget.date, widget.data);
       case "diet":
         return DietTrackerWeekInfo(
-            _selectedTracker!, widget.date ?? DateTime.now());
+            _selectedTracker!, widget.date);
       default:
         return ValueTrackerWeekInfo(
-            _selectedTracker!, widget.date ?? DateTime.now());
+            _selectedTracker!, widget.date, widget.data);
     }
   }
 }
