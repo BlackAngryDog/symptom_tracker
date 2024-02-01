@@ -14,6 +14,7 @@ class AbsWeekInfo extends StatefulWidget {
   final Tracker _tracker;
   final DateTime _trackerDate;
   final List<String> currValues;
+  bool _bottomSheetOpen = false;
 
   int _selectedIndex = -1;
   final List<IconData> trendIcons = List<IconData>.filled(7, Icons.arrow_right);
@@ -23,10 +24,6 @@ class AbsWeekInfo extends StatefulWidget {
   void showControlPanel(BuildContext ctx, int index) {
     _selectedIndex = index;
     final trackDay = _trackerDate.subtract(Duration(days: index));
-    // TODO - Expand this display to look and feel better with more info (Date/adv etc)
-
-    EventManager.dispatchUpdate(
-        UpdateEvent(EventType.trackerChanged, tracker: _tracker));
 
     showModalBottomSheet(
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
@@ -57,6 +54,7 @@ class AbsWeekInfo extends StatefulWidget {
           EventManager.dispatchUpdate(
               UpdateEvent(EventType.trackerChanged, tracker: _tracker))
         });
+    _bottomSheetOpen = true;
   }
 
   @override
@@ -80,9 +78,14 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     trackerSubscription = EventManager.stream.listen((event) {
       if (event.event == EventType.trackerChanged &&
           event.tracker == widget._tracker) {
-        setState(() {
+        if (widget._bottomSheetOpen == true) {
+          Navigator.pop(context);
+          widget._bottomSheetOpen = false;
+
+        }else{
           getCurrValue();
-        });
+        }
+
       }
     });
   }
@@ -142,6 +145,10 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
 
       i++;
     }
+
+    setState(() {
+
+    });
 
     return widget.currValues;
   }

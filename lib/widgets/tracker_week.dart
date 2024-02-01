@@ -89,7 +89,9 @@ class _TrackerWeekState extends State<TrackerWeek> {
                       }).toList(),
                     );
                   } else {
-                    return Container();
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
                 },
               ),
