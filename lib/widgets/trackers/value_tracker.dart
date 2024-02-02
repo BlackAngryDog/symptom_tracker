@@ -101,8 +101,6 @@ class _ValueTrackerState extends State<ValueTracker> {
             setState(() {
               if (value.isNotEmpty)
                 value = value.substring(0, value.length - 1);
-
-
             });
         },
         child: Card(
