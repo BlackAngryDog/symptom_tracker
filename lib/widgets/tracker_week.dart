@@ -19,21 +19,27 @@ class TrackerWeek extends StatefulWidget {
 class _TrackerWeekState extends State<TrackerWeek> {
   var daysOfWeek = <String>['Mo', 'Tu', 'We', 'Tu', 'Fr', 'Sa', 'Su'];
   late StreamSubscription trackerSubscription;
+  Map<Tracker,List<String>> trackerValues = {};
+
 
   @override
   initState() {
     super.initState();
 
     trackerSubscription = EventManager.stream.listen((event) {
+
+
       if (event.event == EventType.trackerAdded ||
-          event.event == EventType.targetChanged) {
+          event.event == EventType.trackableChaned) {
         setState(() {
-          getTrackerValues(DateTime.now());
+          //getTrackerValues(DateTime.now());
 
         });
       }
     });
   }
+
+
 
   @override
   void dispose() {
@@ -43,7 +49,11 @@ class _TrackerWeekState extends State<TrackerWeek> {
 
   Future<Map<Tracker,List<String>>> getTrackerValues(DateTime trackerDate, {int numDays = 7}) async
   {
-    var trackerValues = <Tracker,List<String>>{};
+    trackerValues.clear();
+
+    if (EventManager.selectedTarget.trackers.isEmpty)
+      await EventManager.selectedTarget.getTrackOptions();
+
     for (var tracker in EventManager.selectedTarget.trackers)
     {
 
@@ -81,10 +91,11 @@ class _TrackerWeekState extends State<TrackerWeek> {
               child: FutureBuilder<Map<Tracker,List<String>>>(
                 future: getTrackerValues(date),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
+
+                  if (trackerValues.isNotEmpty == true) {
                     return ListView(
                       shrinkWrap: true,
-                      children: snapshot.data!.entries.map((tracker) {
+                      children: trackerValues!.entries.map((tracker) {
                         return TrackerWeekInfo(tracker.key, date, tracker.value);
                       }).toList(),
                     );

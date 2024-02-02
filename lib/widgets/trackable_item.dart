@@ -13,8 +13,18 @@ class TrackableItem extends StatelessWidget {
       value.save();
       // TODO - MAY NEED TO OPEN TRACKER HOME PAGE
       // Navigator
-      Navigator.pop(ctx, item);
-      EventManager.selectedTarget = item;
+     // Navigator.pop(ctx, item);
+      //EventManager.selectedTarget = item;
+      //EventManager.dispatchUpdate(UpdateEvent(EventType.trackableChaned));
+      ///*
+      Trackable.load(item.id??"").then((value) => {
+        EventManager.selectedTarget = value,
+        Navigator.pop(ctx, item),
+        EventManager.dispatchUpdate(UpdateEvent(EventType.trackableChaned)),
+      });
+
+     //  */
+
 
     });
   }

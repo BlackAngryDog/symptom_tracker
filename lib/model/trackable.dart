@@ -40,7 +40,9 @@ class Trackable {
     if (_weightTracker != null) return _weightTracker as Tracker;
 
     _weightTracker =
-        trackers.firstWhere((element) => element.option.title == 'Weight ');
+        trackers.where((element) => element.option.title == 'Weight ').firstOrNull??
+            Tracker(id ?? '', TrackOption(title: 'Weight', trackType: 'weight', autoFill: AutoFill.last));
+
     return _weightTracker as Tracker;
   }
 

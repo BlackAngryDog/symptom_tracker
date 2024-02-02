@@ -14,7 +14,7 @@ class UpdateEvent {
 enum EventType {
   trackerChanged,
   targetChanged,
-  trackerAdded,
+  trackerAdded, trackableChaned,
 }
 
 class EventManager {

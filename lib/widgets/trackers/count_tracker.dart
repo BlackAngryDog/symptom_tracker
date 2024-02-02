@@ -23,8 +23,8 @@ class _ValueTrackerState extends State<CountTracker> {
     getCurrValue();
   }
 
-  Future updateData() async {
-    currValue++;
+  Future updateData(int v) async {
+    currValue += v;
 
     await widget._tracker.updateLog(currValue, widget._trackerDate);
     print('val $currValue');
@@ -69,9 +69,17 @@ class _ValueTrackerState extends State<CountTracker> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+
                 IconButton(
                   onPressed: () {
-                    updateData();
+                    if (currValue > 0)
+                      updateData(-1);
+                  },
+                  icon: const Icon(Icons.remove),
+                ),
+                IconButton(
+                  onPressed: () {
+                      updateData(1);
                   },
                   icon: const Icon(Icons.add),
                 ),

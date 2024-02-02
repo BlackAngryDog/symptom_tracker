@@ -16,15 +16,44 @@ import 'package:symptom_tracker/widgets/bottom_tracker_panel.dart';
 import 'package:symptom_tracker/widgets/tracker_week.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class TrackerPage extends StatelessWidget {
-  final Trackable trackable;
-  TrackerPage(this.trackable, {Key? key}) : super(key: key) {
-    EventManager(trackable);
+class TrackerPage extends StatefulWidget {
+
+  TrackerPage(_trackable, {Key? key}) : super(key: key) {
+    EventManager(_trackable);
   }
 
-  //static StreamController<Trackable> trackableController = StreamController<Trackable>.broadcast();
-  //static StreamController<Tracker> trackerController = StreamController<Tracker>.broadcast();
+  @override
+  State<TrackerPage> createState() => _TrackerPageState();
+}
 
+
+
+class _TrackerPageState extends State<TrackerPage> {
+
+  late StreamSubscription trackerSubscription;
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    trackerSubscription.cancel();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    trackerSubscription = EventManager.stream.listen((event) {
+      if (event.event == EventType.trackableChaned) {
+        setState(() {
+
+        });
+
+      }
+    });
+  }
+
+
+  //static StreamController<Trackable> trackableController = StreamController<Trackable>.broadcast();
   void _addTrackerPopup(BuildContext ctx) {
     showModalBottomSheet(
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
@@ -68,7 +97,7 @@ class TrackerPage extends StatelessWidget {
       ctx,
       MaterialPageRoute(
           builder: (context) => ChartPage(
-                trackable,
+            EventManager.selectedTarget,
               )),
     );
   }
@@ -78,7 +107,7 @@ class TrackerPage extends StatelessWidget {
       ctx,
       MaterialPageRoute(
           builder: (context) => CalenderPage(
-                trackable,
+            EventManager.selectedTarget,
                 calendarView: CalendarView.week,
               )),
     );
@@ -174,7 +203,7 @@ class TrackerPage extends StatelessWidget {
         // the App.build method, and use it to set our appbar title.
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
         automaticallyImplyLeading: true,
-        title: Text(trackable.title ?? "DOG"),
+        title: Text(EventManager.selectedTarget.title ?? "DOG"),
         actions: [
           IconButton(
               onPressed: () {

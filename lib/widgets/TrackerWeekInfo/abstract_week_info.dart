@@ -51,6 +51,7 @@ class AbsWeekInfo extends StatefulWidget {
           );
         }).whenComplete(() => {
           _selectedIndex = -1,
+          _bottomSheetOpen = false,
           EventManager.dispatchUpdate(
               UpdateEvent(EventType.trackerChanged, tracker: _tracker))
         });
