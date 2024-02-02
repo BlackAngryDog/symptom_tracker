@@ -214,7 +214,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.end,
-                          children: List.generate(count, (index) {
+                          children: count < 0 ? [] : List.generate(count, (index) {
                             return getChild(count - index);
                           }),
                         ),

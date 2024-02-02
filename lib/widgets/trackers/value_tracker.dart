@@ -15,6 +15,7 @@ class ValueTracker extends StatefulWidget {
 
 class _ValueTrackerState extends State<ValueTracker> {
   final myController = TextEditingController();
+  String value = "";
 
   @override
   void initState() {
@@ -84,39 +85,124 @@ class _ValueTrackerState extends State<ValueTracker> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Card(
-        child: ListTile(
-          title: Text(widget._tracker.option.title ?? ""),
-          subtitle: Row(
-            children: [
-              Icon(icon),
-              Text(subtitle),
-            ],
-          ),
-          trailing: SizedBox(
-              width: 100,
-              child: TextField(
-                decoration: const InputDecoration(
-                    labelText: 'Update',
-                    hintText: 'Hint',
-                    icon: Icon(Icons.people)),
-                autocorrect: true,
-                autofocus: false,
-                //displaying number keyboard
-                //keyboardType: TextInputType.number,
 
-                //displaying text keyboard
-                keyboardType: TextInputType.number,
+    return Container(
+      height: MediaQuery.of(context).size.height / 2,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Row(
+              children: [
+                Expanded(child: Text(value.isEmpty ? '0' : value, textAlign: TextAlign.end, style: TextStyle(fontSize: 24),)),
+      GestureDetector(
+        onTap: () {
+            // Handle backspace button tap
+            setState(() {
+              if (value.isNotEmpty)
+                value = value.substring(0, value.length - 1);
 
-                //onChanged: _onChanged,
-                onSubmitted: updateData,
-              )),
+
+            });
+        },
+        child: Card(
+
+            child: Center(
+              child: Icon(Icons.backspace),
+            ),
         ),
       ),
-      onDoubleTap: () {
-        showHistory(context);
-      },
+
+              ],
+            ),
+          ),
+          Expanded(
+            child: GridView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: 12,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // 3 items per row
+                childAspectRatio: (MediaQuery.of(context).size.width) / (MediaQuery.of(context).size.height/3),
+
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                if (index < 9) {
+                  // Numbers 1-9
+                  return GestureDetector(
+                    onTap: () {
+                      // Handle number button tap
+                      setState(() {
+                        value += '${index+1}';
+                      });
+
+                    },
+                    child: Card(
+                      child: Center(
+                        child: Text(
+                          '${index+1}',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                    ),
+                  );
+                } else if (index == 9) {
+                  // Backspace button
+                  return GestureDetector(
+                    onTap: () {
+                      // Handle backspace button tap
+                      setState(() {
+                        if (!value.contains('.')) {
+                          value += '.';
+                        }
+                      });
+                    },
+                    child: Card(
+                      child: Center(
+                        child: Text( '.',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                    ),
+                  );
+                } else if (index == 10) {
+                  // Number 0
+                  return GestureDetector(
+                    onTap: () {
+                      // Handle number 0 button tap
+                      setState(() {
+                        value += '0';
+                      });
+                    },
+                    child: Card(
+                      child: Center(
+                        child: Text(
+                          '0',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  // Submit button
+                  return GestureDetector(
+                    onTap: () {
+                      // Handle submit button tap
+                      setState(() {
+                        updateData(value);
+                      });
+                    },
+                    child: Card(
+                      child: Center(
+                        child: Icon(Icons.check),
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
