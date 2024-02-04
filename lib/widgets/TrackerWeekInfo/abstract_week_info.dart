@@ -14,16 +14,24 @@ class AbsWeekInfo extends StatefulWidget {
   final Tracker _tracker;
   final DateTime _trackerDate;
   final List<String> currValues;
-  bool _bottomSheetOpen = false;
 
-  int _selectedIndex = -1;
   final List<IconData> trendIcons = List<IconData>.filled(7, Icons.arrow_right);
 
   AbsWeekInfo(this._tracker, this._trackerDate, this.currValues, {Key? key}) : super(key: key);
 
+  @override
+  State<AbsWeekInfo> createState() => AbsWeekInfoState();
+}
+
+class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
+  String subtitle = 'count today is 0';
+  bool _bottomSheetOpen = false;
+  int _selectedIndex = -1;
+  late StreamSubscription trackerSubscription;
+
   void showControlPanel(BuildContext ctx, int index) {
     _selectedIndex = index;
-    final trackDay = _trackerDate.subtract(Duration(days: index));
+    final trackDay = widget._trackerDate.subtract(Duration(days: index));
 
     showModalBottomSheet(
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
@@ -39,9 +47,9 @@ class AbsWeekInfo extends StatefulWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Flexible(child: Text(trackDay.dateOnly.toString())),
+                    Flexible(child: Text(DateTimeExt.formatDate(trackDay))),
                     TrackerControls(
-                      _tracker,
+                      widget._tracker,
                       trackDay,
                     ),
                   ],
@@ -50,22 +58,14 @@ class AbsWeekInfo extends StatefulWidget {
             ),
           );
         }).whenComplete(() => {
-          _selectedIndex = -1,
-          _bottomSheetOpen = false,
-          EventManager.dispatchUpdate(
-              UpdateEvent(EventType.trackerChanged, tracker: _tracker))
-        });
+      _selectedIndex = -1,
+      _bottomSheetOpen = false,
+      EventManager.dispatchUpdate(
+          UpdateEvent(EventType.trackerChanged, tracker: widget._tracker))
+    });
     _bottomSheetOpen = true;
   }
 
-  @override
-  State<AbsWeekInfo> createState() => AbsWeekInfoState();
-}
-
-class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
-  String subtitle = 'count today is 0';
-
-  late StreamSubscription trackerSubscription;
 
   @override
   void dispose() {
@@ -79,9 +79,9 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     trackerSubscription = EventManager.stream.listen((event) {
       if (event.event == EventType.trackerChanged &&
           event.tracker == widget._tracker) {
-        if (widget._bottomSheetOpen == true) {
+        if (_bottomSheetOpen == true) {
           Navigator.pop(context);
-          widget._bottomSheetOpen = false;
+          _bottomSheetOpen = false;
 
         }else{
           getCurrValue();
@@ -235,7 +235,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
         padding: const EdgeInsets.all(2.0),
         child: GestureDetector(
           onTap: () {
-            widget.showControlPanel(context, index);
+            showControlPanel(context, index);
           },
           child: v.isEmpty ? getEmpty(index) : getDay(index),
         ),
@@ -302,7 +302,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     return BoxDecoration(
         color: Theme.of(context).colorScheme.secondaryContainer,
         shape: BoxShape.rectangle,
-        border: index == widget._selectedIndex
+        border: index == _selectedIndex
             ? Border.all(color: Colors.blueAccent, width: 2)
             : null,
         boxShadow: [

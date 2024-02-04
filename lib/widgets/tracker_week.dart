@@ -51,6 +51,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
   {
     trackerValues.clear();
 
+    Map<Tracker,List<String>> values = {};
     if (EventManager.selectedTarget.trackers.isEmpty)
       await EventManager.selectedTarget.getTrackOptions();
 
@@ -58,16 +59,17 @@ class _TrackerWeekState extends State<TrackerWeek> {
     {
 
       int i = 0;
-      trackerValues.putIfAbsent(tracker, () => []);
+      values.putIfAbsent(tracker, () => []);
 
       while (i < numDays) {
         var date = trackerDate.add(Duration(days: -i));
         var currValue = await tracker.getValue(day: date);
-        trackerValues[tracker]?.add(currValue);
+        values[tracker]?.add(currValue);
         i++;
       }
 
     }
+    trackerValues.addAll(values);
     return trackerValues;
   }
 
@@ -92,10 +94,10 @@ class _TrackerWeekState extends State<TrackerWeek> {
                 future: getTrackerValues(date),
                 builder: (context, snapshot) {
 
-                  if (trackerValues.isNotEmpty == true) {
+                  if (trackerValues.entries.isNotEmpty == true) {
                     return ListView(
                       shrinkWrap: true,
-                      children: trackerValues!.entries.map((tracker) {
+                      children: trackerValues.entries.map((tracker) {
                         return TrackerWeekInfo(tracker.key, date, tracker.value);
                       }).toList(),
                     );

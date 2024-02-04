@@ -1,3 +1,6 @@
+
+import 'package:intl/intl.dart';
+
 extension DateTimeExt on DateTime {
   DateTime get dateOnly {
     return DateTime(year, month, day);
@@ -49,13 +52,49 @@ extension DateTimeExt on DateTime {
     ];
     return days[weekday];
   }
+
+  static String formatDate(DateTime date) {
+    // TODO - Add format controls
+    var dayFormat = DateFormat('d').format(date);
+    var daySuffix = getDaySuffix(int.parse(dayFormat));
+    return DateFormat('EEEE').format(date) + ' ' + dayFormat + daySuffix;
+  }
+
+  static String getDaySuffix(int day) {
+    if (!(day >= 1 && day <= 31)) {
+      throw ArgumentError('Invalid day of month');
+    }
+
+    if (day >= 11 && day <= 13) {
+      return 'th';
+    }
+
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  }
+
 }
+
 
 extension ParseToString on Enum {
   String toShortString() {
     return toString().split('.').last;
   }
 }
+
+
+
+
+
+
 /*
 extension DateHelper on DateTime {
 
