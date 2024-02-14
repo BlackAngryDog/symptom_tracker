@@ -54,7 +54,7 @@ class DataProcessManager {
 
       var tgtDate = start.startOfDay;
 
-      while (tgtDate.isBefore(end.startOfDay)) {
+      while (tgtDate.isBefore(end.endOfDay)) {
         var value = await tracker.getValue(day: tgtDate);
         // get last log with title
         var chartValue = double.tryParse(value) ?? 0.0;
