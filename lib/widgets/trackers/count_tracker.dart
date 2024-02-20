@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/pages/tracker_Summery.dart';
+import 'package:symptom_tracker/widgets/trackers/value_tracker.dart';
 
 class CountTracker extends StatefulWidget {
   final Tracker _tracker;
@@ -16,11 +17,18 @@ class CountTracker extends StatefulWidget {
 class _ValueTrackerState extends State<CountTracker> {
   int currValue = 0; // TODO - GET TODYS COUNT FOR TRACKER
   String subtitle = 'count today is 0';
+  bool _showPad = false;
 
   @override
   void initState() {
     super.initState();
     getCurrValue();
+  }
+
+  void showNumPad() {
+    setState(() {
+      _showPad = true;
+    });
   }
 
   Future updateData(int v) async {
@@ -56,14 +64,14 @@ class _ValueTrackerState extends State<CountTracker> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return _showPad
+        ? ValueTracker(widget._tracker, widget._trackerDate)
+        :GestureDetector(
       child: Card(
         child: ListTile(
           title: Text(widget._tracker.option.title ?? ""),
           subtitle: Text(subtitle),
-          trailing: SizedBox(
-            width: 100,
-            height: 100,
+          trailing: Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
@@ -76,6 +84,12 @@ class _ValueTrackerState extends State<CountTracker> {
                       updateData(-1);
                   },
                   icon: const Icon(Icons.remove),
+                ),
+                IconButton(
+                  onPressed: () {
+                    showNumPad();
+                  },
+                  icon: const Icon(Icons.edit),
                 ),
                 IconButton(
                   onPressed: () {
