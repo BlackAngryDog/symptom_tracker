@@ -12,21 +12,38 @@ class AddTracker extends StatefulWidget {
   final Tracker? tracker;
   final Function(TrackOption option) onAddTracker;
 
-  const AddTracker(this.onAddTracker, {Key? key, this.tracker})
-      : super(key: key);
+  late TrackOption option;
+
+  AddTracker(this.onAddTracker, {Key? key, this.tracker})
+      : super(key: key){
+    option = tracker?.option ??
+        TrackOption();
+  }
 
   @override
   State<AddTracker> createState() => _AddTrackerState();
 }
 
+enum States { tile, type, value, icon, summery}
+
 class _AddTrackerState extends State<AddTracker> {
   final titleController = TextEditingController();
   final valueController = TextEditingController();
+  final FocusNode unitCodeCtrlFocusNode = FocusNode();
+  final Map<String, IconData> myIconCollection = {
+    'favorite': Icons.favorite,
+    'home': Icons.home,
+    'android': Icons.android,
+    'album': Icons.album,
+    'ac_unit': Icons.ac_unit,
+  };
+
+  var state = States.tile;
 
   String selectedValue = "counter";
   String? selectedIcon = "favorite";
 
-  late TrackOption option;
+
 
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
@@ -65,14 +82,92 @@ class _AddTrackerState extends State<AddTracker> {
 
     if (title == '') return;
 
-    option.save();
-    widget.onAddTracker(option);
+    widget.option.save();
+    widget.onAddTracker(widget.option);
     // ADD STARTING VALUE;
     // var tracker =
     //     Tracker.fromTrackOption(EventManager.selectedTarget.id ?? '', option);
     // tracker.updateLog(value, DateTime.now());
 
     Navigator.of(context).pop();
+  }
+
+  void prevState(){
+    nextState(back:true);
+  }
+
+  void nextState({bool back = false}){
+    if (state == States.summery){
+      OnSubmitTracker();
+      return;
+    }
+
+    setState(() {
+      switch (state){
+        case States.tile:
+          state = States.type;
+          break;
+        case States.type:
+          state = back ? States.tile : States.value;
+          break;
+        case States.value:
+          state = back ? States.type : States.icon;
+          break;
+        case States.icon:
+          state = back ? States.value : States.summery;
+          break;
+      }
+    });
+  }
+
+  Widget getState(BuildContext context){
+    switch (state) {
+      case States.tile:
+        unitCodeCtrlFocusNode.requestFocus();
+        titleController.text = widget.option.title??"";
+        return TextField(
+          decoration: const InputDecoration(labelText: 'Title'),
+          controller: titleController,
+          textAlign: TextAlign.end,
+          focusNode: unitCodeCtrlFocusNode,
+
+          onChanged: (value) {
+            widget.option.title = value;
+
+          },
+          onSubmitted: (value) {
+            nextState();
+          },
+        );
+      case States.type:
+        return DropdownButton(
+            value: widget.option.trackType,
+            onChanged: (String? newValue) {
+              setState(() {
+                widget.option.trackType = newValue!;
+              });
+            },
+            items: dropdownItems);
+      case States.value:
+        return getControl(context);
+      case States.icon:
+        return IconPicker(
+          initialValue: 'favorite',
+          icon: const Icon(Icons.apps),
+          labelText: "Icon",
+          title: "Select an icon",
+          cancelBtn: "CANCEL",
+          enableSearch: true,
+          searchHint: 'Search icon',
+          iconCollection: myIconCollection,
+          onChanged: (val) => {selectedIcon = val},
+          onSaved: (val) => {selectedIcon = val},
+        );
+      default:
+        return Container(
+          child: Text("TODO:Summery"),
+        );
+    }
   }
 
   Widget getControl(BuildContext context) {
@@ -110,22 +205,49 @@ class _AddTrackerState extends State<AddTracker> {
     selectedValue = widget.tracker?.option.trackType ?? 'counter';
     selectedIcon = widget.tracker?.option.icon ?? 'favorite';
 
-    option = widget.tracker?.option ??
-        TrackOption(
-            title: titleController.text,
-            trackType: selectedValue,
-            icon: selectedIcon);
 
-    final Map<String, IconData> myIconCollection = {
-      'favorite': Icons.favorite,
-      'home': Icons.home,
-      'android': Icons.android,
-      'album': Icons.album,
-      'ac_unit': Icons.ac_unit,
-    };
+
+
 
     // TODO - This flow needs a better screen + need to get default or ask for initial value
-
+    return Card(
+      elevation:5,
+      child : Container(
+        height: MediaQuery.of(context).size.height / 3,
+        margin: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            getState(context),
+            Container(
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: prevState,
+                    style: TextButton.styleFrom(foregroundColor: Colors.purple),
+                    child: const Text(
+                      "Back",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: nextState,
+                    style: TextButton.styleFrom(foregroundColor: Colors.purple),
+                    child: const Text(
+                      "Next",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ]
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+/*
     return Card(
       elevation: 5,
       child: Container(
@@ -206,5 +328,6 @@ class _AddTrackerState extends State<AddTracker> {
         ),
       ),
     );
+    */
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
-import 'package:symptom_tracker/widgets/add_tracker_popup.dart';
+import 'package:symptom_tracker/popups/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/diet_option_item.dart';
 
 
