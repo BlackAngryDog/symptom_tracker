@@ -80,7 +80,7 @@ class _AddTrackerState extends State<AddTracker> {
 
     //final String value = valueController.text;
 
-    if (title == '') return;
+    //if (title == '') return;
 
     widget.option.save();
     widget.onAddTracker(widget.option);
