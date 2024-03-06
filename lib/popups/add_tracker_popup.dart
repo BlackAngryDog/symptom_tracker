@@ -8,27 +8,22 @@ import '../model/track_option.dart';
 
 class AddTracker extends StatefulWidget {
   //const AddTransaction({ Key? key }) : super(key: key);
-
-  final Tracker? tracker;
+  final valueController = TextEditingController();
   final Function(TrackOption option) onAddTracker;
 
-  late TrackOption option;
+  final TrackOption option;
 
-  AddTracker(this.onAddTracker, {Key? key, this.tracker})
-      : super(key: key){
-    option = tracker?.option ??
-        TrackOption();
-  }
+  AddTracker(this.onAddTracker, this.option, {Key? key}): super(key: key);
 
   @override
   State<AddTracker> createState() => _AddTrackerState();
 }
 
-enum States { tile, type, value, icon, summery}
+enum States { tile, type, autofill, value, icon, summery}
 
 class _AddTrackerState extends State<AddTracker> {
   final titleController = TextEditingController();
-  final valueController = TextEditingController();
+
   final FocusNode unitCodeCtrlFocusNode = FocusNode();
   final Map<String, IconData> myIconCollection = {
     'favorite': Icons.favorite,
@@ -75,12 +70,6 @@ class _AddTrackerState extends State<AddTracker> {
   }
 
   void OnSubmitTracker() {
-    print("test");
-    final String title = titleController.text;
-
-    //final String value = valueController.text;
-
-    //if (title == '') return;
 
     widget.option.save();
     widget.onAddTracker(widget.option);
@@ -97,6 +86,7 @@ class _AddTrackerState extends State<AddTracker> {
   }
 
   void nextState({bool back = false}){
+
     if (state == States.summery){
       OnSubmitTracker();
       return;
@@ -105,13 +95,16 @@ class _AddTrackerState extends State<AddTracker> {
     setState(() {
       switch (state){
         case States.tile:
-          state = States.type;
+          state = back ? States.tile : States.type;
           break;
         case States.type:
-          state = back ? States.tile : States.value;
+          state = back ? States.tile : States.autofill;
+          break;
+        case States.autofill:
+          state = back ? States.type : States.value;
           break;
         case States.value:
-          state = back ? States.type : States.icon;
+          state = back ? States.autofill : States.icon;
           break;
         case States.icon:
           state = back ? States.value : States.summery;
@@ -123,8 +116,6 @@ class _AddTrackerState extends State<AddTracker> {
   Widget getState(BuildContext context){
     switch (state) {
       case States.tile:
-        unitCodeCtrlFocusNode.requestFocus();
-        titleController.text = widget.option.title??"";
         return TextField(
           decoration: const InputDecoration(labelText: 'Title'),
           controller: titleController,
@@ -133,9 +124,9 @@ class _AddTrackerState extends State<AddTracker> {
 
           onChanged: (value) {
             widget.option.title = value;
-
           },
           onSubmitted: (value) {
+            widget.option.title = value;
             nextState();
           },
         );
@@ -148,6 +139,15 @@ class _AddTrackerState extends State<AddTracker> {
               });
             },
             items: dropdownItems);
+       case States.autofill:
+        return  DropdownButton(
+            value: widget.option.autoFill,
+            onChanged: (AutoFill? newValue) {
+              setState(() {
+                widget.option.autoFill = newValue!;
+              });
+            },
+            items: autofillItems);
       case States.value:
         return getControl(context);
       case States.icon:
@@ -160,8 +160,8 @@ class _AddTrackerState extends State<AddTracker> {
           enableSearch: true,
           searchHint: 'Search icon',
           iconCollection: myIconCollection,
-          onChanged: (val) => {selectedIcon = val},
-          onSaved: (val) => {selectedIcon = val},
+          onChanged: (val) => {widget.option.icon = val},
+          onSaved: (val) => {widget.option.icon = val},
         );
       default:
         return Container(
@@ -187,13 +187,13 @@ class _AddTrackerState extends State<AddTracker> {
             color: Colors.amber,
           ),
           onRatingUpdate: (rating) {
-            valueController.text = rating.toString();
+            widget.valueController.text = rating.toString();
           },
         ); // ADD BASELINE VALUE (as 1-X picker)
       default:
         return TextField(
           decoration: const InputDecoration(labelText: 'Current Value'),
-          controller: valueController,
+          controller: widget.valueController,
           textAlign: TextAlign.end,
         );
     }
@@ -201,15 +201,9 @@ class _AddTrackerState extends State<AddTracker> {
 
   @override
   Widget build(BuildContext context) {
-    titleController.text = widget.tracker?.option.title ?? '';
-    selectedValue = widget.tracker?.option.trackType ?? 'counter';
-    selectedIcon = widget.tracker?.option.icon ?? 'favorite';
 
+    titleController.text = widget.option.title ?? '';
 
-
-
-
-    // TODO - This flow needs a better screen + need to get default or ask for initial value
     return Card(
       elevation:5,
       child : Container(

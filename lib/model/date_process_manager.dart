@@ -49,7 +49,7 @@ class DataProcessManager {
 
     var logs = List<LogTimeLineEntry>.empty(growable: true);
 
-    for (var tracker in EventManager.selectedTarget.trackers)
+    for (var tracker in EventManager.selectedTarget.getTrackers())
     {
 
       var tgtDate = start.startOfDay;
@@ -341,7 +341,7 @@ class DataProcessManager {
       }
 
       // get trackers and assign values
-      for (var tracker in EventManager.selectedTarget.trackers) {
+      for (var tracker in EventManager.selectedTarget.getTrackers()) {
         try {
           var combined = combo.join(",");
           if (combo.length > 1) {

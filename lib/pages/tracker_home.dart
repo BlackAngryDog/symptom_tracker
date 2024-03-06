@@ -26,12 +26,9 @@ class TrackerPage extends StatefulWidget {
   State<TrackerPage> createState() => _TrackerPageState();
 }
 
-
-
 class _TrackerPageState extends State<TrackerPage> {
 
   late StreamSubscription trackerSubscription;
-
 
   @override
   void dispose() {
@@ -43,43 +40,34 @@ class _TrackerPageState extends State<TrackerPage> {
   void initState() {
     super.initState();
     trackerSubscription = EventManager.stream.listen((event) {
-      if (event.event == EventType.trackableChaned) {
-        setState(() {
-
-        });
-
+      if (event.event == EventType.trackableChaned)
+      {
+        setState(() {});
       }
     });
   }
 
-
-  //static StreamController<Trackable> trackableController = StreamController<Trackable>.broadcast();
   void _addTrackerPopup(BuildContext ctx) {
+    var value = TrackOption();
     showModalBottomSheet(
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
         context: ctx,
+        isScrollControlled: true,
         builder: (_) {
-          return GestureDetector(
-            onTap: () {},
-            behavior: HitTestBehavior.opaque,
-            child: AddTracker(_addTracker),
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: GestureDetector(
+              onTap: () {},
+              behavior: HitTestBehavior.opaque,
+              child: AddTracker(_addTracker, value),
+            ),
           );
         });
   }
 
   void _addTracker(TrackOption value) {
-    // DatabaseTools.testFirestore();
-
-    // setState(() {
-    // TODO - CREATE A NEW TRACKER IN THE TRACKABLE (NEEDS POPUP FOR PARAMS)
-
-    // Tracker tracker = value;
-    //tracker.trackableID = trackable.id ?? 'default';
-    EventManager.selectedTarget.trackOptions.add(value);
-    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerAdded));
-    // TODO - Switch to tracker options list update
-    //tracker.save();
-    //});
+    EventManager.selectedTarget.AddTrackOption(value);
   }
 
   void showHistory(BuildContext ctx) {
@@ -125,7 +113,6 @@ class _TrackerPageState extends State<TrackerPage> {
 
   Future showTrackingOptions(BuildContext ctx) async {
     // SHOW FOOD LIST
-
     Navigator.push(
       ctx,
       MaterialPageRoute(
@@ -142,25 +129,10 @@ class _TrackerPageState extends State<TrackerPage> {
       MaterialPageRoute(builder: (ctx) => const TrackableSelectionPage()),
     );
 
-    // When a BuildContext is used from a StatefulWidget, the mounted property
-    // must be checked after an asynchronous gap.
-    //if (!mounted) return;
-
-    // After the Selection Screen returns a result, hide any previous snackbars
-    // and show the new result.
-    //ScaffoldMessenger.of(context)
-    //  ..removeCurrentSnackBar()
-    //  ..showSnackBar(SnackBar(content: Text('$result')));
-
-    //setState(() {
-    //_trackerInfoPanel..setTrackable(result);
     if (result != null) {
       EventManager.selectedTarget = result;
     }
-    // trackable = result;
-    //_bottomButtonPanel = BottomTrackerSelectionPanel(widget.trackable, setActiveTracker);
-    // _selectedTracker = null;
-    // });
+
   }
 
   void _showTrackerPanel(BuildContext ctx) {
@@ -178,24 +150,6 @@ class _TrackerPageState extends State<TrackerPage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-/*
-    DataProcessManager.getAverage(diet: "Beef", option: "Itchyness");
-    DataProcessManager.getMin(diet: "Beef", option: "Itchyness");
-    DataProcessManager.getMax(diet: "Beef", option: "Itchyness");
-
-    DataProcessManager.getAverage(diet: "Venison", option: "Itchyness");
-    DataProcessManager.getMin(diet: "Venison", option: "Itchyness");
-    DataProcessManager.getMax(diet: "Venison", option: "Itchyness");
-  */
-    //DataProcessManager.getMin();
-    //DataProcessManager.getMax();
-
     print("build");
     return Scaffold(
       appBar: AppBar(
@@ -245,7 +199,7 @@ class _TrackerPageState extends State<TrackerPage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _addTrackerPopup(context);
+          showTrackingOptions(context);
         },
         tooltip: 'Increment',
         mini: true,

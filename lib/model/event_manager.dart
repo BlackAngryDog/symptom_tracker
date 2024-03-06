@@ -26,12 +26,7 @@ class EventManager {
   static set selectedTarget(Trackable value) {
     _instance._selectedTracker = null;
     _instance._selectedTarget = value;
-    TrackOption? initialTrackerOption =
-        _instance._selectedTarget.trackOptions.firstOrNull;
-    if (initialTrackerOption != null) {
-      _instance._selectedTracker =
-          Tracker.fromTrackOption(value.id ?? '', initialTrackerOption);
-    }
+    // TODO - Implement a Future to assign selected target if needed
     dispatchUpdate(UpdateEvent(EventType.targetChanged));
   }
 
@@ -39,7 +34,6 @@ class EventManager {
     _instance._selectedTracker = value;
     dispatchUpdate(UpdateEvent(EventType.targetChanged));
   }
-
 
   static Trackable get selectedTarget => _instance._selectedTarget;
   static Tracker? get selectedTracker => _instance._selectedTracker;

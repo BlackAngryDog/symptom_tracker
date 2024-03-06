@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class DietOptionItem<T> extends StatefulWidget {
   final T item;
   bool selected;
+  int order = 1000000;
 
   DietOptionItem(this.selected, this.item, {Key? key}) : super(key: key);
 

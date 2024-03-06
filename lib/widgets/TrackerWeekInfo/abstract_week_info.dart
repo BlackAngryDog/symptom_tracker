@@ -114,7 +114,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
             behavior: HitTestBehavior.opaque,
             child: AddTracker((option) {
               _editTrackerPopup(context);
-            }, tracker: widget._tracker),
+            }, widget._tracker.option),
           );
         });
   }

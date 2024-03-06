@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/model/trackable.dart';
 import 'package:symptom_tracker/pages/tracker_home.dart';
@@ -20,6 +21,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
   List<DietOptionItem> options = [];
 
   void _addTrackerPopup(BuildContext ctx) {
+    var value = TrackOption();
     showModalBottomSheet(
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
         context: ctx,
@@ -27,7 +29,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
           return GestureDetector(
             onTap: () {},
             behavior: HitTestBehavior.opaque,
-            child: AddTracker(_addTracker),
+            child: AddTracker(_addTracker, value),
           );
         });
   }
@@ -91,18 +93,32 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
   }
 
   Future<List<DietOptionItem>> _getData() async {
-    List<TrackOption> entries = widget._trackable.trackOptions;
+    List<TrackOption> entries = await widget._trackable.getTrackOptions();
 
     if (entries.isEmpty) return options;
 
-    // SELECT OPTIONS FROM DATA
+    int index = 0;
 
     for (TrackOption entry in entries) {
       DietOptionItem? option = options
           .where((element) => element.item.title == entry.title)
           .firstOrNull;
       option?.selected = true;
+      option?.order = index++;
     }
+
+    // TODO - add order to diet options and make sure it's saved with the option - can this be loaded from tracker screen just for consistency
+
+    // sort options on selected and order
+    options.sort((a, b) {
+      if (a.selected == b.selected) {
+        return a.order.compareTo(b.order);
+      } else {
+        return a.selected ? -1 : 1;
+      }
+    });
+
+
 
     return options;
   }
@@ -180,31 +196,14 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
     );
   }
 
-  Future initialiseTrackable(BuildContext context) async {
-    widget._trackable.trackOptions = options
+  void initialiseTrackable(BuildContext context) {
+    widget._trackable.loadTrackOptions(options
         .where((element) => element.selected == true)
-        .map((value) => TrackOption(
-            id: value.item.id, title: value.item.title, trackType: value.item.trackType, icon: value.item.icon))
-        .toList();
-    await widget._trackable.save();
-    // Update tracking data for trackable (how to delete?)
-    // TODO - MAKE THIS A FUNCTION
-    //for (DietOptionItem item in options) {
-    //  if (item.selected) {
-    //    TrackOption option = item.item;
-    //    Tracker tracker = Tracker(widget._trackable.id ?? 'default', title: option.title, type: option.trackType);
-    // TODO - NEED TO CHECK IF ADDING/REMOVING
-    //    await tracker.save();
-    //  }
-    // }
+        .map((value) => value.item.id.toString())
+        .toList());
 
+    widget._trackable.save();
     Navigator.of(context).pop();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => TrackerPage(
-                widget._trackable,
-              )),
-    );
+
   }
 }

@@ -1,8 +1,10 @@
 // stateless widget that displays the tracker for the week
 import 'dart:async';
+import 'dart:collection';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/model/track_option.dart';
 import 'package:symptom_tracker/widgets/tracker_week_info.dart';
 
 import '../model/event_manager.dart';
@@ -21,19 +23,17 @@ class _TrackerWeekState extends State<TrackerWeek> {
   late StreamSubscription trackerSubscription;
   Map<Tracker,List<String>> trackerValues = {};
 
-
   @override
   initState() {
     super.initState();
 
     trackerSubscription = EventManager.stream.listen((event) {
 
-
       if (event.event == EventType.trackerAdded ||
           event.event == EventType.trackableChaned) {
         setState(() {
+          trackerValues.clear();
           //getTrackerValues(DateTime.now());
-
         });
       }
     });
@@ -49,16 +49,20 @@ class _TrackerWeekState extends State<TrackerWeek> {
 
   Future<Map<Tracker,List<String>>> getTrackerValues(DateTime trackerDate, {int numDays = 7}) async
   {
-    trackerValues.clear();
 
-    Map<Tracker,List<String>> values = {};
-    if (EventManager.selectedTarget.trackers.isEmpty)
+    LinkedHashMap<Tracker,List<String>> values = LinkedHashMap();
+    var trackers = EventManager.selectedTarget.getTrackers();
+    if (trackers.isEmpty)
       await EventManager.selectedTarget.getTrackOptions();
 
-    for (var tracker in EventManager.selectedTarget.trackers)
+    // sort the trackers based on the tracker.option.order
+    //trackers.sort((a, b) => a.option.order.compareTo(b.option.order));
+
+    for (var tracker in trackers)
     {
 
       int i = 0;
+      //tracker.option.order = trackerValues.length;
       values.putIfAbsent(tracker, () => []);
 
       while (i < numDays) {
@@ -70,6 +74,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
 
     }
     trackerValues.addAll(values);
+
     return trackerValues;
   }
 
@@ -95,7 +100,48 @@ class _TrackerWeekState extends State<TrackerWeek> {
                 builder: (context, snapshot) {
 
                   if (trackerValues.entries.isNotEmpty == true) {
-                    return ListView(
+                    return ReorderableListView(
+                      onReorder: (oldIndex, newIndex) {
+                       //
+                          if (newIndex > oldIndex) {
+                            newIndex -= 1;
+                          }
+
+                          var preoptions = trackerValues.entries.map((tracker) {
+                            return tracker.key.option.id.toString();
+                          }).toList();
+
+                          final String item = preoptions.removeAt(oldIndex);
+                          preoptions.insert(newIndex, item);
+
+                          EventManager.selectedTarget.loadTrackOptions(preoptions);
+                          EventManager.selectedTarget.save(); // Save the data to tracker
+
+
+                          // TODO - can theis be done after loading option data - if we use trakerbale info
+                          /*
+                          for (var tag in preoptions) {
+                            // Save order to the track-options list
+                            var option = trackerValues.entries.where((element) => element.key.option.id.toString() == tag).first.key.option;
+                            option.order = preoptions.indexOf(tag);
+                            option.save();
+                          }
+
+                           */
+
+                          setState(() {
+                            trackerValues.clear();
+                            // TODO - Work out a way to be able to re-order data by using list rather than map
+                            //final item = trackerValues.entries.removeAt(oldIndex);
+                            //trackerValues.entries.insert(newIndex, item);
+                          });
+                      },
+                      children: trackerValues.entries.map((tracker) {
+                        return TrackerWeekInfo(tracker.key, date, tracker.value, key: GlobalKey());
+                      }).toList(),
+                    );
+
+                      ListView(
                       shrinkWrap: true,
                       children: trackerValues.entries.map((tracker) {
                         return TrackerWeekInfo(tracker.key, date, tracker.value);

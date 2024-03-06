@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/data_log.dart';
 import 'package:symptom_tracker/model/databaseTool.dart';
+import 'package:symptom_tracker/model/event_manager.dart';
 import 'package:symptom_tracker/model/track_option.dart';
 
 import 'tracker.dart';
@@ -16,9 +17,9 @@ class Trackable {
   Tracker? _dietTracker;
   Tracker? _weightTracker;
 
-  List<String> trackerIDs = [];
-  List<TrackOption> trackOptions = [];
-  List<Tracker> trackers = [];
+  List<String> _trackerIDs = [];
+  List<TrackOption> _trackOptions = [];
+  List<Tracker> _trackers = [];
 
   final List<DataLog> _log = [];
   List<DataLog> get log => _log;
@@ -40,22 +41,58 @@ class Trackable {
     if (_weightTracker != null) return _weightTracker as Tracker;
 
     _weightTracker =
-        trackers.where((element) => element.option.title == 'Weight ').firstOrNull??
+        _trackers.where((element) => element.option.title == 'Weight ').firstOrNull??
             Tracker(id ?? '', TrackOption(title: 'Weight', trackType: 'weight', autoFill: AutoFill.last));
 
     return _weightTracker as Tracker;
   }
 
-  Future<List<TrackOption>> getTrackOptions() async {
-    trackOptions.clear();
-    for (var tid in trackerIDs) {
+  Future AddTrackOption(TrackOption option) async {
+
+    if (option.id == null || _trackOptions.any((current) => current.id == option.id))  return;
+    // clear trackers as need to refresh
+    _trackers.clear();
+
+    // Add ID and option to list
+    _trackerIDs.add(option.id??"");
+    _trackOptions.add(option);
+
+    // Fire event to update observers
+    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerAdded));
+  }
+
+  Future loadTrackOptions(List<String> trackerIds) async {
+    _trackOptions.clear();
+    _trackers.clear();
+    _trackerIDs = trackerIds;
+
+    for (var tid in trackerIds) {
       var option = await TrackOption.load(tid);
-      trackOptions.add(option);
-      trackers.add(Tracker(id ?? '', option));
+      _trackOptions.add(option);
+    }
+    EventManager.dispatchUpdate(UpdateEvent(EventType.trackerAdded));
+  }
+
+  Future<List<TrackOption>> getTrackOptions() async {
+    if (_trackOptions.isNotEmpty) return _trackOptions;
+
+    _trackers.clear();
+    for (var tid in _trackerIDs) {
+      var option = await TrackOption.load(tid);
+      _trackOptions.add(option);
+      _trackers.add(Tracker(id ?? '', option));
     }
 
-    return trackOptions;
-    //return trackerIDs.map((e) => await TrackOption.getOption(e)).toList();
+    return _trackOptions;
+  }
+
+  List<Tracker> getTrackers() {
+    if (_trackers.isNotEmpty) return _trackers;
+
+    for (var option in _trackOptions) {
+      _trackers.add(Tracker(id ?? '', option));
+    }
+    return _trackers;
   }
 
   Future<List<DataLog>> getDataLogs(DateTime start, DateTime end) async {
@@ -82,6 +119,8 @@ class Trackable {
 
   Future save() async {
     CollectionReference collection = getCollection();
+
+
     if (id != null) {
       Map<dynamic, dynamic> map = toJson();
       collection
@@ -127,15 +166,11 @@ class Trackable {
     title = json['title'];
 
     // set trackerIDs to json
-    trackerIDs =
-        json['trackerIDs'] != null ? List.from(json['trackerIDs']) : [];
+    _trackerIDs = json['trackerIDs'] != null ? List.from(json['trackerIDs']) : [];
   }
 
   Map<dynamic, dynamic> toJson() => <String, dynamic>{
         'title': title,
-        'trackerIDs': trackOptions
-            .where((element) => element.id?.isNotEmpty == true)
-            .map((e) => e.id)
-            .toList(),
+        'trackerIDs': _trackerIDs,
       };
 }
