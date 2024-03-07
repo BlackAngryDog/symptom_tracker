@@ -71,14 +71,17 @@ class _DataTimeLineState extends State<DataTimeLine> {
     List<LogTimeLineEntry> events = List.from(_data);
     List<LogTimeLineItem> entries = [];
     //var entryDate = DateTime.now();
-    while (entries.length < numDays) {
-      var nextDate = DateTime.now().subtract(Duration(days: entries.length));
+    for (i; i < numDays; i++) {
+      var nextDate = DateTime.now().subtract(Duration(days: i));
       var entriesForDay = events
           .where((element) =>
               element.date.difference(nextDate).inDays == 0)
           .toList();
 
+      entries.add(LogTimeLineItem(nextDate, const []));
+
       if (entriesForDay.isNotEmpty) {
+
         entries.add(LogTimeLineItem(nextDate, entriesForDay, comparisonLog: _data));
 
         for (var entry in entriesForDay) {
@@ -88,7 +91,7 @@ class _DataTimeLineState extends State<DataTimeLine> {
         continue;
       }
 
-      entries.add(LogTimeLineItem(nextDate, const []));
+
     }
 
     //var dataCopy = Map.castFrom(_data);

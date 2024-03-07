@@ -51,12 +51,9 @@ class LogTimeLineItem extends StatelessWidget {
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: 30,
-        child: Expanded(
-          child: Text("${entry.title} ${entry.advChange > 0
-              ? "+${entry.advChange.toString()}"
-              : entry.advChange.toString()}" ?? "", textAlign: entry.advChange < 0 ? TextAlign.start : TextAlign.end),
-
-        ),
+        child: Text("${entry.title} ${entry.advChange > 0
+            ? "+${entry.advChange.toString()}"
+            : entry.advChange.toString()}" ?? "", textAlign: entry.advChange < 0 ? TextAlign.start : TextAlign.end),
       ),
     );
 
