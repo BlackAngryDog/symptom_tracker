@@ -20,6 +20,7 @@ class TrackerOptionsPage extends StatefulWidget {
 class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
   List<DietOptionItem> options = [];
 
+  /*
   void _addTrackerPopup(BuildContext ctx) {
     var value = TrackOption();
     showModalBottomSheet(
@@ -30,6 +31,26 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
             onTap: () {},
             behavior: HitTestBehavior.opaque,
             child: AddTracker(_addTracker, value),
+          );
+        });
+  }
+  */
+
+  void _addTrackerPopup(BuildContext ctx) {
+    var value = TrackOption();
+    showModalBottomSheet(
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        context: ctx,
+        isScrollControlled: true,
+        builder: (_) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: GestureDetector(
+              onTap: () {},
+              behavior: HitTestBehavior.opaque,
+              child: AddTracker(_addTracker, value),
+            ),
           );
         });
   }
@@ -140,59 +161,75 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
         ],
       ),
       body: SafeArea(
-        child: SizedBox(
-          height: MediaQuery.of(context).copyWith().size.height,
-          child: StreamBuilder<QuerySnapshot>(
-              stream: TrackOption.getCollection().orderBy('title').snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else {
-                  options = snapshot.data?.docs.map((doc) {
-                    return DietOptionItem<TrackOption>(
-                        false,
-                        TrackOption.fromJson(
-                            doc.id, doc.data() as Map<String, dynamic>));
-                  }).toList() as List<DietOptionItem>;
+        child: StreamBuilder<QuerySnapshot>(
+            stream: TrackOption.getCollection().orderBy('title').snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                options = snapshot.data?.docs.map((doc) {
+                  return DietOptionItem<TrackOption>(
+                      false,
+                      TrackOption.fromJson(
+                          doc.id, doc.data() as Map<String, dynamic>));
+                }).toList() as List<DietOptionItem>;
 
-                  return FutureBuilder<List<DietOptionItem>>(
-                      future: _getData(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView(
-                            children: options,
-                          );
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      });
-                }
-              }),
+                return FutureBuilder<List<DietOptionItem>>(
+                    future: _getData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView(
+                          children: options,
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    });
+              }
+            }),
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          //showTrackingOptions(context);
+        },
+        tooltip: 'Increment',
+        mini: true,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation:
+      FloatingActionButtonLocation.miniCenterDocked,
+
+      bottomNavigationBar: BottomAppBar(
+        notchMargin: 3,
+        height: 60,
+        elevation: 10,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: <Widget>[
+            ElevatedButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            const Spacer(),
+            ElevatedButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                initialiseTrackable(context);
+              },
+            ),
+          ],
         ),
-      ),
-      floatingActionButton: ButtonBar(
-        children: <Widget>[
-          ElevatedButton(
-            child: const Text('Next'),
-            onPressed: () {
-              // GOTO INITIAL SETUP FOR TRACKERS -
-              //showInitialSettingsPopup(context, 1);
-              initialiseTrackable(context);
-            },
-          ),
-          ElevatedButton(
-            child: const Text('Back'),
-            onPressed: () {
-              // To do - pop nav
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
+
+
+
     );
   }
 
