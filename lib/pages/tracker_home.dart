@@ -196,7 +196,7 @@ class _TrackerPageState extends State<TrackerPage> {
 
         ),
       ),
-
+/*
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showTrackingOptions(context);
@@ -208,6 +208,8 @@ class _TrackerPageState extends State<TrackerPage> {
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniCenterDocked,
 
+
+ */
       bottomNavigationBar: BottomAppBar(
         notchMargin: 3,
         height: 60,

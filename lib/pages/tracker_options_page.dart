@@ -114,6 +114,13 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
   }
 
   Future<List<DietOptionItem>> _getData() async {
+    var dataList = await TrackOption.getOptions();
+    options = dataList.map((option) {
+      return DietOptionItem<TrackOption>(
+          false,
+          option);
+    }).toList();
+
     List<TrackOption> entries = await widget._trackable.getTrackOptions();
 
     if (entries.isEmpty) return options;
@@ -161,54 +168,30 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
         ],
       ),
       body: SafeArea(
-        child: StreamBuilder<QuerySnapshot>(
-            stream: TrackOption.getCollection().orderBy('title').snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                options = snapshot.data?.docs.map((doc) {
-                  return DietOptionItem<TrackOption>(
-                      false,
-                      TrackOption.fromJson(
-                          doc.id, doc.data() as Map<String, dynamic>));
-                }).toList() as List<DietOptionItem>;
-
-                return FutureBuilder<List<DietOptionItem>>(
-                    future: _getData(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return ListView(
-                          children: options,
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    });
-              }
-            }),
+        child: SizedBox(
+          height: MediaQuery.of(context).copyWith().size.height,
+          child: FutureBuilder<List<DietOptionItem>>(
+                      future: _getData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView(
+                            children: options,
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
+        ),
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //showTrackingOptions(context);
-        },
-        tooltip: 'Increment',
-        mini: true,
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation:
-      FloatingActionButtonLocation.miniCenterDocked,
 
       bottomNavigationBar: BottomAppBar(
-        notchMargin: 3,
-        height: 60,
-        elevation: 10,
-        padding: const EdgeInsets.all(16),
+        //notchMargin: 3,
+       // height: 60,
+        //elevation: 10,
+        //padding: const EdgeInsets.all(16),
         child: Row(
           children: <Widget>[
             ElevatedButton(
@@ -216,6 +199,13 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
+            ),
+            const Spacer(),
+            IconButton(
+                onPressed: () {
+                    _addTrackerPopup(context);
+                },
+                icon:  const Icon(Icons.add),
             ),
             const Spacer(),
             ElevatedButton(
@@ -226,11 +216,25 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
             ),
           ],
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-
+      ),
+      
+    ); // This trailing comma makes auto-formatting nicer for build methods.
+/*
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _addTrackerPopup(context);
+        },
+        tooltip: 'Increment',
+        mini: true,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation:
+      FloatingActionButtonLocation.miniEndFloat,
 
 
     );
+
+ */
   }
 
   void initialiseTrackable(BuildContext context) {
