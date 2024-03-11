@@ -82,12 +82,18 @@ class _AddTrackerState extends State<AddTracker> {
   }
 
   void prevState(){
+
+    if (state == States.tile){
+      Navigator.of(context).pop();
+      return;
+    }
+
     nextState(back:true);
   }
 
   void nextState({bool back = false}){
 
-    if (state == States.summery){
+    if (!back && state == States.summery){
       OnSubmitTracker();
       return;
     }

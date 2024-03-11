@@ -8,6 +8,8 @@ import 'package:symptom_tracker/pages/tracker_home.dart';
 import 'package:symptom_tracker/popups/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/diet_option_item.dart';
 
+import '../widgets/track_option_item.dart';
+
 
 class TrackerOptionsPage extends StatefulWidget {
   final Trackable _trackable;
@@ -18,23 +20,15 @@ class TrackerOptionsPage extends StatefulWidget {
 }
 
 class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
-  List<DietOptionItem> options = [];
+  List<TrackOptionItem> _options = [];
+  List<TrackOption> _activeOptions = [];
 
-  /*
-  void _addTrackerPopup(BuildContext ctx) {
-    var value = TrackOption();
-    showModalBottomSheet(
-        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-        context: ctx,
-        builder: (_) {
-          return GestureDetector(
-            onTap: () {},
-            behavior: HitTestBehavior.opaque,
-            child: AddTracker(_addTracker, value),
-          );
-        });
+  @override
+  void initState() {
+    super.initState();
+    _updateOptions();
   }
-  */
+
 
   void _addTrackerPopup(BuildContext ctx) {
     var value = TrackOption();
@@ -56,35 +50,9 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
   }
 
   void _addTracker(TrackOption option) {
-    // DatabaseTools.testFirestore();
-
-    setState(() {
-      // TODO - CREATE A NEW TRACKER IN THE TRACKABLE (NEEDS POPUP FOR PARAMS)
-
-      option.save();
-
-      //Tracker tracker = value;
-      //tracker.trackableID = widget._trackable.id ?? 'default';
-      //tracker.save();
-    });
+    _activeOptions.add(option);
+    _updateOptions();
   }
-
-/*
-  Future<List<DietOptionItem>> _getData() async {
-    DataLog? log = await widget._trackable.getLastEntry(false);
-
-    // SELECT OPTIONS FROM DATA
-    final test = log?.value;
-
-    for (var entry in test.entries) {
-      DietOptionItem? option = options.where((element) => element.item.title == entry.key).firstOrNull;
-      option?.selected = entry.value;
-    }
-
-    return options;
-  }
-
- */
 
   void showInitialSettingsPopup(BuildContext context, int index) {
     showDialog(
@@ -113,32 +81,36 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
         });
   }
 
-  Future<List<DietOptionItem>> _getData() async {
+  Future _updateOptions() async {
+    _options = await _getData();
+    setState(() {});
+  }
+
+  Future<List<TrackOptionItem>> _getData() async {
     var dataList = await TrackOption.getOptions();
-    options = dataList.map((option) {
-      return DietOptionItem<TrackOption>(
+    _options = dataList.map((option) {
+      return TrackOptionItem<TrackOption>(
           false,
           option);
     }).toList();
 
-    List<TrackOption> entries = await widget._trackable.getTrackOptions();
+    _activeOptions = _activeOptions.isEmpty
+        ? await widget._trackable.getTrackOptions()
+        : _activeOptions;
 
-    if (entries.isEmpty) return options;
+    if (_activeOptions.isEmpty) return _options;
 
     int index = 0;
-
-    for (TrackOption entry in entries) {
-      DietOptionItem? option = options
+    for (TrackOption entry in _activeOptions) {
+      TrackOptionItem? option = _options
           .where((element) => element.item.title == entry.title)
           .firstOrNull;
       option?.selected = true;
       option?.order = index++;
     }
 
-    // TODO - add order to diet options and make sure it's saved with the option - can this be loaded from tracker screen just for consistency
-
     // sort options on selected and order
-    options.sort((a, b) {
+    _options.sort((a, b) {
       if (a.selected == b.selected) {
         return a.order.compareTo(b.order);
       } else {
@@ -146,9 +118,7 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
       }
     });
 
-
-
-    return options;
+    return _options;
   }
 
   @override
@@ -170,22 +140,11 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
       body: SafeArea(
         child: SizedBox(
           height: MediaQuery.of(context).copyWith().size.height,
-          child: FutureBuilder<List<DietOptionItem>>(
-                      future: _getData(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView(
-                            children: options,
-                          );
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      }),
+          child: (_options.isEmpty)
+              ? const Center(child: CircularProgressIndicator())
+              : ListView(children: _options)
         ),
       ),
-
 
       bottomNavigationBar: BottomAppBar(
         //notchMargin: 3,
@@ -218,27 +177,12 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
         ),
       ),
       
-    ); // This trailing comma makes auto-formatting nicer for build methods.
-/*
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _addTrackerPopup(context);
-        },
-        tooltip: 'Increment',
-        mini: true,
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation:
-      FloatingActionButtonLocation.miniEndFloat,
-
-
     );
 
- */
   }
 
   void initialiseTrackable(BuildContext context) {
-    widget._trackable.loadTrackOptions(options
+    widget._trackable.loadTrackOptions(_options
         .where((element) => element.selected == true)
         .map((value) => value.item.id.toString())
         .toList());

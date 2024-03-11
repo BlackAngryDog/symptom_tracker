@@ -44,12 +44,6 @@ class _ValueTrackerWeekInfoState
           alignment: Alignment.center,
           children: [
             FittedBox(
-              child: Padding(
-                padding: const EdgeInsets.all(1.0),
-                child: Icon(widget.trendIcons[index]),
-              ),
-            ),
-            FittedBox(
               fit: BoxFit.contain,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),

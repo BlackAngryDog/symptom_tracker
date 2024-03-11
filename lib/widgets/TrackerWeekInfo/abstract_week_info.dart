@@ -183,7 +183,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           if (icon != null)
                             Padding(
@@ -193,24 +193,27 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
                                 size: 24,
                               ),
                             ),
-                          Text(widget._tracker.option.title ?? "",
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.start),
-                          Row(
-                            children: [
-                              IconButton(
-                                  onPressed: () => {_editTrackerPopup(context)},
-                                  icon: const Icon(Icons.edit)),
-                              IconButton(
-                                  onPressed: () => {_showHistory(context)},
-                                  icon: const Icon(Icons.history)),
-                            ],
-                          )
+                          FittedBox(
+                            // This should be making text fit this content
+                            fit: BoxFit.contain,
+                            child: Text(widget._tracker.option.title ?? "",
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.start),
+                          ),
+                          const Spacer(),
+
+                          IconButton(
+                              onPressed: () => {_editTrackerPopup(context)},
+                              icon: const Icon(Icons.edit)),
+                          IconButton(
+                              onPressed: () => {_showHistory(context)},
+                              icon: const Icon(Icons.history)),
+
                         ],
                       ),
-                      SizedBox(
-                        height: 40.0,
+                      Flexible(
+                        flex: 3,
+
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -230,6 +233,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
   Widget getChild(int index) {
     var v = widget.currValues[index];
     return Expanded(
+
       flex: 1,
       child: Padding(
         padding: const EdgeInsets.all(2.0),
@@ -247,9 +251,10 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     return AspectRatio(
       aspectRatio: 1,
       child: Container(
+
         // add a box decoration with round corners
         decoration: getContainerDecoration(index),
-        alignment: Alignment.center,
+        alignment: Alignment.bottomCenter,
 
         child: const Stack(
           fit: StackFit.expand,
