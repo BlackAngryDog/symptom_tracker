@@ -153,25 +153,25 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
         //padding: const EdgeInsets.all(16),
         child: Row(
           children: <Widget>[
-            ElevatedButton(
-              child: const Text('Cancel'),
+            IconButton.filled(
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              icon: const Icon(Icons.cancel),
             ),
             const Spacer(),
-            IconButton(
+            IconButton.filled(
                 onPressed: () {
                     _addTrackerPopup(context);
                 },
                 icon:  const Icon(Icons.add),
             ),
             const Spacer(),
-            ElevatedButton(
-              child: const Text('Ok'),
+            IconButton.filled(
               onPressed: () {
                 initialiseTrackable(context);
               },
+              icon: const Icon(Icons.check),
             ),
           ],
         ),
