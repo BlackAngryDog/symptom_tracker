@@ -20,7 +20,7 @@ class TrackableItem extends StatelessWidget {
       Trackable.load(item.id??"").then((value) => {
         EventManager.selectedTarget = value,
         Navigator.pop(ctx, item),
-        EventManager.dispatchUpdate(UpdateEvent(EventType.trackableChaned)),
+        EventManager.dispatchUpdate(UpdateEvent(EventType.trackableChanged)),
       });
 
      //  */

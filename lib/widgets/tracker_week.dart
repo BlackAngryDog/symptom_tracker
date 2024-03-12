@@ -11,6 +11,13 @@ import '../model/event_manager.dart';
 import '../model/tracker.dart';
 import 'TrackerWeekInfo/week_info_grid.dart';
 
+class TrackerVO {
+  final Tracker tracker;
+  final List<String> values;
+
+  TrackerVO(this.tracker, this.values);
+}
+
 class TrackerWeek extends StatefulWidget {
   const TrackerWeek({Key? key}) : super(key: key);
 
@@ -21,16 +28,18 @@ class TrackerWeek extends StatefulWidget {
 class _TrackerWeekState extends State<TrackerWeek> {
   var daysOfWeek = <String>['Mo', 'Tu', 'We', 'Tu', 'Fr', 'Sa', 'Su'];
   late StreamSubscription trackerSubscription;
-  Map<Tracker,List<String>> trackerValues = {};
+  //Map<Tracker, List<String>> trackerValues = {};
+  final List<TrackerVO> trackerValues = [];
+  late DateTime currDate;
 
   @override
   initState() {
+    currDate = DateTime.now();
     super.initState();
 
     trackerSubscription = EventManager.stream.listen((event) {
-
       if (event.event == EventType.trackerAdded ||
-          event.event == EventType.trackableChaned) {
+          event.event == EventType.trackableChanged) {
         setState(() {
           trackerValues.clear();
           //getTrackerValues(DateTime.now());
@@ -40,47 +49,53 @@ class _TrackerWeekState extends State<TrackerWeek> {
   }
 
 
-
   @override
   void dispose() {
     super.dispose();
     trackerSubscription.cancel();
   }
 
-  Future<Map<Tracker,List<String>>> getTrackerValues(DateTime trackerDate, {int numDays = 7}) async
+  Future<List<TrackerVO>> getTrackerValues(DateTime trackerDate,
+      {int numDays = 7}) async
   {
 
-    LinkedHashMap<Tracker,List<String>> values = LinkedHashMap();
+    if (currDate.difference(trackerDate).inDays != 0) trackerValues.clear();
+
+    if (trackerValues.isNotEmpty) return trackerValues;
+
+    currDate = trackerDate;
+
     var trackers = EventManager.selectedTarget.getTrackers();
     if (trackers.isEmpty)
-      await EventManager.selectedTarget.getTrackOptions();
-
-    // sort the trackers based on the tracker.option.order
-    //trackers.sort((a, b) => a.option.order.compareTo(b.option.order));
-
-    for (var tracker in trackers)
     {
+      await EventManager.selectedTarget.getTrackOptions();
+    }
 
+    for (var tracker in trackers) {
       int i = 0;
       //tracker.option.order = trackerValues.length;
-      values.putIfAbsent(tracker, () => []);
+      //values.putIfAbsent(tracker, () => []);
+      var vo = TrackerVO(tracker, []);
+
 
       while (i < numDays) {
         var date = trackerDate.add(Duration(days: -i));
         var currValue = await tracker.getValue(day: date);
-        values[tracker]?.add(currValue);
+        vo.values.add(currValue);
         i++;
       }
-
+      trackerValues.add(vo);
     }
-    trackerValues.addAll(values);
-
     return trackerValues;
   }
 
   Widget getWeek(DateTime date) {
     return SizedBox(
-      height: MediaQuery.of(context).copyWith().size.height,
+      height: MediaQuery
+          .of(context)
+          .copyWith()
+          .size
+          .height,
       child: Padding(
         padding: const EdgeInsets.only(left: 8, right: 8),
         child: Column(
@@ -95,58 +110,39 @@ class _TrackerWeekState extends State<TrackerWeek> {
             Expanded(
               flex: 9,
               // Load Trackers
-              child: FutureBuilder<Map<Tracker,List<String>>>(
+              child: FutureBuilder<List<TrackerVO>>(
                 future: getTrackerValues(date),
                 builder: (context, snapshot) {
-
-                  if (trackerValues.entries.isNotEmpty == true) {
+                  if (trackerValues.isNotEmpty == true) {
                     return ReorderableListView(
                       onReorder: (oldIndex, newIndex) {
-                       //
-                          if (newIndex > oldIndex) {
-                            newIndex -= 1;
-                          }
+                        //
+                        if (newIndex > oldIndex) {
+                          newIndex -= 1;
+                        }
 
-                          var preoptions = trackerValues.entries.map((tracker) {
-                            return tracker.key.option.id.toString();
-                          }).toList();
+                        var preoptions = trackerValues.map((vo) {
+                          return vo.tracker.option.id.toString();
+                        }).toList();
 
-                          final String item = preoptions.removeAt(oldIndex);
-                          preoptions.insert(newIndex, item);
+                        final String item = preoptions.removeAt(oldIndex);
+                        preoptions.insert(newIndex, item);
+                        // create an anonymous async Future
 
-                          EventManager.selectedTarget.loadTrackOptions(preoptions);
-                          EventManager.selectedTarget.save(); // Save the data to tracker
+                        EventManager.selectedTarget.saveTrackIDs(preoptions);
+                        setState(() {
+                          var child = trackerValues.removeAt(oldIndex);
+                          trackerValues.insert(newIndex, child);
+                        });
 
 
-                          // TODO - can theis be done after loading option data - if we use trakerbale info
-                          /*
-                          for (var tag in preoptions) {
-                            // Save order to the track-options list
-                            var option = trackerValues.entries.where((element) => element.key.option.id.toString() == tag).first.key.option;
-                            option.order = preoptions.indexOf(tag);
-                            option.save();
-                          }
-
-                           */
-
-                          setState(() {
-                            trackerValues.clear();
-                            // TODO - Work out a way to be able to re-order data by using list rather than map
-                            //final item = trackerValues.entries.removeAt(oldIndex);
-                            //trackerValues.entries.insert(newIndex, item);
-                          });
                       },
-                      children: trackerValues.entries.map((tracker) {
-                        return TrackerWeekInfo(tracker.key, date, tracker.value, key: GlobalKey());
+                      children: trackerValues.map((vo) {
+                        return TrackerWeekInfo(
+                            vo.tracker, date, vo.values, key: GlobalKey());
                       }).toList(),
                     );
 
-                      ListView(
-                      shrinkWrap: true,
-                      children: trackerValues.entries.map((tracker) {
-                        return TrackerWeekInfo(tracker.key, date, tracker.value);
-                      }).toList(),
-                    );
                   } else {
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -172,7 +168,10 @@ class _TrackerWeekState extends State<TrackerWeek> {
 
     return CarouselSlider.builder(
       options: CarouselOptions(
-        height: MediaQuery.of(context).size.height,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
         aspectRatio: 16 / 9,
         viewportFraction: 1,
         initialPage: 0,
@@ -186,138 +185,12 @@ class _TrackerWeekState extends State<TrackerWeek> {
       itemCount: 15,
       itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) =>
           Container(
-        child: getWeek(
-          DateTime.now().subtract(Duration(days: itemIndex * 7)),
-        ),
-      ),
-    );
-    /*
-    return CarouselSlider(
-      options: CarouselOptions(
-        height: MediaQuery.of(context).size.height,
-        aspectRatio: 16 / 9,
-        viewportFraction: 1,
-        initialPage: 0,
-        enableInfiniteScroll: false,
-        reverse: true,
-        autoPlay: false,
-        enlargeCenterPage: true,
-        enlargeFactor: 0.3,
-        onPageChanged: callbackFunction,
-        scrollDirection: Axis.horizontal,
-      ),
-        CarouselSlider.builder(
-          itemCount: 15,
-          itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) =>
-              Container(
-                child: Text(itemIndex.toString()),
-              ),
-        )
-      items: [1, 2, 3, 4, 5].map((i) {
-        return Builder(
-          builder: (BuildContext context) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: BoxDecoration(color: Colors.amber),
-              child: getWeek(
-                DateTime.now().subtract(Duration(days: 10 - i * 7)),
-              ),
-            );
-          },
-        );
-      }).toList(),
-    );
-
-
-     */
-    /*child: FirebaseDatabaseListView(
-        query: DatabaseTools.getRef(Tracker().getEndpoint()),
-        itemBuilder: (context, snapshot) {
-          Tracker tracker = Tracker.fromJson(
-              snapshot.key, snapshot.value as Map<String, dynamic>);
-          return TrackerItem(tracker);
-        },
-      ),
-
-       */
-  }
-  /*
-  @override
-  Widget build(BuildContext context) {
-
-    var daysOfWeek = <String>[
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday'
-    ];
-
-    return GestureDetector(
-
-      onHorizontalDragEnd: (dragDetail) {
-        if (dragDetail.velocity.pixelsPerSecond.dx < 1) {
-          print("right");
-        } else {
-          print("left");
-        }
-      },
-
-
-
-      child: Container(
-        color: const Color.fromARGB(0,100,0,0),
-        height: MediaQuery.of(context).copyWith().size.height,
-        child: StreamBuilder<QuerySnapshot>(
-          stream: DataLog.getCollection(widget.trackable.id ?? "Default")
-              .orderBy('time', descending: true)
-              .startAt([
-            DateTime.now().subtract(const Duration(days: 7))
-          ]).endAt([DateTime.now()]).snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              // create a days of the week container
-              return ListView.builder(
-                  itemCount: daysOfWeek.length,
-                  itemBuilder: (_, index) {
-                    bool isSameDate = true;
-
-                    final item = daysOfWeek[index];
-                    final currDay = DateTime.now().weekday;
-
-                    return Container(
-                      color: const Color.fromARGB(100,100,0,0),
-                      child: Column(children: [
-
-                        // get day of week as a string
-                        Text(
-                          item,
-                          style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        Column(
-                          children: _trackers.map((doc) {
-                            return TrackerControls(
-                                doc,
-                                DateTime.now()
-                                    .add(Duration(days: index - currDay)));
-                          }).toList(),
-                        ),
-                      ]),
-                    );
-                  });
-            }
-          },
-        ),
-      ),
+            child: getWeek(
+              DateTime.now().subtract(Duration(days: itemIndex * 7))
+            ),
+          ),
     );
   }
-  */
 }
+
+

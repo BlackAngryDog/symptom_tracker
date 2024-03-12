@@ -182,12 +182,11 @@ class _TrackerOptionsPageState extends State<TrackerOptionsPage> {
   }
 
   void initialiseTrackable(BuildContext context) {
-    widget._trackable.loadTrackOptions(_options
+    widget._trackable.saveTrackIDs(_options
         .where((element) => element.selected == true)
         .map((value) => value.item.id.toString())
         .toList());
 
-    widget._trackable.save();
     Navigator.of(context).pop();
 
   }

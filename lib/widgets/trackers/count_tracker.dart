@@ -71,51 +71,49 @@ class _ValueTrackerState extends State<CountTracker> {
         child: ListTile(
           title: Text(widget._tracker.option.title ?? ""),
           subtitle: Text(subtitle),
-          trailing: Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+          trailing: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
 
-                IconButton(
-                  onPressed: () {
-                    if (currValue > 0)
-                      updateData(-1);
-                  },
-                  icon: const Icon(Icons.remove),
-                ),
-                IconButton(
-                  onPressed: () {
-                    showNumPad();
-                  },
-                  icon: const Icon(Icons.edit),
-                ),
-                IconButton(
-                  onPressed: () {
-                      updateData(1);
-                  },
-                  icon: const Icon(Icons.add),
-                ),
-                /*PopupMenuButton(
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text('Edit'),
-                      ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Text('Delete'),
-                      )
-                    ];
-                  },
-                  onSelected: (String value) {
-                    print('You Click on po up menu item');
-                  },
-                )*/
-              ],
-            ),
+              IconButton(
+                onPressed: () {
+                  if (currValue > 0)
+                    updateData(-1);
+                },
+                icon: const Icon(Icons.remove),
+              ),
+              IconButton(
+                onPressed: () {
+                  showNumPad();
+                },
+                icon: const Icon(Icons.edit),
+              ),
+              IconButton(
+                onPressed: () {
+                    updateData(1);
+                },
+                icon: const Icon(Icons.add),
+              ),
+              /*PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      value: 'edit',
+                      child: Text('Edit'),
+                    ),
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Text('Delete'),
+                    )
+                  ];
+                },
+                onSelected: (String value) {
+                  print('You Click on po up menu item');
+                },
+              )*/
+            ],
           ),
         ),
       ),

@@ -40,7 +40,7 @@ class _TrackerPageState extends State<TrackerPage> {
   void initState() {
     super.initState();
     trackerSubscription = EventManager.stream.listen((event) {
-      if (event.event == EventType.trackableChaned)
+      if (event.event == EventType.trackableChanged)
       {
         setState(() {});
       }

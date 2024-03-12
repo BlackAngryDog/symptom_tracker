@@ -61,6 +61,7 @@ class Trackable {
     EventManager.dispatchUpdate(UpdateEvent(EventType.trackerAdded));
   }
 
+  /*
   Future loadTrackOptions(List<String> trackerIds) async {
     _trackOptions.clear();
     _trackers.clear();
@@ -71,6 +72,14 @@ class Trackable {
       _trackOptions.add(option);
     }
     EventManager.dispatchUpdate(UpdateEvent(EventType.trackerAdded));
+  }
+  */
+
+  Future saveTrackIDs(List<String> trackerIds) async {
+    _trackOptions.clear();
+    _trackers.clear();
+    _trackerIDs = trackerIds;
+    await save();
   }
 
   Future<List<TrackOption>> getTrackOptions() async {
