@@ -70,7 +70,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
     {
       await EventManager.selectedTarget.getTrackOptions();
     }
-
+    var values = <TrackerVO>{};
     for (var tracker in trackers) {
       int i = 0;
       //tracker.option.order = trackerValues.length;
@@ -84,8 +84,9 @@ class _TrackerWeekState extends State<TrackerWeek> {
         vo.values.add(currValue);
         i++;
       }
-      trackerValues.add(vo);
+      values.add(vo);
     }
+    trackerValues.addAll(values);
     return trackerValues;
   }
 

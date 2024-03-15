@@ -10,6 +10,7 @@ import 'package:symptom_tracker/pages/diet_options_page.dart';
 import 'package:symptom_tracker/pages/trackable_selection_page.dart';
 import 'package:symptom_tracker/pages/tracker_history.dart';
 import 'package:symptom_tracker/pages/tracker_options_page.dart';
+import 'package:symptom_tracker/popups/add_note_popup.dart';
 import 'package:symptom_tracker/popups/add_tracker_popup.dart';
 import 'package:symptom_tracker/widgets/appbar_popup_menu_button.dart';
 import 'package:symptom_tracker/widgets/bottom_tracker_panel.dart';
@@ -47,8 +48,8 @@ class _TrackerPageState extends State<TrackerPage> {
     });
   }
 
-  void _addTrackerPopup(BuildContext ctx) {
-    var value = TrackOption();
+  void _addNote(BuildContext ctx) {
+  
     showModalBottomSheet(
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
         context: ctx,
@@ -60,14 +61,10 @@ class _TrackerPageState extends State<TrackerPage> {
             child: GestureDetector(
               onTap: () {},
               behavior: HitTestBehavior.opaque,
-              child: AddTracker(_addTracker, value),
+              child: const AddNote(),
             ),
           );
         });
-  }
-
-  void _addTracker(TrackOption value) {
-    EventManager.selectedTarget.AddTrackOption(value);
   }
 
   void showHistory(BuildContext ctx) {
@@ -196,10 +193,10 @@ class _TrackerPageState extends State<TrackerPage> {
 
         ),
       ),
-/*
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showTrackingOptions(context);
+          _addNote(context);
         },
         tooltip: 'Increment',
         mini: true,
@@ -209,7 +206,7 @@ class _TrackerPageState extends State<TrackerPage> {
           FloatingActionButtonLocation.miniCenterDocked,
 
 
- */
+ 
       bottomNavigationBar: BottomAppBar(
         notchMargin: 3,
         height: 60,

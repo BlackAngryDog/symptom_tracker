@@ -60,6 +60,8 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
         return DietTrackerWeekInfo(
             _selectedTracker!, widget.date);
       default:
+      // TODO - ADD Duration - like value but with time
+      // TODO - Add SEVERITY like quality but with a scale
         return ValueTrackerWeekInfo(
             _selectedTracker!, widget.date, widget.data);
     }
