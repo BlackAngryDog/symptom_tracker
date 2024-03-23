@@ -4,7 +4,7 @@ import 'package:icon_picker/icon_picker.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 
-import '../model/track_option.dart';
+import '../model/database_objects/track_option.dart';
 
 class AddTracker extends StatefulWidget {
   //const AddTransaction({ Key? key }) : super(key: key);

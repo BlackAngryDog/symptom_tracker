@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
-import 'package:symptom_tracker/model/data_log.dart';
-import 'package:symptom_tracker/model/track_option.dart';
+import 'package:symptom_tracker/model/database_objects/data_log.dart';
+import 'package:symptom_tracker/model/database_objects/track_option.dart';
 
 // discribes the setup of the tracker and creates log entries
 class Tracker {
@@ -40,7 +40,7 @@ class Tracker {
     log ??= DataLog(option.id ?? "", date, value: value);
     log.time = date;
     log.value = value;
-    log.save(trackableID);
+    log.save();
   }
 
   // get data from logs for day ?
@@ -55,7 +55,7 @@ class Tracker {
 
   Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
     if (trackableID == '') return [];
-    return DataLog.getCollection(trackableID)
+    return DataLog.collection(trackableID)
         .where('optionID', isEqualTo: option.id ?? '')
         .where('time', isGreaterThanOrEqualTo: start)
         .where('time', isLessThanOrEqualTo: end)
@@ -71,7 +71,7 @@ class Tracker {
   Future<DataLog?> _getFirstEntry() async {
     if (trackableID == '') return null;
 
-    return DataLog.getCollection(trackableID)
+    return DataLog.collection(trackableID)
         .where('optionID', isEqualTo: option.id ?? '')
         .orderBy('time', descending: false)
         .limit(1)
@@ -91,7 +91,7 @@ class Tracker {
     var start =
         dateOnly == true ? (date ?? DateTime.now()).startOfDay : DateTime(2000);
 
-    return DataLog.getCollection(trackableID)
+    return DataLog.collection(trackableID)
         .where('optionID', isEqualTo: option.id ?? '')
         .where('time', isGreaterThanOrEqualTo: start)
         .where('time', isLessThanOrEqualTo: end)
@@ -106,35 +106,6 @@ class Tracker {
     });
   }
 
-/*
-  Future<DataLog?> getLastEntry(bool today, {DateTime? before}) async {
-    if (trackableID == '') return null;
-
-    DateTime date = before ?? DateTime.now();
-
-    return await DataLog.getCollection(trackableID)
-        .where('time', isLessThanOrEqualTo: date)
-        .where('optionID', isEqualTo: option.id ?? '')
-        .limit(1)
-        .orderBy('time', descending: true)
-        .get()
-        .then((data) {
-      List<DataLog> log = data.docs.map((doc) {
-        return DataLog.fromJson(doc.id, doc.data() as Map<String, dynamic>);
-      }).toList();
-
-      if (log.lastOrNull == null) return null;
-
-      DataLog? lastEntry = log.lastOrNull;
-      DateTime time = lastEntry!.time;
-      Duration diff = date.difference(time);
-      //print('days diff is ${diff.inDays}');
-      if (today == true && diff.inDays >= 1) return null;
-
-      return log.lastOrNull;
-    });
-  }
-*/
   Type typeOf<T>() => T;
 
   // get value based on TrackerOption autofill property
@@ -163,24 +134,6 @@ class Tracker {
     return log;
   }
 
-  // get last value for this tracker
-  /*
-  Future<String> _getLastValue(bool today) async {
-    if (trackableID == '') return '';
-    DataLog? dataLog = await getLastEntry(today);
-    return dataLog?.value.toString() ?? '';
-  }
-  */
-
-/*
-  Future<String> getLastValueFor(DateTime day,
-      {bool includePrevious = true}) async {
-    if (trackableID == '') return '';
-    DataLog? dataLog = await getLastEntry(true, before: day.endOfDay);
-    return dataLog?.value.toString() ??
-        await getAutoFillValue(!includePrevious);
-  }
-*/
   Future<List<dynamic>> getValuesFor(DateTime start, DateTime end) async {
     if (trackableID == '') return [];
     List<DataLog> logs = await getLogs(start, end);

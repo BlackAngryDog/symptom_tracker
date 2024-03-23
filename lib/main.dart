@@ -4,15 +4,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart' as auth;
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/model/databaseTool.dart';
-import 'package:symptom_tracker/model/trackable.dart';
-import 'package:symptom_tracker/model/user.dart';
-import 'package:symptom_tracker/pages/trackable_selection_page.dart';
-import 'package:symptom_tracker/pages/tracker_home.dart';
+import 'package:symptom_tracker/services/database_service.dart';
+import 'package:symptom_tracker/model/database_objects/trackable.dart';
+import 'package:symptom_tracker/model/database_objects/user.dart';
+import 'package:symptom_tracker/views/pages/trackable_selection_page.dart';
+import 'package:symptom_tracker/views/pages/home/tracker_home.dart';
 import 'package:symptom_tracker/theme/theme.dart';
 
 import 'firebase_config.dart';
-import 'model/event_manager.dart';
+import 'managers/event_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,8 +69,8 @@ class AuthGate extends StatelessWidget {
         }
 
         // Load UserData
-        return FutureBuilder<UserVo>(
-          future: DatabaseTools.getUser(),
+        return FutureBuilder<UserVo?>(
+          future: DatabaseService.getUser(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               // Check if CurrTrackable set
@@ -80,6 +80,7 @@ class AuthGate extends StatelessWidget {
                 return const TrackableSelectionPage();
               } else {
                 // Open tracker summery page
+
                 return FutureBuilder<Trackable?>(
                     future:
                         Trackable.load(snapshot.data!.selectedID ?? 'default'),

@@ -57,7 +57,7 @@ extension DateTimeExt on DateTime {
     // TODO - Add format controls
     var dayFormat = DateFormat('d').format(date);
     var daySuffix = getDaySuffix(int.parse(dayFormat));
-    return DateFormat('EEEE').format(date) + ' ' + dayFormat + daySuffix;
+    return '${DateFormat('EEEE').format(date)} $dayFormat$daySuffix';
   }
 
   static String getDaySuffix(int day) {
