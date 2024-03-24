@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:icon_picker/icon_picker.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/services/tracker_service.dart';
 
 import '../model/database_objects/track_option.dart';
 
@@ -39,26 +40,13 @@ class _AddTrackerState extends State<AddTracker> {
   String? selectedIcon = "favorite";
 
 
-
+// Todo - get this from a constant
   List<DropdownMenuItem<String>> get dropdownItems {
-    List<DropdownMenuItem<String>> menuItems = [
-      const DropdownMenuItem(
-        value: "counter",
-        child: Text("counter"),
-      ),
-      const DropdownMenuItem(
-        value: "quality",
-        child: Text("quality"),
-      ),
-      const DropdownMenuItem(
-        value: "rating",
-        child: Text("satisfaction"),
-      ),
-      const DropdownMenuItem(
-        value: "value",
-        child: Text("value"),
-      ),
-    ];
+
+    List<DropdownMenuItem<String>> menuItems = TrackerTypes.values
+        .map((e) => DropdownMenuItem<String>(
+            value: e.toShortString(), child: Text(e.toShortString())))
+        .toList();
     return menuItems;
   }
 
