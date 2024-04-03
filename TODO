@@ -1,0 +1,79 @@
+TODO:
+
+Tutorial, how to use app and implement Onboarding for users.
+
+Traker screen:
+    remove edit and history buttons
+    add note button to lower popup
+    If quality - add daily count to tracker info (MVP - base trackers ?)
+    Could there be a severity picker for count ? - double popout ?
+    Add duration control
+
+Lower contex menu: - Need to maye data system dynamic to pull of symptom type as well as other data (tracker ID)
+    Add note
+    Add event
+    Add symptom
+    add diet option
+
+Symptom Add wizard:
+    Add model titles and help btn
+    Validation on each model
+    Change model base for input type
+    For quality, severity - add a toggle to also track quantity - how to show this in the UI & data?
+    More Icon options
+    Add more track type options, severity, duration, frequency, etc
+    Add more symptom type options, pain, fatigue, etc
+    Add more symptom location options, head, neck, etc
+    Add more symptom trigger options, stress, food, etc
+    Add more symptom relief options, rest, food, etc
+    Add more symptom treatment options, medication, therapy, etc
+    Add more symptom note options, etc
+    Add more symptom event options, etc
+
+Standardise bottom menu
+
+Food Add wizard:
+    Add model titles and help btn
+    Validation on each model
+    Change model base for input type
+    More Icon options
+    Add more food type options, meal, snack, etc
+    Add more food category options, fruit, veg, etcdw
+    Add more food trigger options, stress, food, etc
+    Add more food relief options, rest, food, etc
+    Add more food treatment options, medication, therapy, etc
+    Add more food note options, etc
+    Add more food event options, etc
+
+History
+    Duration Picker
+    Notes and events - roll over chart ?
+    Filters
+    Add more charts
+    Add more stats
+    Add more history options
+    Fix bar chart
+    Show diet (group with shades)
+    Diet data does not update with picker
+    Picker should trigger busy state for load - or animation ?
+
+ Localisation
+
+Select symptom menus:
+    Add Edit/info option in list item (MVP - base trackers ?)
+
+Timeline
+    filters ?
+    show change + value
+    show diet (group with shades)
+    show all events
+    show all notes
+    show all symptoms
+
+
+Reminders, events and calendar
+
+
+
+
+

@@ -109,7 +109,7 @@ class _DietChartState extends State<DietChart> {
     Tracker dietTracker = _selectedTarget.getDietTracker();
 
     // TODO - setup timeframe
-    DateTime start = DateTime.now().add(Duration(days: widget.duration));
+    DateTime start = DateTime.now().subtract(Duration(days: widget.duration));
     DateTime end = DateTime.now();
     List<DataLog> dietLogs = await dietTracker.getLogs(start, DateTime.now());
 

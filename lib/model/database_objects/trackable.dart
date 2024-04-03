@@ -32,7 +32,7 @@ class Trackable extends AbsSavable<Trackable>{
     _dietTracker = Tracker(
         id ?? '',
         TrackOption(
-            title: 'Diet Tracker', trackType: 'diet', autoFill: AutoFill.last));
+            id: "diet", title: 'Diet Tracker', trackType: 'diet', autoFill: AutoFill.last));
     return _dietTracker as Tracker;
   }
 

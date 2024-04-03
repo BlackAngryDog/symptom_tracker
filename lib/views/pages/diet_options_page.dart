@@ -43,14 +43,16 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
 
     // SELECT OPTIONS FROM DATA
     final test = log.value;
-
-    for (var entry in test!.entries) {
-      DietOptionItem? option = options
-          .where((element) => element.item.id == entry.key)
-          .firstOrNull;
-      option?.selected = entry.value;
+    try {
+      for (var entry in test!.entries) {
+        DietOptionItem? option = options
+            .where((element) => element.item.id == entry.key.toString())
+            .firstOrNull;
+        option?.selected = true ;
+      }
+    }catch (error ){
+      print('error');
     }
-
     return options;
   }
 
@@ -111,8 +113,8 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
             child: const Text('Save'),
             onPressed: () {
               // To do - save data
-              final result = Map.fromEntries(options
-                  .map((value) => MapEntry(value.item.id, value.selected)));
+              final result = Map.fromEntries(options.where((element) => element.selected == true)
+                  .map((value) => MapEntry(value.item.id, value.item.title)));
               EventManager.selectedTarget
                   .getDietTracker()
                   .updateLog(result, DateTime.now());

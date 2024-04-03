@@ -133,7 +133,7 @@ class DataProcessManager {
       //get combined name for this segment
       List<String> combo = [];
       for (var entry in dietLogs[i].value!.entries) {
-        if (entry.value == true) combo.add(entry.key);
+         combo.add(entry.value.toString());
       }
       var combined = combo.join(",");
       if (combo.length > 1) {
