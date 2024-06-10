@@ -46,6 +46,36 @@ class Trackable extends AbsSavable<Trackable>{
     return _weightTracker as Tracker;
   }
 
+  Future loadDefaultTrackers(List<TrackOption> options) async {
+    // setup default trackers, wright, diet, notes and events
+    var options = await getTrackOptions();
+    bool changed = false;
+    if (!options.any((x) => x.title == 'Weight')) {
+      await addTrackOption(TrackOption(title: 'Weight', trackType: 'weight', autoFill: AutoFill.last));
+      changed = true;
+    }
+
+    if (!options.any((x) => x.title == 'Diet Tracker')) {
+      await addTrackOption(TrackOption(title: 'Diet Tracker', trackType: 'diet', autoFill: AutoFill.last));
+      changed = true;
+    }
+
+    if (!options.any((x) => x.title == 'Notes')) {
+      await addTrackOption(TrackOption(title: 'Notes', trackType: 'notes', autoFill: AutoFill.last));
+      changed = true;
+    }
+
+    if (!options.any((x) => x.title == 'Events')) {
+      await addTrackOption(TrackOption(title: 'Events', trackType: 'events', autoFill: AutoFill.last));
+      changed = true;
+    }
+
+    if (changed) {
+     // var trackerIds = _trackOptions.map((e) => e.id).toList();
+      saveTrackIDs(_trackerIDs);
+    }
+  }
+
   Future addTrackOption(TrackOption option) async {
 
     if (option.id == null || _trackOptions.any((current) => current.id == option.id))  return;
@@ -128,7 +158,10 @@ class Trackable extends AbsSavable<Trackable>{
       (snapshot) async {
         var item =
             Trackable.fromJson(doc.id, snapshot.data() as Map<String, dynamic>);
-        await item.getTrackOptions();
+
+       ;
+        await item.loadDefaultTrackers(await item.getTrackOptions());
+
         return item;
       },
     ).catchError(
@@ -143,6 +176,8 @@ class Trackable extends AbsSavable<Trackable>{
     id = key;
     title = json['title'];
     _trackerIDs = json['trackerIDs'] != null ? List.from(json['trackerIDs']) : [];
+
+
   }
 
   @override
@@ -151,4 +186,6 @@ class Trackable extends AbsSavable<Trackable>{
       'title': title,
       'trackerIDs': _trackerIDs,
     };
+
+
 }

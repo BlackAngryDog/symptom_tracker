@@ -17,7 +17,13 @@ abstract class AbsSavable<T> implements ISavable{
       id != null
           ? getCollection().doc(id).set(toJson())
           : getCollection().add(toJson()).then((value) => {id = value.id});
-    } catch (error) {
+    } on Exception catch (e) {
+      // Anything else that is an exception
+      print('Unknown exception: $e');
+      rethrow;
+    } catch (e) {
+      // No specified type, handles all
+      print('Something really unknown: $e');
       rethrow;
     }
 

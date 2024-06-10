@@ -9,6 +9,7 @@ import 'package:symptom_tracker/model/tracker.dart';
 import 'package:collection/collection.dart';
 
 class DataProcessManager {
+
   static Future<List<DataLog>> getLogs(DateTime start, DateTime end) async {
     return DataLog.collection(EventManager.selectedTarget.id!)
         .where('time', isGreaterThanOrEqualTo: start)
@@ -23,25 +24,20 @@ class DataProcessManager {
   }
 
   static Future<List<String>> getCurrValue(
-      DateTime start, Tracker tracker) async {
-    // TODO: should we run this from today - 7 or keep is as week starting?
+      DateTime start, Tracker tracker, {int days = 7}) async {
 
-    // TODO - Can we change this to have a range - over day, week, month so that the format can easily change depending on data ?
+      int i = 0;
 
-    int i = 0;
-    //widget.currValues.clear();
-    //widget.trendIcons.clear();
+      while (i < days) {
+        var date = start.add(Duration(days: -i));
+        var prevDate = start.add(Duration(days: -i + 1));
 
-    while (i < 7) {
-      var date = start.add(Duration(days: -i));
-      var prevDate = start.add(Duration(days: -i + 1));
+        var currValue = await tracker.getValue(day: date);
+        var prevValue = await tracker.getValue(day: prevDate);
 
-      var currValue = await tracker.getValue(day: date);
-      var prevValue = await tracker.getValue(day: prevDate);
-
-      i++;
-    }
-    return [];
+        i++;
+      }
+      return [];
   }
 
   static Future<List<LogTimeLineEntry>> getTrackersFor(
