@@ -73,7 +73,10 @@ class _LineDataChartState extends State<LineDataChart> {
       Colors.green,
       Colors.orange,
       Colors.pink,
-      Colors.purple
+      Colors.purple,
+      Colors.purple,
+      Colors.purple,
+      Colors.purple,
     ];
 
     // get array of colours
@@ -263,9 +266,7 @@ class _LineDataChartState extends State<LineDataChart> {
   // TODO - handle touch events on chart
   LineTouchData get lineTouchData1 => LineTouchData(
         handleBuiltInTouches: true,
-        touchTooltipData: LineTouchTooltipData(
-          tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
-        ),
+        touchTooltipData: LineTouchTooltipData(),
       );
 
   FlTitlesData getTitles(
