@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/views/widgets/home/tracker_week_info/week_info_grid.dart';
 
 import 'package:symptom_tracker/views/widgets/home/tracker_week_info.dart';
@@ -32,6 +33,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
   //Map<Tracker, List<String>> trackerValues = {};
   final List<TrackerVO> trackerValues = [];
   late DateTime currDate;
+  final ignoreList = <TrackerType>[TrackerType.diet];
 
   @override
   initState() {
@@ -71,14 +73,16 @@ class _TrackerWeekState extends State<TrackerWeek> {
     {
       await EventManager.selectedTarget.getTrackOptions();
     }
+
     var values = <TrackerVO>{};
     for (var tracker in trackers) {
-      int i = 0;
-      //tracker.option.order = trackerValues.length;
-      //values.putIfAbsent(tracker, () => []);
+
+      // Ignore trackers that are not in the list
+      if (ignoreList.contains(tracker.option.trackType)) continue;
+
       var vo = TrackerVO(tracker, []);
 
-
+      int i = 0;
       while (i < numDays) {
         var date = trackerDate.add(Duration(days: -i));
         var currValue = await tracker.getValue(day: date);

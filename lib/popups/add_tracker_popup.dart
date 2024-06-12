@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:icon_picker/icon_picker.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/services/tracker_service.dart';
@@ -43,7 +44,7 @@ class _AddTrackerState extends State<AddTracker> {
 // Todo - get this from a constant
   List<DropdownMenuItem<String>> get dropdownItems {
 
-    List<DropdownMenuItem<String>> menuItems = TrackerTypes.values
+    List<DropdownMenuItem<String>> menuItems = TrackerType.values
         .map((e) => DropdownMenuItem<String>(
             value: e.toShortString(), child: Text(e.toShortString())))
         .toList();
@@ -126,10 +127,10 @@ class _AddTrackerState extends State<AddTracker> {
         );
       case States.type:
         return DropdownButton(
-            value: widget.option.trackType,
+            value: widget.option.trackType.toShortString(),
             onChanged: (String? newValue) {
               setState(() {
-                widget.option.trackType = newValue!;
+                widget.option.trackType = TrackerType.values.byName(newValue!);
               });
             },
             items: dropdownItems);

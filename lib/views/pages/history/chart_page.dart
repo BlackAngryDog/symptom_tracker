@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/model/database_objects/data_log.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
 import 'package:symptom_tracker/model/database_objects/trackable.dart';
@@ -63,7 +64,7 @@ class _ChartPageState extends State<ChartPage> {
                   //TODO - create a weight details widget - make weight a default tracker
                   Expanded(
                     child: ValueTrackerDisplay(
-                      EventManager.selectedTarget.getWeightTracker(),
+                      EventManager.selectedTarget.getTracker(TrackerType.weight)!,
                       DateTime.now().subtract(Duration(days: duration)),
                       DateTime.now(),
                     ),

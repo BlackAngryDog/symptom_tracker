@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/model/database_objects/data_log.dart';
 import 'package:symptom_tracker/model/database_objects/diet_option.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
@@ -37,7 +38,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
   }
 
   Future<List<DietOptionItem>> _getData() async {
-    DataLog? log = await EventManager.selectedTarget.getDietTracker().getLog();
+    DataLog? log = await EventManager.selectedTarget.getTracker(TrackerType.diet)?.getLog();
 
     if (log == null) return options;
 
@@ -115,9 +116,7 @@ class _DietOptionsPageState extends State<DietOptionsPage> {
               // To do - save data
               final result = Map.fromEntries(options.where((element) => element.selected == true)
                   .map((value) => MapEntry(value.item.id, value.item.title)));
-              EventManager.selectedTarget
-                  .getDietTracker()
-                  .updateLog(result, DateTime.now());
+              EventManager.selectedTarget.getTracker(TrackerType.diet)?.updateLog(result, DateTime.now());
               Navigator.of(context).pop();
             },
           ),

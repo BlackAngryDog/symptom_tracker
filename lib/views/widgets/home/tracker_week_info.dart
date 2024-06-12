@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/views/widgets/home/tracker_week_info/count_tracker_week_info.dart';
@@ -47,16 +48,16 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
 
   StatefulWidget getDisplay() {
     switch (_selectedTracker!.option.trackType) {
-      case "counter":
+      case TrackerType.counter:
         return CountTrackerWeekInfo(
             _selectedTracker!, widget.date, widget.data);
-      case "quality":
+      case TrackerType.counter:
         return QualityTrackerWeekInfo(
             _selectedTracker!, widget.date, widget.data);
-      case "rating":
+      case TrackerType.rating:
         return RatingTrackerWeekInfo(
             _selectedTracker!, widget.date, widget.data);
-      case "diet":
+      case TrackerType.diet:
         return DietTrackerWeekInfo(
             _selectedTracker!, widget.date);
       default:

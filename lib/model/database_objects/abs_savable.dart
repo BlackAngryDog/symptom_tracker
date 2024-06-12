@@ -12,11 +12,14 @@ abstract class AbsSavable<T> implements ISavable{
   String? id;
   AbsSavable({this.id});
 
-  T save() {
+  Future<T> save() async {
     try {
-      id != null
-          ? getCollection().doc(id).set(toJson())
-          : getCollection().add(toJson()).then((value) => {id = value.id});
+      if(id != null) {
+        getCollection().doc(id).set(toJson());
+      }else {
+        var value = await getCollection().add(toJson()); //.then((value) => {id = value.id});
+        id  = value.id;
+      }
     } on Exception catch (e) {
       // Anything else that is an exception
       print('Unknown exception: $e');
@@ -26,7 +29,6 @@ abstract class AbsSavable<T> implements ISavable{
       print('Something really unknown: $e');
       rethrow;
     }
-
     return this as T;
   }
 

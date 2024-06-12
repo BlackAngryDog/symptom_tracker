@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/views/widgets/mini_trackers/count_tracker.dart';
 
@@ -10,11 +11,11 @@ class TrackerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (item.option.trackType) {
-      case "counter":
+      case TrackerType.counter:
         return MiniCountTracker(item);
-      case "quality":
+      case TrackerType.quality:
         return MiniCountTracker(item);
-      case "diet":
+      case TrackerType.diet:
         return MiniCountTracker(item);
       default:
         return MiniCountTracker(item);

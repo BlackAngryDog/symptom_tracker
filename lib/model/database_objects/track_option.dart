@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/model/database_objects/abs_savable.dart';
 import 'package:symptom_tracker/services/database_service.dart';
 import 'package:symptom_tracker/model/tracker.dart';
@@ -11,19 +12,28 @@ enum AutoFill { initial, zero, last }
 class TrackOption extends AbsSavable<TrackOption>{
 
   String? title;
-  String? trackType;
+  late TrackerType trackType;
   String? icon;
   AutoFill? autoFill;
 
-  TrackOption({this.title, this.trackType, this.icon, this.autoFill, String? id}) : super(id:id);
+  TrackOption({this.title, this.trackType = TrackerType.counter, this.icon, this.autoFill, String? id}) : super(id:id);
 
   static Future<List<TrackOption>> getOptions() async {
-    return TrackOption.collection().get().then((data) {
-      List<TrackOption> log = data.docs.map((doc) {
-        return TrackOption.fromJson(doc.id, doc.data() as Map<String, dynamic>);
-      }).toList();
-      return log;
-    });
+
+    var data = await TrackOption.collection().get();
+    var list = data.docs.map((doc) {
+      var json = doc.data() as Map<String, dynamic>;
+      // Check if the track type is valid
+      var isValid = TrackerType.values.any((element) => element.toShortString() == json['trackType']);
+      if (isValid) {
+        return TrackOption.fromJson(
+            doc.id, doc.data() as Map<String, dynamic>);
+      }
+
+      return null;
+    }).toList().where((e) => e != null).map((e) => TrackOption()).toList();
+    return list;
+
   }
 
   @override
@@ -37,20 +47,23 @@ class TrackOption extends AbsSavable<TrackOption>{
       .doc(DatabaseService.getUserID())
       .collection('trackOptions');
 
-  static Future<TrackOption> load(String key) async {
+  static Future<TrackOption?> load(String key) async {
     if (key.isEmpty) return TrackOption();
 
     final doc = collection().doc(key);
+    return doc.get().then((snapshot) {
 
-    return doc
-        .get()
-        .then(
-          (snapshot) => TrackOption.fromJson(
-              doc.id, snapshot.data() as Map<String, dynamic>),
-        )
-        .catchError(
-          (error, stackTrace) => TrackOption(),
-        );
+      if (!snapshot.exists)
+        return null;
+
+      var json = snapshot.data() as Map<String, dynamic>;
+      if (!TrackerType.values.any((element) => element.toShortString() == json['trackType']))
+        return null;
+
+      return TrackOption.fromJson(
+          doc.id, snapshot.data() as Map<String, dynamic>);
+    }).catchError((error, stackTrace) => null);
+
   }
 
   TrackOption.fromJson(String? key, Map<String, dynamic> json) {
@@ -58,7 +71,7 @@ class TrackOption extends AbsSavable<TrackOption>{
         ? json['id']
         : key; // TODO - LINK TRAKER OPTION TO DATA - LINK DATA LOGS TO OPTION
     title = json['title'];
-    trackType = json['trackType'];
+    trackType = TrackerType.values.byName(json['trackType']);
     icon = json['icon'];
     autoFill = AutoFill.values.byName(json['autoFill'] ?? 'initial');
   }
@@ -74,7 +87,7 @@ class TrackOption extends AbsSavable<TrackOption>{
   @override
   Map<String, dynamic> toJson() => <String, dynamic>{
     'title': title,
-    'trackType': trackType,
+    'trackType': trackType.toShortString(),
     'icon': icon,
     'autoFill': autoFill?.toShortString(),
   };

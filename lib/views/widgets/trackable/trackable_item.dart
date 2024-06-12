@@ -9,17 +9,20 @@ class TrackableItem extends StatelessWidget {
   const TrackableItem(this.item, {Key? key}) : super(key: key);
 
   void select(BuildContext ctx) {
-    DatabaseService.getUser().then((value) {
-      value?.selectedID = item.id;
-      value?.save();
-
-      Trackable.load(item.id??"").then((value) => {
-        EventManager.selectedTarget = value,
-        Navigator.pop(ctx, item),
-        EventManager.dispatchUpdate(UpdateEvent(EventType.trackableChanged)),
-      });
+    DatabaseService.getUser().then((user) {
+      user?.selectedID = item.id;
+      user?.save().then((user) => {
+        Trackable.load(item.id??"").then((value) => {
+          EventManager.selectedTarget = value,
+          Navigator.pop(ctx, item),
+          EventManager.dispatchUpdate(UpdateEvent(EventType.trackableChanged)),
+        })
+      }).catchError(
+        (error) => print("Error saving user:")
+      );
     });
   }
+
 
   @override
   Widget build(BuildContext context) {

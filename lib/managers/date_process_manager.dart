@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/database_objects/data_log.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
@@ -101,8 +102,9 @@ class DataProcessManager {
   static Future<Map<String, Duration>> getDietFor(
       DateTime start, DateTime end,
       {String optionID = ""}) async {
+
     // Read data as a list of diet changes.
-    Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
+    Tracker dietTracker = EventManager.selectedTarget.getTracker(TrackerType.diet)!;
 
     List<DataLog> dietLogs =
     await dietTracker.getLogs(start.startOfDay, end.endOfDay);
@@ -152,7 +154,7 @@ class DataProcessManager {
       DateTime start, DateTime end,
       {String optionID = ""}) async {
     // Read data as a list of diet changes.
-    Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
+    Tracker dietTracker = EventManager.selectedTarget.getTracker(TrackerType.diet)!;
 
     List<DataLog> dietLogs =
         await dietTracker.getLogs(start.startOfDay, end.endOfDay);
@@ -239,7 +241,7 @@ class DataProcessManager {
     DateTime start = DateTimeExt.lastYear;
 
     // Read data as a list of diet changes.
-    Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
+    Tracker dietTracker = EventManager.selectedTarget.getTracker(TrackerType.diet)!;
 
     List<DataLog> dietLogs =
         await dietTracker.getLogs(start, DateTime.now().endOfDay);
@@ -311,7 +313,7 @@ class DataProcessManager {
     DateTime end = endTime?.endOfDay ?? DateTime.now().endOfDay;
 
     // Read data as a list of diet changes.
-    Tracker dietTracker = EventManager.selectedTarget.getDietTracker();
+    Tracker dietTracker = EventManager.selectedTarget.getTracker(TrackerType.diet)!;
 
     DateTime curr = start;
     var map = <String, Map<String, List<double>>>{};

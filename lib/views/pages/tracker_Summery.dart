@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/managers/date_process_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/views/widgets/history/diet_chart.dart';
@@ -11,11 +12,15 @@ class TrackerSummeryPage extends StatelessWidget {
   Widget getState() {
     print('tracker type is ${_tracker.option.trackType}');
     switch (_tracker.option.trackType) {
-      case "counter":
+      case TrackerType.counter:
         return CountTrackerInfo(_tracker);
-      case "quality":
+      case TrackerType.quality:
         return QualityTrackerInfo(_tracker);
-      case "diet":
+      case TrackerType.diet:
+        return DietTrackerInfo(_tracker);
+      case TrackerType.note:
+        return DietTrackerInfo(_tracker);
+      case TrackerType.event:
         return DietTrackerInfo(_tracker);
       default:
         return ValueTrackerInfo(_tracker);

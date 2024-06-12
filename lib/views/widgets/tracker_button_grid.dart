@@ -69,7 +69,7 @@ class _TrackerButtonGridState extends State<TrackerButtonGrid> {
   Widget build(BuildContext context) {
     return Container(
       child: StreamBuilder<QuerySnapshot>(
-        //stream: Tracker.getCollection(_trackable.id ?? "default").where('type', isEqualTo: "counter").snapshots(),
+        //stream: Tracker.getCollection(_trackable.id ?? "default").where('type', isEqualTo: TrackerType.counter).snapshots(),
         stream: Tracker.getCollection(EventManager.selectedTarget.id ?? "default").where('type', isNotEqualTo: 'diet').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {

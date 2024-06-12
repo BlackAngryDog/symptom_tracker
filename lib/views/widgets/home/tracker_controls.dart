@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/views/widgets/home/trackers/count_tracker.dart';
@@ -43,13 +44,13 @@ class _TrackerControlsState extends State<TrackerControls> {
     if (_selectedTracker == null) return Container();
 
     switch (_selectedTracker!.option.trackType) {
-      case "counter":
+      case TrackerType.counter:
         return CountTracker(_selectedTracker!, widget.date ?? DateTime.now());
-      case "quality":
+      case TrackerType.quality:
         return QualityTracker(_selectedTracker!, widget.date ?? DateTime.now());
-      case "rating":
+      case TrackerType.rating:
         return RatingTracker(_selectedTracker!, widget.date ?? DateTime.now());
-      case "diet":
+      case TrackerType.diet:
         return DietTracker(_selectedTracker!);
       default:
         return ValueTracker(_selectedTracker!, widget.date ?? DateTime.now());

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/model/database_objects/data_log.dart';
 import 'package:symptom_tracker/managers/date_process_manager.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
@@ -106,7 +107,7 @@ class _DietChartState extends State<DietChart> {
     Map<String, List<PieChartSectionData>> pieSections =
         <String, List<PieChartSectionData>>{};
     // Read data as a list of diet changes.
-    Tracker dietTracker = _selectedTarget.getDietTracker();
+    Tracker dietTracker = _selectedTarget.getTracker(TrackerType.diet)!;
 
     // TODO - setup timeframe
     DateTime start = DateTime.now().subtract(Duration(days: widget.duration));

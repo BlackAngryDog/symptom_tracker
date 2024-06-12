@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/model/database_objects/abs_savable.dart';
 import 'package:symptom_tracker/model/database_objects/data_log.dart';
@@ -6,15 +7,13 @@ import 'package:symptom_tracker/model/database_objects/track_option.dart';
 import 'package:symptom_tracker/services/database_service.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:collection/collection.dart';
 
 // Used to store details of thing bing tracked (a group of trackers)
 class Trackable extends AbsSavable<Trackable>{
   // Trackable object to store tracked data
   String? userID;
   String? title;
-
-  Tracker? _dietTracker;
-  Tracker? _weightTracker;
 
   List<String> _trackerIDs = [];
   final List<TrackOption> _trackOptions = [];
@@ -25,55 +24,46 @@ class Trackable extends AbsSavable<Trackable>{
 
   Trackable({this.title, String? id}) : super(id:id);
 
-  // GET A DIET TRACKER FOR LOGGIN (STANDARD TRACKERS NEED FOR IMPLEMENTATION)
-  Tracker getDietTracker() {
-    if (_dietTracker != null) return _dietTracker as Tracker;
-
-    _dietTracker = Tracker(
-        id ?? '',
-        TrackOption(
-            id: "diet", title: 'Diet Tracker', trackType: 'diet', autoFill: AutoFill.last));
-    return _dietTracker as Tracker;
-  }
-
-  Tracker getWeightTracker() {
-    if (_weightTracker != null) return _weightTracker as Tracker;
-
-    _weightTracker =
-        _trackers.where((element) => element.option.title == 'Weight ').firstOrNull??
-            Tracker(id ?? '', TrackOption(title: 'Weight', trackType: 'weight', autoFill: AutoFill.last));
-
-    return _weightTracker as Tracker;
-  }
-
   Future loadDefaultTrackers(List<TrackOption> options) async {
     // setup default trackers, wright, diet, notes and events
+
+    var dataList = await TrackOption.getOptions();
     var options = await getTrackOptions();
     bool changed = false;
-    if (!options.any((x) => x.title == 'Weight')) {
-      await addTrackOption(TrackOption(title: 'Weight', trackType: 'weight', autoFill: AutoFill.last));
-      changed = true;
-    }
 
-    if (!options.any((x) => x.title == 'Diet Tracker')) {
-      await addTrackOption(TrackOption(title: 'Diet Tracker', trackType: 'diet', autoFill: AutoFill.last));
-      changed = true;
-    }
-
-    if (!options.any((x) => x.title == 'Notes')) {
-      await addTrackOption(TrackOption(title: 'Notes', trackType: 'notes', autoFill: AutoFill.last));
-      changed = true;
-    }
-
-    if (!options.any((x) => x.title == 'Events')) {
-      await addTrackOption(TrackOption(title: 'Events', trackType: 'events', autoFill: AutoFill.last));
-      changed = true;
-    }
+    changed = await addDefaultTrackOption(dataList, 'Weight', TrackerType.weight, AutoFill.last) ? true :  changed;
+    changed = await addDefaultTrackOption(dataList, 'Diet Tracker', TrackerType.diet, AutoFill.last)? true :  changed;
+    changed = await addDefaultTrackOption(dataList, 'Notes', TrackerType.note, AutoFill.last)? true : changed;
+    changed = await addDefaultTrackOption(dataList, 'Events', TrackerType.event, AutoFill.last)? true :  changed;
 
     if (changed) {
      // var trackerIds = _trackOptions.map((e) => e.id).toList();
       saveTrackIDs(_trackerIDs);
     }
+  }
+
+  /// Add a default track option to the trackable if no option exists
+  Future<bool> addDefaultTrackOption(List<TrackOption> dataList, String title, TrackerType trackType, AutoFill autoFill) async {
+
+    var options = await getTrackOptions();
+
+    if (!options.any((x) => x.trackType == trackType)) {
+
+      // Get this option from the database
+      var option = dataList.firstWhereOrNull((x) => x.trackType == trackType);
+
+      // Add database entry if required
+      if (option == null){
+        option = TrackOption(title: title, trackType: trackType, autoFill: autoFill);
+        await option.save();
+      }
+
+      // Assign to Trackable
+      await addTrackOption(option);
+      return true;
+    }
+
+    return false;
   }
 
   Future addTrackOption(TrackOption option) async {
@@ -103,6 +93,7 @@ class Trackable extends AbsSavable<Trackable>{
     _trackers.clear();
     for (var tid in _trackerIDs) {
       var option = await TrackOption.load(tid);
+      if (option == null) continue;
       _trackOptions.add(option);
       _trackers.add(Tracker(id ?? '', option));
     }
@@ -117,6 +108,10 @@ class Trackable extends AbsSavable<Trackable>{
       _trackers.add(Tracker(id ?? '', option));
     }
     return _trackers;
+  }
+
+  Tracker? getTracker(TrackerType type) {
+    return _trackers.firstWhereOrNull((x) => x.option.trackType == type);
   }
 
   Future<List<DataLog>> getDataLogs(DateTime start, DateTime end) async {
@@ -158,8 +153,6 @@ class Trackable extends AbsSavable<Trackable>{
       (snapshot) async {
         var item =
             Trackable.fromJson(doc.id, snapshot.data() as Map<String, dynamic>);
-
-       ;
         await item.loadDefaultTrackers(await item.getTrackOptions());
 
         return item;
