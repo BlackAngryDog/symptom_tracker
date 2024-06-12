@@ -46,9 +46,9 @@ class ValueTrackerDisplay extends StatelessWidget {
                 height: 100,
                 child: LineChart(
                   LineChartData(
-                    lineTouchData: LineTouchData(enabled: false),
-                    gridData: FlGridData(show: false),
-                    titlesData: FlTitlesData(show: false),
+                    lineTouchData: const LineTouchData(enabled: false),
+                    gridData: const FlGridData(show: false),
+                    titlesData: const FlTitlesData(show: false),
                     borderData: FlBorderData(show: false),
                     lineBarsData: [
                       LineChartBarData(
@@ -57,7 +57,7 @@ class ValueTrackerDisplay extends StatelessWidget {
                         preventCurveOverShooting: true,
                         barWidth: 3,
                         isStrokeCapRound: true,
-                        dotData: FlDotData(show: true),
+                        dotData: const FlDotData(show: true),
                         spots: spots,
                       )
                     ],

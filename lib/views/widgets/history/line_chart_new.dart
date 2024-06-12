@@ -96,7 +96,7 @@ class _LineDataChartState extends State<LineDataChart> {
         preventCurveOverShooting: true,
         barWidth: 3,
         isStrokeCapRound: true,
-        dotData: FlDotData(show: true),
+        dotData: const FlDotData(show: true),
         belowBarData: BarAreaData(show: false),
         spots: [],
         //show: option == "Fits", // Todo add filters
@@ -223,7 +223,7 @@ class _LineDataChartState extends State<LineDataChart> {
         preventCurveOverShooting: true,
         barWidth: 3,
         isStrokeCapRound: true,
-        dotData: FlDotData(show: true),
+        dotData: const FlDotData(show: true),
         belowBarData: BarAreaData(show: false),
         spots: [],
         //show: option == "Fits", // Todo add filters
@@ -264,7 +264,7 @@ class _LineDataChartState extends State<LineDataChart> {
   }
 
   // TODO - handle touch events on chart
-  LineTouchData get lineTouchData1 => LineTouchData(
+  LineTouchData get lineTouchData1 => const LineTouchData(
         handleBuiltInTouches: true,
         touchTooltipData: LineTouchTooltipData(),
       );
@@ -292,7 +292,7 @@ class _LineDataChartState extends State<LineDataChart> {
 
   SideTitles GetTitles(List<String> list) {
     return list.isEmpty
-        ? SideTitles(showTitles: false)
+        ? const SideTitles(showTitles: false)
         : SideTitles(
             showTitles: true,
             interval: 1,
@@ -317,7 +317,7 @@ class _LineDataChartState extends State<LineDataChart> {
     );
   }
 
-  FlGridData get gridData => FlGridData(show: false);
+  FlGridData get gridData => const FlGridData(show: false);
 
   FlBorderData get borderData => FlBorderData(
         show: true,
@@ -344,7 +344,7 @@ class _LineDataChartState extends State<LineDataChart> {
         color: Colors.blue,
         barWidth: 8,
         isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
+        dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
         spots: map[option]!
             .map((e) =>

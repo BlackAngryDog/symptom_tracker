@@ -86,7 +86,7 @@ class _ValueTrackerState extends State<ValueTracker> {
   @override
   Widget build(BuildContext context) {
 
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height / 2,
       child: Column(
         children: [
@@ -94,16 +94,17 @@ class _ValueTrackerState extends State<ValueTracker> {
             padding: const EdgeInsets.only(right: 8.0),
             child: Row(
               children: [
-                Expanded(child: Text(value.isEmpty ? '0' : value, textAlign: TextAlign.end, style: TextStyle(fontSize: 24),)),
+                Expanded(child: Text(value.isEmpty ? '0' : value, textAlign: TextAlign.end, style: const TextStyle(fontSize: 24),)),
       GestureDetector(
         onTap: () {
             // Handle backspace button tap
             setState(() {
-              if (value.isNotEmpty)
+              if (value.isNotEmpty) {
                 value = value.substring(0, value.length - 1);
+              }
             });
         },
-        child: Card(
+        child: const Card(
 
             child: Center(
               child: Icon(Icons.backspace),
@@ -116,7 +117,7 @@ class _ValueTrackerState extends State<ValueTracker> {
           ),
           Expanded(
             child: GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: 12,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, // 3 items per row
@@ -138,7 +139,7 @@ class _ValueTrackerState extends State<ValueTracker> {
                       child: Center(
                         child: Text(
                           '${index+1}',
-                          style: TextStyle(fontSize: 24),
+                          style: const TextStyle(fontSize: 24),
                         ),
                       ),
                     ),
@@ -154,7 +155,7 @@ class _ValueTrackerState extends State<ValueTracker> {
                         }
                       });
                     },
-                    child: Card(
+                    child: const Card(
                       child: Center(
                         child: Text( '.',
                           style: TextStyle(fontSize: 24),
@@ -171,7 +172,7 @@ class _ValueTrackerState extends State<ValueTracker> {
                         value += '0';
                       });
                     },
-                    child: Card(
+                    child: const Card(
                       child: Center(
                         child: Text(
                           '0',
@@ -189,7 +190,7 @@ class _ValueTrackerState extends State<ValueTracker> {
                         updateData(value);
                       });
                     },
-                    child: Card(
+                    child: const Card(
                       child: Center(
                         child: Icon(Icons.check),
                       ),

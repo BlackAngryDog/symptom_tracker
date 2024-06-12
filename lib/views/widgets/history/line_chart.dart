@@ -189,19 +189,19 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         horizontalInterval: 1,
         verticalInterval: 1,
         getDrawingHorizontalLine: (value) {
-          return FlLine(
-            color: const Color(0xff37434d),
+          return const FlLine(
+            color: Color(0xff37434d),
             strokeWidth: 1,
           );
         },
         getDrawingVerticalLine: (value) {
-          return FlLine(
-            color: const Color(0xff37434d),
+          return const FlLine(
+            color: Color(0xff37434d),
             strokeWidth: 1,
           );
         },
       ),
-      titlesData: FlTitlesData(
+      titlesData: const FlTitlesData(
         show: true,
         rightTitles: AxisTitles(
           sideTitles: SideTitles(showTitles: false),
@@ -246,7 +246,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         color: const Color(0xff4af699),
         barWidth: 6,
         isStrokeCapRound: true,
-        dotData: FlDotData(show: true),
+        dotData: const FlDotData(show: true),
         belowBarData: BarAreaData(show: true),
         spots: _spots,
       );
@@ -256,7 +256,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         color: const Color(0xffaa4cfc),
         barWidth: 4,
         isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
+        dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(
           show: false,
           color: const Color(0x00aa4cfc),
@@ -276,7 +276,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         color: const Color(0xff27b6fc),
         barWidth: 8,
         isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
+        dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
         spots: const [
           FlSpot(1, 2.8),

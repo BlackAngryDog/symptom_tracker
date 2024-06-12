@@ -53,12 +53,14 @@ class TrackOption extends AbsSavable<TrackOption>{
     final doc = collection().doc(key);
     return doc.get().then((snapshot) {
 
-      if (!snapshot.exists)
+      if (!snapshot.exists) {
         return null;
+      }
 
       var json = snapshot.data() as Map<String, dynamic>;
-      if (!TrackerType.values.any((element) => element.toShortString() == json['trackType']))
+      if (!TrackerType.values.any((element) => element.toShortString() == json['trackType'])) {
         return null;
+      }
 
       return TrackOption.fromJson(
           doc.id, snapshot.data() as Map<String, dynamic>);

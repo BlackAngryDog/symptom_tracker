@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:symptom_tracker/model/database_objects/abs_savable.dart';
 import 'package:symptom_tracker/model/database_objects/user.dart';
 
 class DatabaseService {

@@ -10,18 +10,16 @@ import 'package:symptom_tracker/views/pages/trackable_selection_page.dart';
 import 'package:symptom_tracker/views/pages/tracker_history.dart';
 import 'package:symptom_tracker/views/pages/tracker_options_page.dart';
 import 'package:symptom_tracker/popups/add_note_popup.dart';
-import 'package:symptom_tracker/views/widgets/footer/footer.dart';
 
 import 'package:symptom_tracker/views/widgets/header/appbar_popup_menu_button.dart';
-import 'package:symptom_tracker/views/widgets/bottom_tracker_panel.dart';
 import 'package:symptom_tracker/views/widgets/home/tracker_week.dart';
 import 'package:symptom_tracker/views/widgets/log/data_timeline.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class TrackerPage extends StatefulWidget {
 
-  TrackerPage(_trackable, {Key? key}) : super(key: key) {
-    EventManager(_trackable);
+  TrackerPage(trackable, {Key? key}) : super(key: key) {
+    EventManager(trackable);
   }
 
   @override
@@ -73,7 +71,7 @@ class _TrackerPageState extends State<TrackerPage> {
     Navigator.push(
       ctx,
       MaterialPageRoute(
-          builder: (context) => TrackerHistoryPage()),
+          builder: (context) => const TrackerHistoryPage()),
     );
   }
 
@@ -81,7 +79,7 @@ class _TrackerPageState extends State<TrackerPage> {
     Navigator.push(
       ctx,
       MaterialPageRoute(
-          builder: (context) => ChartPage()),
+          builder: (context) => const ChartPage()),
     );
   }
 
@@ -120,16 +118,16 @@ class _TrackerPageState extends State<TrackerPage> {
   Widget _getPageContent(){
     switch(_selectedIndex) {
       case 0:
-        return TrackerWeek();
+        return const TrackerWeek();
         break;
       case 1:
-        return ChartPage();
+        return const ChartPage();
         break;
       case 2:
         return DataTimeLine(EventManager.selectedTarget);
         break;
       default:
-        return TrackerWeek();
+        return const TrackerWeek();
         break;
     }
   }
@@ -139,12 +137,15 @@ class _TrackerPageState extends State<TrackerPage> {
       context: context,
       position: RelativeRect.fromLTRB(MediaQuery.of(context).copyWith().size.width, MediaQuery.of(context).copyWith().size.height, 0.0, 0.0),
       items: <PopupMenuItem<String>>[
-        new PopupMenuItem<String>(
-            child: const Text('Edit Trackers'), value: 'trackers'),
-        new PopupMenuItem<String>(
-            child: const Text('Edit Diet'), value: 'diet'),
-        new PopupMenuItem<String>(
-            child: const Text('Add Note'), value: 'note'),
+        const PopupMenuItem<String>(
+            value: 'trackers',
+            child: Text('Edit Trackers')),
+        const PopupMenuItem<String>(
+            value: 'diet',
+            child: Text('Edit Diet')),
+        const PopupMenuItem<String>(
+            value: 'note',
+            child: Text('Add Note')),
       ],
       elevation: 8.0,
     );
@@ -186,7 +187,7 @@ class _TrackerPageState extends State<TrackerPage> {
 
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Expanded(child: Text("${EventManager.selectedTarget.title ?? 'DOG'}'s ${PageTitle}" )),
+            Expanded(child: Text("${EventManager.selectedTarget.title ?? 'DOG'}'s $PageTitle" )),
             AppBarMenuButton({
               'Switch': () {
                 showTrackableList(context);
@@ -260,7 +261,7 @@ class _TrackerPageState extends State<TrackerPage> {
                 _onItemTapped(2,context);
               },
             ),
-            SizedBox(width: 50),
+            const SizedBox(width: 50),
             /*
             IconButton(
 

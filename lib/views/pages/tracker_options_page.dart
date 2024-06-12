@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
 import 'package:symptom_tracker/model/database_objects/track_option.dart';
-import 'package:symptom_tracker/model/database_objects/trackable.dart';
 import 'package:symptom_tracker/popups/add_tracker_popup.dart';
 import '../widgets/tracker_options/track_option_item.dart';
 

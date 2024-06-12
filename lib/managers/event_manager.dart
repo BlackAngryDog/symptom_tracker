@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
-import 'package:symptom_tracker/model/database_objects/track_option.dart';
 import 'package:symptom_tracker/model/database_objects/trackable.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 

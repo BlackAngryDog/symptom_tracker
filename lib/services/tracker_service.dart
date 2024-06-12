@@ -1,6 +1,5 @@
 
 
-import 'package:flutter/cupertino.dart';
 import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/model/database_objects/track_option.dart';
 

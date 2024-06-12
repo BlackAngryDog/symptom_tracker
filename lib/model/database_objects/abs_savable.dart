@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:symptom_tracker/services/database_service.dart';
-import 'package:collection/src/iterable_extensions.dart';
 
 abstract class ISavable {
   CollectionReference getCollection();

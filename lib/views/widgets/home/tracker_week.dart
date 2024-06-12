@@ -1,6 +1,5 @@
 // stateless widget that displays the tracker for the week
 import 'dart:async';
-import 'dart:collection';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';

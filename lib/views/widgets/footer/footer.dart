@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/managers/event_manager.dart';
 import 'package:symptom_tracker/views/pages/diet_options_page.dart';
 import 'package:symptom_tracker/views/pages/tracker_options_page.dart';
 import 'package:symptom_tracker/views/widgets/bottom_tracker_panel.dart';
@@ -23,7 +21,7 @@ class Footer extends StatelessWidget {
     Navigator.push(
       ctx,
       MaterialPageRoute(
-        builder: (context) => TrackerOptionsPage(),
+        builder: (context) => const TrackerOptionsPage(),
       ),
     );
   }

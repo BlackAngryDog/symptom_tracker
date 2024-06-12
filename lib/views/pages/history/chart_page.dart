@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/model/database_objects/data_log.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
-import 'package:symptom_tracker/model/database_objects/trackable.dart';
 import 'package:symptom_tracker/views/widgets/history/diet_chart.dart';
 import 'package:symptom_tracker/views/widgets/history/line_chart_new.dart';
 import 'package:symptom_tracker/views/widgets/tracker_info_widgets/value_tracker_info.dart';
@@ -24,18 +23,18 @@ class _ChartPageState extends State<ChartPage> {
     List<DropdownMenuItem<int>> menuItems = [
       const DropdownMenuItem(
         value: 7,
-        child: Text("7 days"),
         alignment: Alignment.topRight,
+        child: Text("7 days"),
       ),
       const DropdownMenuItem(
         value: 30,
-        child: Text("30 days"),
         alignment: Alignment.topRight,
+        child: Text("30 days"),
       ),
       const DropdownMenuItem(
         value: 90,
-        child: Text("90 days"),
         alignment: Alignment.topRight,
+        child: Text("90 days"),
       ),
     ];
     return menuItems;

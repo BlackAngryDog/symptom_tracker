@@ -175,7 +175,7 @@ class _TrackableSetupPageState extends State<TrackableSetupPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                TrackerOptionsPage(),
+                                const TrackerOptionsPage(),
                           ),
                         );
                       }

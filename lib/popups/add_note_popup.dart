@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddNote extends StatefulWidget {
@@ -42,11 +41,11 @@ class _AddNoteState extends State<AddNote> with SingleTickerProviderStateMixin {
 
           const SizedBox(height: 20),
 
-         Expanded(
-           child: const TextField(
+         const Expanded(
+           child: TextField(
              textAlignVertical: TextAlignVertical.top,
               maxLines: 5,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Note',
                 alignLabelWithHint: true,

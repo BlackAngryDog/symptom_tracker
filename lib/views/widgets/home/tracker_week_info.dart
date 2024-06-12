@@ -4,7 +4,6 @@ import 'package:symptom_tracker/managers/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/views/widgets/home/tracker_week_info/count_tracker_week_info.dart';
 import 'package:symptom_tracker/views/widgets/home/tracker_week_info/diet_tracker_week_info.dart';
-import 'package:symptom_tracker/views/widgets/home/tracker_week_info/quality_tracker_week_info.dart';
 import 'package:symptom_tracker/views/widgets/home/tracker_week_info/rating_tracker_week_info.dart';
 import 'package:symptom_tracker/views/widgets/home/tracker_week_info/value_tracker_week_info.dart';
 
@@ -50,9 +49,6 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
     switch (_selectedTracker!.option.trackType) {
       case TrackerType.counter:
         return CountTrackerWeekInfo(
-            _selectedTracker!, widget.date, widget.data);
-      case TrackerType.counter:
-        return QualityTrackerWeekInfo(
             _selectedTracker!, widget.date, widget.data);
       case TrackerType.rating:
         return RatingTrackerWeekInfo(

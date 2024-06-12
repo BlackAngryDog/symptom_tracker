@@ -57,11 +57,11 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
               ),
             ),
           );
-        }).whenComplete(() => {
-      _selectedIndex = -1,
-      _bottomSheetOpen = false,
+        }).whenComplete(() {
+      _selectedIndex = -1;
+      _bottomSheetOpen = false;
       EventManager.dispatchUpdate(
-          UpdateEvent(EventType.trackerChanged, tracker: widget._tracker))
+          UpdateEvent(EventType.trackerChanged, tracker: widget._tracker));
     });
     _bottomSheetOpen = true;
   }

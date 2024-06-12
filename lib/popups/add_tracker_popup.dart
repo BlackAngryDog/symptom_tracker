@@ -3,8 +3,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:icon_picker/icon_picker.dart';
 import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
-import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/services/tracker_service.dart';
 
 import '../model/database_objects/track_option.dart';
 
@@ -160,7 +158,7 @@ class _AddTrackerState extends State<AddTracker> {
         );
       default:
         return Container(
-          child: Text("TODO:Summery"),
+          child: const Text("TODO:Summery"),
         );
     }
   }

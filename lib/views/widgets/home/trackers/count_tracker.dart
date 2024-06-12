@@ -81,8 +81,9 @@ class _ValueTrackerState extends State<CountTracker> {
 
               IconButton(
                 onPressed: () {
-                  if (currValue > 0)
+                  if (currValue > 0) {
                     updateData(-1);
+                  }
                 },
                 icon: const Icon(Icons.remove),
               ),
