@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/extentions/extention_methods.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
 import 'package:symptom_tracker/model/tracker.dart';
+import 'package:symptom_tracker/popups/add_note_popup.dart';
 import 'package:symptom_tracker/views/pages/tracker_Summery.dart';
 import 'package:symptom_tracker/popups/add_tracker_popup.dart';
 import 'package:symptom_tracker/views/widgets/home/tracker_controls.dart';
@@ -34,27 +36,16 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
     final trackDay = widget._trackerDate.subtract(Duration(days: index));
 
     showModalBottomSheet(
+        isScrollControlled: true,
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
         context: ctx,
         builder: (_) {
           return GestureDetector(
             onTap: () {},
             behavior: HitTestBehavior.opaque,
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Flexible(child: Text(DateTimeExt.formatDate(trackDay))),
-                    TrackerControls(
-                      widget._tracker,
-                      trackDay,
-                    ),
-                  ],
-                ),
-              ),
+            child : TrackerControls(
+              widget._tracker,
+              trackDay,
             ),
           );
         }).whenComplete(() {
@@ -239,7 +230,7 @@ class AbsWeekInfoState<T extends AbsWeekInfo> extends State<T> {
         padding: const EdgeInsets.all(2.0),
         child: GestureDetector(
           onTap: () {
-            showControlPanel(context, index);
+              showControlPanel(context, index);
           },
           child: v.isEmpty ? getEmpty(index) : getDay(index),
         ),

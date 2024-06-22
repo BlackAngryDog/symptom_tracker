@@ -32,7 +32,7 @@ class _TrackerWeekState extends State<TrackerWeek> {
   //Map<Tracker, List<String>> trackerValues = {};
   final List<TrackerVO> trackerValues = [];
   late DateTime currDate;
-  final ignoreList = <TrackerType>[TrackerType.diet];
+  final ignoreList = <TrackerType>[];
 
   @override
   initState() {

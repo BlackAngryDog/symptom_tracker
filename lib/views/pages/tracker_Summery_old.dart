@@ -11,14 +11,12 @@ class TrackerSummeryPage extends StatelessWidget {
     print('tracker type is ${_tracker.option.trackType}');
     switch (_tracker.option.trackType) {
       case TrackerType.counter:
+      case TrackerType.event:
+      case TrackerType.note:
         return CountTrackerInfo(_tracker);
       case TrackerType.quality:
         return QualityTrackerInfo(_tracker);
       case TrackerType.diet:
-        return DietTrackerInfo(_tracker);
-      case TrackerType.note:
-        return DietTrackerInfo(_tracker);
-      case TrackerType.event:
         return DietTrackerInfo(_tracker);
       default:
         return ValueTrackerInfo(_tracker);

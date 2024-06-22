@@ -56,25 +56,23 @@ class _QualityTrackerState extends State<QualityTracker> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Card(
-        child: ListTile(
-          title: Text(widget._tracker.option.title ?? ""),
-          subtitle: Text(subtitle),
-          trailing: RatingBar.builder(
-            initialRating: currValue,
-            minRating: 1,
-            direction: Axis.horizontal,
-            allowHalfRating: true,
-            itemCount: 5,
+      child: ListTile(
+        title: Text(widget._tracker.option.title ?? ""),
+        subtitle: Text(subtitle),
+        trailing: RatingBar.builder(
+          initialRating: currValue,
+          minRating: 1,
+          direction: Axis.horizontal,
+          allowHalfRating: true,
+          itemCount: 5,
 
-            itemBuilder: (context, _) => const Icon(
-              Icons.star,
-              color: Colors.amber,
-            ),
-            onRatingUpdate: (rating) {
-              updateData(rating);
-            },
+          itemBuilder: (context, _) => const Icon(
+            Icons.star,
+            color: Colors.amber,
           ),
+          onRatingUpdate: (rating) {
+            updateData(rating);
+          },
         ),
       ),
       onDoubleTap: () {

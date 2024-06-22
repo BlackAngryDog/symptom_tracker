@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/views/pages/diet_options_page.dart';
+import 'package:symptom_tracker/popups/diet_options_popup.dart';
 import 'package:symptom_tracker/views/pages/tracker_Summery.dart';
 
 class DietTracker extends StatefulWidget {
@@ -13,7 +13,7 @@ class DietTracker extends StatefulWidget {
 }
 
 class _DietTrackerState extends State<DietTracker> {
-  List<String> currValue = []; // TODO - GET TODYS COUNT FOR TRACKER
+  List<String> currValue = []; // TODO - GET TODAY'S COUNT FOR TRACKER
   String subtitle = '';
 
   @override
@@ -27,7 +27,7 @@ class _DietTrackerState extends State<DietTracker> {
     Navigator.push(
       ctx,
       MaterialPageRoute(
-        builder: (context) => const DietOptionsPage(),
+        builder: (context) => DietOptions(widget._tracker, DateTime.now()),
       ),
     );
   }
@@ -54,42 +54,40 @@ class _DietTrackerState extends State<DietTracker> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Card(
-        child: ListTile(
-          title: Text(widget._tracker.option.title ?? ""),
-          subtitle: Text(subtitle),
-          trailing: SizedBox(
-            width: 100,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    showOptions(context);
-                  },
-                  icon: const Icon(Icons.change_circle_outlined),
-                ),
-                /*PopupMenuButton(
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text('Edit'),
-                      ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Text('Delete'),
-                      )
-                    ];
-                  },
-                  onSelected: (String value) {
-                    print('You Click on po up menu item');
-                  },
-                )*/
-              ],
-            ),
+      child: ListTile(
+        title: Text(widget._tracker.option.title ?? ""),
+        subtitle: Text(subtitle),
+        trailing: SizedBox(
+          width: 100,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: () {
+                  showOptions(context);
+                },
+                icon: const Icon(Icons.change_circle_outlined),
+              ),
+              /*PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      value: 'edit',
+                      child: Text('Edit'),
+                    ),
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Text('Delete'),
+                    )
+                  ];
+                },
+                onSelected: (String value) {
+                  print('You Click on po up menu item');
+                },
+              )*/
+            ],
           ),
         ),
       ),

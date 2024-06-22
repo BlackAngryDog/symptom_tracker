@@ -11,10 +11,10 @@ class CountTracker extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<CountTracker> createState() => _ValueTrackerState();
+  State<CountTracker> createState() => _CountTrackerState();
 }
 
-class _ValueTrackerState extends State<CountTracker> {
+class _CountTrackerState extends State<CountTracker> {
   int currValue = 0; // TODO - GET TODYS COUNT FOR TRACKER
   String subtitle = 'count today is 0';
   bool _showPad = false;
@@ -69,55 +69,53 @@ class _ValueTrackerState extends State<CountTracker> {
     return _showPad
         ? ValueTracker(widget._tracker, widget._trackerDate)
         :GestureDetector(
-      child: Card(
-        child: ListTile(
-          title: Text(widget._tracker.option.title ?? ""),
-          subtitle: Text(subtitle),
-          trailing: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
+      child: ListTile(
+        title: Text(widget._tracker.option.title ?? ""),
+        subtitle: Text(subtitle),
+        trailing: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
 
-              IconButton(
-                onPressed: () {
-                  if (currValue > 0) {
-                    updateData(-1);
-                  }
-                },
-                icon: const Icon(Icons.remove),
-              ),
-              IconButton(
-                onPressed: () {
-                  showNumPad();
-                },
-                icon: const Icon(Icons.edit),
-              ),
-              IconButton(
-                onPressed: () {
-                    updateData(1);
-                },
-                icon: const Icon(Icons.add),
-              ),
-              /*PopupMenuButton(
-                itemBuilder: (context) {
-                  return [
-                    PopupMenuItem(
-                      value: 'edit',
-                      child: Text('Edit'),
-                    ),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Text('Delete'),
-                    )
-                  ];
-                },
-                onSelected: (String value) {
-                  print('You Click on po up menu item');
-                },
-              )*/
-            ],
-          ),
+            IconButton(
+              onPressed: () {
+                if (currValue > 0) {
+                  updateData(-1);
+                }
+              },
+              icon: const Icon(Icons.remove),
+            ),
+            IconButton(
+              onPressed: () {
+                showNumPad();
+              },
+              icon: const Icon(Icons.edit),
+            ),
+            IconButton(
+              onPressed: () {
+                  updateData(1);
+              },
+              icon: const Icon(Icons.add),
+            ),
+            /*PopupMenuButton(
+              itemBuilder: (context) {
+                return [
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Text('Edit'),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Text('Delete'),
+                  )
+                ];
+              },
+              onSelected: (String value) {
+                print('You Click on po up menu item');
+              },
+            )*/
+          ],
         ),
       ),
       onDoubleTap: () {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/tracker.dart';
-import 'package:symptom_tracker/views/pages/diet_options_page.dart';
+import 'package:symptom_tracker/popups/diet_options_popup.dart';
 
 class MiniDietTracker extends StatefulWidget {
   final Tracker _tracker;
@@ -21,12 +21,15 @@ class _MiniDietTrackerState extends State<MiniDietTracker> {
 
   Future showOptions(BuildContext ctx) async {
     // SHOW FOOD LIST
+    /*
     Navigator.push(
       ctx,
       MaterialPageRoute(
-        builder: (context) => const DietOptionsPage(),
+        builder: (context) => const DietOptions(),
       ),
     );
+    */
+
   }
 
   @override

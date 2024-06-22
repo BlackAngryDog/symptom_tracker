@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:symptom_tracker/views/pages/diet_options_page.dart';
+import 'package:symptom_tracker/popups/diet_options_popup.dart';
 import 'package:symptom_tracker/views/pages/tracker_options_page.dart';
 import 'package:symptom_tracker/views/widgets/bottom_tracker_panel.dart';
 
@@ -8,12 +8,12 @@ class Footer extends StatelessWidget {
 
   Future showDietOptions(BuildContext ctx) async {
     // SHOW FOOD LIST
-    Navigator.push(
-      ctx,
-      MaterialPageRoute(
-        builder: (context) => const DietOptionsPage(),
-      ),
-    );
+    //Navigator.push(
+    //  ctx,
+    //  MaterialPageRoute(
+    //    builder: (context) => const DietOptions(),
+    //  ),
+    //);
   }
 
   Future showTrackingOptions(BuildContext ctx) async {

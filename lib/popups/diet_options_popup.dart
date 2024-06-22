@@ -5,17 +5,22 @@ import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/model/database_objects/data_log.dart';
 import 'package:symptom_tracker/model/database_objects/diet_option.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
+import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/views/widgets/diet_options/add_diet_option_popup.dart';
 import 'package:symptom_tracker/views/widgets/diet_options/diet_option_item.dart';
 
-class DietOptionsPage extends StatefulWidget {
-  const DietOptionsPage({Key? key}) : super(key: key);
+class DietOptions extends StatefulWidget {
+
+  final Tracker _tracker;
+  final DateTime _trackerDate;
+
+  const DietOptions(this._tracker, this._trackerDate, {Key? key}) : super(key: key);
 
   @override
-  State<DietOptionsPage> createState() => _DietOptionsPageState();
+  State<DietOptions> createState() => _DietOptionsState();
 }
 
-class _DietOptionsPageState extends State<DietOptionsPage> {
+class _DietOptionsState extends State<DietOptions> {
   List<DietOptionItem> options = [];
 
   void _addOptionopup(BuildContext ctx) {

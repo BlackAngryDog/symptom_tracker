@@ -55,47 +55,45 @@ class _RatingTrackerState extends State<RatingTracker> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Card(
-        child: ListTile(
-          title: Text(widget._tracker.option.title ?? ""),
-          subtitle: Text(subtitle),
-          trailing: RatingBar.builder(
-            initialRating: currValue,
-            itemCount: 5,
-            minRating: 1,
-            itemBuilder: (context, index) {
-              switch (index) {
-                case 0:
-                  return const Icon(
-                    Icons.sentiment_very_dissatisfied,
-                    color: Colors.red,
-                  );
-                case 1:
-                  return const Icon(
-                    Icons.sentiment_dissatisfied,
-                    color: Colors.redAccent,
-                  );
-                case 2:
-                  return const Icon(
-                    Icons.sentiment_neutral,
-                    color: Colors.amber,
-                  );
-                case 3:
-                  return const Icon(
-                    Icons.sentiment_satisfied,
-                    color: Colors.lightGreen,
-                  );
-                default:
-                  return const Icon(
-                    Icons.sentiment_very_satisfied,
-                    color: Colors.green,
-                  );
-              }
-            },
-            onRatingUpdate: (rating) {
-              updateData(rating);
-            },
-          ),
+      child: ListTile(
+        title: Text(widget._tracker.option.title ?? ""),
+        subtitle: Text(subtitle),
+        trailing: RatingBar.builder(
+          initialRating: currValue,
+          itemCount: 5,
+          minRating: 1,
+          itemBuilder: (context, index) {
+            switch (index) {
+              case 0:
+                return const Icon(
+                  Icons.sentiment_very_dissatisfied,
+                  color: Colors.red,
+                );
+              case 1:
+                return const Icon(
+                  Icons.sentiment_dissatisfied,
+                  color: Colors.redAccent,
+                );
+              case 2:
+                return const Icon(
+                  Icons.sentiment_neutral,
+                  color: Colors.amber,
+                );
+              case 3:
+                return const Icon(
+                  Icons.sentiment_satisfied,
+                  color: Colors.lightGreen,
+                );
+              default:
+                return const Icon(
+                  Icons.sentiment_very_satisfied,
+                  color: Colors.green,
+                );
+            }
+          },
+          onRatingUpdate: (rating) {
+            updateData(rating);
+          },
         ),
       ),
       onDoubleTap: () {

@@ -1,79 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:symptom_tracker/model/tracker.dart';
 import 'package:symptom_tracker/views/pages/tracker_Summery.dart';
+import 'package:symptom_tracker/views/widgets/home/tracker_week_info/abstract_week_info.dart';
 
-class DietTrackerWeekInfo extends StatefulWidget {
+class DietTrackerWeekInfo extends AbsWeekInfo{
   final Tracker _tracker;
   final DateTime _trackerDate;
-  const DietTrackerWeekInfo(this._tracker, this._trackerDate, {Key? key})
-      : super(key: key);
+  DietTrackerWeekInfo(this._tracker, this._trackerDate, _currValues, {Key? key})
+      : super(_tracker, _trackerDate, _currValues, key: key);
 
   @override
   State<DietTrackerWeekInfo> createState() => _DietTrackerWeekInfoState();
 }
 
-class _DietTrackerWeekInfoState extends State<DietTrackerWeekInfo> {
-  final List<String> currValues = [
-    "0",
-    "0",
-    "0",
-    "0",
-    "0",
-    "0",
-    "0"
-  ]; // TODO - GET TODYS COUNT FOR TRACKER
-  String subtitle = 'count today is 0';
+class _DietTrackerWeekInfoState extends AbsWeekInfoState<DietTrackerWeekInfo> {
 
   @override
-  void initState() {
-    super.initState();
-    getCurrValue();
-  }
+  Future<List<String>> getCurrValue() async {
 
-  Future getCurrValue() async {
     int i = 0;
-    final currDay = DateTime.now().weekday;
-    List<String> v = [];
-    while (i++ < 7) {
-      v.add(await widget._tracker
-          .getValue(day: widget._trackerDate.add(Duration(days: i - currDay))));
+    while (i < 7) {
+      var date = widget._trackerDate.add(Duration(days: -i));
+      var prevDate = widget._trackerDate.add(Duration(days: -i + 1));
+
+      var currValue = await widget._tracker.getValue(day: date);
+      var prevValue = await widget._tracker.getValue(day: prevDate);
+
+      widget.currValues[i] = currValue.split(",").length.toString();
+      widget.trendIcons[i] = getTrendIcon(prevValue, currValue);
+
+      i++;
     }
-    currValues.clear();
+
     setState(() {
-      currValues.addAll(v);
+
     });
-  }
 
-  void showHistory(BuildContext ctx) {
-    Navigator.push(
-      ctx,
-      MaterialPageRoute(
-        builder: (context) => TrackerSummeryPage(
-          widget._tracker,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var daysOfWeek = <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 50, crossAxisSpacing: 0, mainAxisSpacing: 0),
-      itemCount: daysOfWeek.length,
-      shrinkWrap: true,
-      itemBuilder: (BuildContext ctx, index) {
-        // Add your card/widget/grid element here
-        return Container(
-          color: Colors.transparent,
-          alignment: Alignment.center,
-          child: Column(
-            children: [Text(currValues[index])],
-          ),
-        );
-      },
-    );
+    return widget.currValues;
   }
 }

@@ -47,6 +47,8 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
 
   StatefulWidget getDisplay() {
     switch (_selectedTracker!.option.trackType) {
+      case TrackerType.event:
+      case TrackerType.note:
       case TrackerType.counter:
         return CountTrackerWeekInfo(
             _selectedTracker!, widget.date, widget.data);
@@ -55,7 +57,7 @@ class _TrackerWeekInfoState extends State<TrackerWeekInfo> {
             _selectedTracker!, widget.date, widget.data);
       case TrackerType.diet:
         return DietTrackerWeekInfo(
-            _selectedTracker!, widget.date);
+            _selectedTracker!, widget.date, widget.data);
       default:
       // TODO - ADD Duration - like value but with time
       // TODO - Add SEVERITY like quality but with a scale

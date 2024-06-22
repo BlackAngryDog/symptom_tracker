@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:symptom_tracker/enums/tracker_enums.dart';
 import 'package:symptom_tracker/managers/event_manager.dart';
 
 import 'package:symptom_tracker/views/pages/calender_page.dart';
 import 'package:symptom_tracker/views/pages/history/chart_page.dart';
-import 'package:symptom_tracker/views/pages/diet_options_page.dart';
+import 'package:symptom_tracker/popups/diet_options_popup.dart';
 import 'package:symptom_tracker/views/pages/trackable_selection_page.dart';
 import 'package:symptom_tracker/views/pages/tracker_history.dart';
 import 'package:symptom_tracker/views/pages/tracker_options_page.dart';
@@ -49,7 +50,7 @@ class _TrackerPageState extends State<TrackerPage> {
   }
 
   void _addNote(BuildContext ctx) {
-  
+  /*
     showModalBottomSheet(
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
         context: ctx,
@@ -65,6 +66,8 @@ class _TrackerPageState extends State<TrackerPage> {
             ),
           );
         });
+        */
+
   }
 
   void showHistory(BuildContext ctx) {
@@ -159,11 +162,11 @@ class _TrackerPageState extends State<TrackerPage> {
         );
         break;
       case 'diet':
-        Navigator.push(
-          ctx,
-          MaterialPageRoute(
-              builder: (context) => const DietOptionsPage()),
-        );
+       // Navigator.push(
+       //   ctx,
+       //   MaterialPageRoute(
+       //       builder: (context) => DietOptions(EventManager.selectedTarget.getTracker(TrackerType.diet), DateTime.now()),
+       // );
         break;
       case 'note':
         _addNote(ctx);
